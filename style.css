@@ -1,0 +1,324 @@
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+/** LOGIN PAGE **/
+
+/* parent container */
+.parent-registration {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #96A1C4;
+    height: 100vh;
+    width: 100vw;
+    box-sizing: border-box;
+}
+
+/* left section */
+.logo {
+    width: 600px;
+    height: 600px;
+}
+
+/* right section */
+.rightSide {
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 5%;
+    box-sizing: border-box;
+    width: 550px;
+    max-height: 90%;
+}
+
+.main, .details, .signup-page {
+    text-align: center;
+}
+
+.main {
+    font-family: "Hammersmith One", sans-serif;
+    font-size: 32px; 
+}
+
+.details {
+    font-size: 16px; 
+}
+
+/* form styling */
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2vh;
+    position: relative;
+    font-size: 1vw; 
+}
+
+.form-group input[type="text"], 
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 1vh;
+    border: none;
+    border-bottom: 2px solid black;
+    outline: none;
+    font-size: 1vw;
+}
+
+.form-group input[type="text"]::placeholder,
+.form-group input[type="password"]::placeholder {
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+    position: absolute;
+}
+
+/* checkbox */
+.miniform-group {
+    display: flex;
+    align-content: center;
+}
+
+label{
+    font-size: 16px;
+}
+
+.checkmark {
+    height: 2vh;
+    width: 2vh;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 3px;
+    margin-right: 1vh;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* a links */
+.register {
+    color: black;  
+    font-weight: 600; 
+}
+
+.forgot-page{
+    font-size: 16px;
+}
+
+/* submit button */
+.registration {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: black;
+    color: #fff;
+    border: 3px solid black;
+    font-size: 18px; 
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.registration:hover {
+    background-color: #fff;
+    color: #96A1C4;
+    border: 3px solid #96A1C4;
+}
+
+/** DASHBOARD PAGE **/
+.parent-dashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* left section */
+.leftSection {
+    display: grid;
+    align-content: space-between;
+    width: 20%;
+    background-color: #181D31;
+    color: white;
+    height: 1000px;
+}
+
+.blockA, .blockC{
+    padding: 5%;
+    display: flex;
+}
+
+
+/* block A */
+.app-name{
+    font-weight: bold;
+}
+
+.logo-small{
+    width: 100px;
+    height: 100px;
+}
+
+/* block B */
+.menu{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 2%;
+    margin-left: 10%;
+    font-size: 18px;
+}
+
+.white-icon {
+    color: white;
+}
+
+.menu-title{
+    margin-left: 10px;
+    font-weight: 600;
+}
+
+.menu-options{
+    color: white;
+    text-decoration: none;
+}
+
+.menu:hover{
+    background-color: #96A1C4;  
+}
+
+/* block C */
+.gabay-dashboard{
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.gabay-logo{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+/* right section */
+.rightSection {
+    width: 80%;
+    height: 1000px;
+}
+
+/* search bar */
+.header-search {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 20px;
+}
+
+.header-search input[type="text"] {
+    width: 90%; 
+    padding-right: 30px; 
+    margin: 20px;
+    padding: 1vh;
+    border: none;
+    background-color: #96A1C4;
+    border-radius: 50px;
+    outline: none;
+    font-size: 1vw;
+    position: relative;
+}
+
+.header-search input[type="text"]::placeholder {
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    position: absolute;
+    left: 10px; 
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.header-search .fa-search {
+    position: absolute;
+    right: 10px; 
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+}
+
+/* filter */
+.filter{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 50px;
+}
+
+.monthly, .yearly{
+    border: 2px solid black;
+    border-radius: 50px;
+    margin: 10px;
+    padding: 8px;
+    position: relative;
+}
+
+.filter div {
+    cursor: pointer;
+}
+
+#months {
+    display: none;
+    position: absolute; 
+    top: calc(100% + 5px); 
+    left: 0; 
+    background-color: white; 
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+    z-index: 1;
+}
+
+/* statistics */
+.statistics{
+    display: flex;
+    justify-content: space-evenly;
+    margin: 2%;
+}
+
+.total, .positive, .negative{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5px;
+    padding: 2%;
+    width: 300px;
+}
+
+.total{
+    background-color: #FBFFE0;
+}
+
+.positive{
+    background-color: #E2FFED;
+}
+
+.negative{
+    background-color: #FFEFEF;
+}
+
+.stats-title{
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.number{
+    font-size: 24px;
+}
+
+#icon-stats{
+    font-size: 60px;
+}
+
+/* graphs */

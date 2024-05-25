@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Page</title>
+
+    <!-- css file -->
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+
+    <!-- javascript file -->
+	<script src="script.js"></script>
+
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hammersmith+One&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+	<div class="parent-dashboard">
+        <!-- left section : menu -->
+        <div class="leftSection">
+            <!-- logo, app name -->
+            <div class="blockA">
+                <div class="logo-dashboard">
+                    <img class="logo-small" src="logo.png" alt="logo"/>
+                </div>
+                <div class="app">
+                    <p class="app-name">DB App</p>
+                    <p class="app-type">Database Management</p>
+                </div>
+            </div>
+            
+            <!-- menu -->
+            <div class="blockB">
+                <div class="menu">
+                    <i class="fa-solid fa-line-chart white-icon"></i>
+                    <p class="menu-title"><a class="menu-options" href="dashboard.html">Dashboard</a></p>
+                </div>
+                <div class="menu">
+                    <i class="fa-solid fa-pen white-icon"></i>
+                    <p class="menu-title"><a class="menu-options" href="tracker.html">Data Tracker</a></p>
+                </div>
+                <div class="menu">
+                    <i class="fa-solid fa-right-from-bracket white-icon"></i>
+                    <p class="menu-title"><a class="menu-options" href="login.html">Logout</a></p>
+                </div>
+            </div>
+
+             <!-- user photo, name, role -->
+            <div class="blockC">
+                <div class="gabay-dashboard">
+                    <img class="gabay-logo" src="gabay-logo.jpeg" alt="GABAY"/>
+                </div>
+                <div class="user">
+                    <p class="admin-name">Admin Name</p>
+                    <p class="admin">Admin</p>
+                </div>
+            </div>
+            
+            
+        </div>
+        
+        <!-- right section : dashboard -->
+        <div class="rightSection">
+
+            <!-- search bar -->
+            <div class="header-search">
+                <input class="search-bar" type="text" name="key" placeholder="Search">
+                <i class="fa fa-search"></i>
+            </div>
+
+            <!-- filter by monthly or yearly -->
+            <div class="filter">
+                <div class="monthly" onclick="toggleMonthDropdown()">Month
+                    <!-- Month Dropdown -->
+                    <select id="months">
+                        <option value="january">January</option>
+                        <option value="february">February</option>
+                        <option value="march">March</option>
+                        <option value="april">April</option>
+                        <option value="may">May</option>
+                        <option value="june">June</option>
+                        <option value="july">July</option>
+                        <option value="august">August</option>
+                        <option value="september">September</option>
+                        <option value="october">October</option>
+                        <option value="november">November</option>
+                        <option value="december">December</option>
+                    </select>
+                </div>
+                <div class="yearly" onclick="hideMonthDropdown()">Yearly</div>
+            </div>
+
+            <!-- statistics -->
+            <div class="statistics">
+                <div class="total">
+                    <div id="stats">
+                        <p class="stats-title"><b>Total Tested</b></p>
+                        <p class="number">890</p>
+                    </div>
+                    <i id="icon-stats" class="fa-solid fa-people-group"></i>
+                </div>
+                <div class="positive">
+                    <div id="stats">
+                        <p class="stats-title"><b>Positive</b></p>
+                        <p class="number">90</p>
+                    </div>
+                    <i id="icon-stats" class="fa-solid fa-user-plus"></i>
+                </div>
+                <div class="negative">
+                    <div id="stats">
+                        <p class="stats-title"><b>Negative</b></p>
+                        <p class="number">800</p>
+                    </div>
+                    <i id="icon-stats" class="fa-solid fa-user-minus"></i>
+                </div>
+            </div>
+
+            <!-- graphs -->
+            <div class="graphs">
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
