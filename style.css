@@ -207,6 +207,11 @@ label{
     white-space: nowrap;
 }
 
+.sidebar ul li.active{
+    background: #96A1C4;
+    border-radius: 50px;
+}
+
 .sidebar ul li a{
     color: #fff;
     display: flex;
