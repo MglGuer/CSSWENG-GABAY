@@ -136,7 +136,7 @@ label{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
@@ -144,6 +144,8 @@ label{
     background-color: #181D31;
     padding: 0.4rem 0.8rem;
     transition: all 0.5s ease;
+    overflow-y: auto;
+    z-index: 999;
 }
 
 .sidebar.active ~ .main-content{
@@ -184,6 +186,10 @@ label{
     opacity: 1;
 }
 
+#logo-mini{
+    width: 50px;
+}
+
 .top .logo i {
     font-size: 2rem;
     margin-right: 5px;
@@ -205,6 +211,7 @@ label{
     margin: 0.8rem auto;
     line-height: 50px;
     white-space: nowrap;
+    z-index: 1;
 }
 
 .sidebar ul li.active{
@@ -241,24 +248,25 @@ label{
     opacity: 1;
 }
 
-.sidebar ul li .tooltip{
+.sidebar ul li .tooltip {
     position: absolute;
-    left: 125px;
+    left: calc(100% + 10px); /* Position it to the right of the sidebar */
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateY(-50%);
     box-shadow: 0 0.5rem 0.8rem rgba(0, 0, 0, 0.2);
     border-radius: 0.6rem;
     padding: 0.4rem 1.2rem;
     line-height: 1.8rem;
-    z-index: 20;
-    opacity: 0;
+    z-index: 1001;
+    visibility: hidden;
     white-space: nowrap;
+    background-color: black; 
+    color: white;
+    border: 2px solid red;  
 }
 
-.sidebar ul li:hover .tooltip{
-    background-color: black;
-    color: white;
-    opacity: 1;
+.sidebar ul li:hover .tooltip {
+    visibility: visible;
 }
 
 .sidebar.active ul li .tooltip{
