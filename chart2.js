@@ -39,8 +39,9 @@ document.addEventListener("DOMContentLoaded", function() {
             ]
         },
         options: {
+            indexAxis: 'y',  
             scales: {
-                y: {
+                x: {
                   beginAtZero: true
                 }
             }

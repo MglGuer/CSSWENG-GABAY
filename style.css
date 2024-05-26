@@ -331,85 +331,87 @@ label{
 /* container */
 .container {
     display: grid;
-    grid-template-rows: repeat(5, 300px); 
+    grid-template-rows: repeat(4, 350px); 
     grid-template-columns: repeat(8, 1fr); 
     gap: 20px; 
 }
 
 /* grid items */
-.statistics, .graph1, .graph2, .graph3, .graph4, .graph5, .graph6 {
+.graph1, .graph2, .graph3, .graph4, .graph5, .graph6 {
     background-color: #fff;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.statistics {
-    grid-row: 1 / 2;
-    grid-column: 1 / 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
 .graph1 {
     grid-row: 1 / 3;
-    grid-column: 3 / 9;
+    grid-column: 1 / 6;
 }
 
 .graph2 {
-    grid-row: 2 / 4;
-    grid-column: 1 / 3;
+    grid-row: 3 / 5;
+    grid-column: 1 / 6;
 }
 
 .graph3 {
-    grid-row: 3 / 5;
-    grid-column: 3 / 9;
+    grid-row: 1 / 2;
+    grid-column: 6 / 9;
 }
 
 .graph4 {
-    grid-row: 4 / 6;
-    grid-column: 1 / 3;
+    grid-row: 2 / 3;
+    grid-column: 6 / 9;
 }
 
 .graph5 {
-    grid-row: 5 / 6;
-    grid-column: 3 / 6;
+    grid-row: 3 / 4;
+    grid-column: 6 / 9;
 }
 
 .graph6 {
-    grid-row: 5 / 6;
+    grid-row: 4 / 5;
     grid-column: 6 / 9;
 }
 
 /* statistics */
+.statistics{
+    display: flex;
+    justify-content: space-evenly;
+    margin: 2%;
+}
+
 .total, .positive, .negative{
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    padding: 16px;
+    border-radius: 5px;
+    padding: 2%;
+    width: 300px;
 }
 
-.total, .positive{
-    border-bottom: 2px solid #181D31;
+.total{
+    background-color: #FBFFE0;
 }
 
-.total i, .positive i, .negative i {
-    font-size: 4rem; 
-    margin-right: 10px; 
+.positive{
+    background-color: #E2FFED;
 }
 
-.total .text, .positive .text, .negative .text {
-    display: flex;
-    flex-direction: column; 
+.negative{
+    background-color: #FFEFEF;
 }
 
-.text .bold{
-    font-family: "Hammersmith One", sans-serif;
+.stats-title{
     font-size: 20px;
+    font-weight: 600;
 }
 
-.number {
-    margin: 0; 
+.number{
     font-size: 24px;
+}
+
+#icon-stats{
+    font-size: 60px;
 }
 
 /* graphs */

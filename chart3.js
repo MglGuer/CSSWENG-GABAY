@@ -12,32 +12,32 @@ document.addEventListener("DOMContentLoaded", function() {
                 {
                     label: 'Positive Male',
                     backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                    data: [1, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+                    data: [1, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 },
                 {
                     label: 'Negative Male',
                     backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                    data: [0, 29, 0, 2, 0, 0, 0, 1, 2, 0, 0, 27]
+                    data: [0, 29, 0, 2, 0, 0, 0, 1, 2, 0, 0, 27, 0]
                 },
                 {
                     label: 'Positive Female',
                     backgroundColor: 'rgba(255, 206, 86, 0.5)',
-                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 },
                 {
                     label: 'Negative Female',
                     backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                    data: [0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0]
+                    data: [0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0]
                 },
                 {
                     label: 'Positive Transgender',
                     backgroundColor: 'rgba(153, 102, 255, 0.5)',
-                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 },
                 {
                     label: 'Negative Transgender',
                     backgroundColor: 'rgba(255, 159, 64, 0.5)',
-                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 }
             ]
         },

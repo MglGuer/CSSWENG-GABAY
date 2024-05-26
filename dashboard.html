@@ -84,30 +84,30 @@
             <div class="monthly">Month</div>
             <div class="yearly">Yearly</div>
         </div>
-        <div class="container">
-            <div class="statistics">
-                <div class="total">
-                    <i class="bx bxs-group"></i>
-                    <div class="text">
-                        <p class="bold">Total Patients Tested</p>
-                        <p class="number">890</p>
-                    </div>
+        <div class="statistics">
+            <div class="total">
+                <div id="stats">
+                    <p class="stats-title"><b>Total Tested</b></p>
+                    <p class="number">890</p>
                 </div>
-                <div class="positive">
-                    <i class="bx bxs-user-plus"></i>
-                    <div class="text">
-                        <p class="bold">Positive Patients Tested</p>
-                        <p class="number">90</p>
-                    </div>
-                </div>
-                <div class="negative">
-                    <i class="bx bxs-user-minus"></i>
-                    <div class="text">
-                        <p class="bold">Negative Patients Tested</p>
-                        <p class="number">800</p>
-                    </div>
-                </div>
+                <i id="icon-stats" class="bx bxs-group"></i>
             </div>
+            <div class="positive">
+                <div id="stats">
+                    <p class="stats-title"><b>Positive</b></p>
+                    <p class="number">90</p>
+                </div>
+                <i id="icon-stats" class="bx bxs-user-plus"></i>
+            </div>
+            <div class="negative">
+                <div id="stats">
+                    <p class="stats-title"><b>Negative</b></p>
+                    <p class="number">800</p>
+                </div>
+                <i id="icon-stats" class="bx bxs-user-minus"></i>
+            </div>
+        </div>
+        <div class="container">
             <div class="graph1">
                 <p class="reason">Testing outcomes by main reason for HIV Test</p>
                 <div class="chart">
@@ -115,33 +115,33 @@
                 </div>
             </div>
             <div class="graph2">
-                <p class="reason">Testing outcomes for clients who were tested before (repeat testers)</p>
-                <div class="chart">
-                    <canvas id="barchart"></canvas>
-                </div>
-            </div>
-            <div class="graph3">
                 <p class="reason">Testing outcomes by Key or Vulnerable Population (KVP) at higher risk</p>
                 <div class="chart">
                     <canvas id="horizontalbarchart2"></canvas>
                 </div>
             </div>
+            <div class="graph3">
+                <p class="reason">Testing outcomes for clients who were tested before (repeat testers)</p>
+                <div class="chart">
+                    <canvas id="barchart"></canvas>
+                </div>
+            </div>
             <div class="graph4">
                 <p class="reason">Testing outcomes by age</p>
                 <div class="chart">
-                    <canvas id=""></canvas>
+                    <canvas id="linechart"></canvas>
                 </div>
             </div>
             <div class="graph5">
                 <p class="reason">Testing outcomes for first time testers</p>
                 <div class="chart">
-                    <canvas id=""></canvas>
+                    <canvas id="horizontalbarchart3"></canvas>
                 </div>
             </div>
             <div class="graph6">
                 <p class="reason">Linkage for positive clients</p>
                 <div class="chart">
-                    <canvas id=""></canvas>
+                    <canvas id="linechart2"></canvas>
                 </div>
             </div>
         </div>
