@@ -16,6 +16,15 @@
 
     <!-- icons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- chartjs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" crossorigin="anonymous"></script>
+    <script src="chart1.js"></script>
+    <script src="chart2.js"></script>
+    <script src="chart3.js"></script>
+    <script src="chart4.js"></script>
+    <script src="chart5.js"></script>
+    <script src="chart6.js"></script>
 </head>
 <body>
 	<div class="sidebar">
@@ -100,22 +109,40 @@
                 </div>
             </div>
             <div class="graph1">
-                <p>Testing outcomes by main reason for HIV Test</p>
+                <p class="reason">Testing outcomes by main reason for HIV Test</p>
+                <div class="chart">
+                    <canvas id="horizontalbarchart"></canvas>
+                </div>
             </div>
             <div class="graph2">
-                <p>Testing outcomes for clients who were tested before (repeat testers)</p>
+                <p class="reason">Testing outcomes for clients who were tested before (repeat testers)</p>
+                <div class="chart">
+                    <canvas id="barchart"></canvas>
+                </div>
             </div>
             <div class="graph3">
-                <p>Testing outcomes by Key or Vulnerable Population (KVP) at higher risk</p>
+                <p class="reason">Testing outcomes by Key or Vulnerable Population (KVP) at higher risk</p>
+                <div class="chart">
+                    <canvas id="horizontalbarchart2"></canvas>
+                </div>
             </div>
             <div class="graph4">
-                <p>Testing outcomes by age</p>
+                <p class="reason">Testing outcomes by age</p>
+                <div class="chart">
+                    <canvas id=""></canvas>
+                </div>
             </div>
             <div class="graph5">
-                <p>Testing outcomes for first time testers</p>
+                <p class="reason">Testing outcomes for first time testers</p>
+                <div class="chart">
+                    <canvas id=""></canvas>
+                </div>
             </div>
             <div class="graph6">
-                <p>Linkage for positive clients</p>
+                <p class="reason">Linkage for positive clients</p>
+                <div class="chart">
+                    <canvas id=""></canvas>
+                </div>
             </div>
         </div>
     </div>
