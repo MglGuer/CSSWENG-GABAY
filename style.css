@@ -136,7 +136,7 @@ label{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
@@ -144,6 +144,7 @@ label{
     background-color: #181D31;
     padding: 0.4rem 0.8rem;
     transition: all 0.5s ease;
+    z-index: 1000;
 }
 
 .sidebar.active ~ .main-content{
@@ -255,12 +256,10 @@ label{
     border-radius: 0.6rem;
     padding: 0.4rem 1.2rem;
     line-height: 1.8rem;
-    z-index: 1001;
     visibility: hidden;
     white-space: nowrap;
     background-color: black; 
     color: white;
-    border: 2px solid red;  
 }
 
 .sidebar ul li:hover .tooltip {
