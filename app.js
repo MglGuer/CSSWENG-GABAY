@@ -21,8 +21,17 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 const mongoose = require('mongoose');
-const uri = "";//insert database connection
+const uri = "mongodb://127.0.0.1:27017/GABAY"; //temp local connection
 mongoose.connect(uri);
+
+const patientSchema = new mongoose.Schema({
+    name: { type: String },
+    birthday: {type: Date},
+    age: { type: Number },
+    reason: {type: String}
+  },{ versionKey: false });
+  
+const patientModel = mongoose.model('patient', patientSchema);
 
 const session = require('express-session');
 const mongoStore = require('connect-mongodb-session')(session);
