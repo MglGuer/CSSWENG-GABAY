@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     new Chart(ctx, {
         type: 'line', 
         data: {
-            labels: [ 'Linked to Treatment Facility', 'Linkage not yet confirmed, under follow-up', 'linkage unconfirmed (after 3 months follow-up)'],
+            labels: [ 'Linked to Treatment Facility', 'Linkage not yet confirmed, under follow-up', 'Linkage unconfirmed (after 3 months follow-up)'],
             datasets: [
                 {
                     label: 'Positive Male',
