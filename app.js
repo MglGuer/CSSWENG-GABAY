@@ -59,3 +59,41 @@ const port = process.env.PORT | 3000;
 server.listen(port, function(){
     console.log('Listening at port '+port);
 });
+
+server.use(express.static(__dirname + '/public'));
+
+server.get('/', (req,res) => {
+
+    res.sendFile('./login.html',{root:__dirname});
+
+});
+
+server.get('/dashboard', (req,res) => {
+
+    res.sendFile('./dashboard.html',{root:__dirname});
+
+});
+
+server.get('/signup', (req,res) => {
+
+    res.sendFile('./signup.html',{root:__dirname});
+
+});
+
+server.get('/tracker', (req,res) => {
+
+    res.sendFile('./tracker.html',{root:__dirname});
+
+});
+
+server.get('/profile', (req,res) => {
+
+    res.sendFile('./profile.html',{root:__dirname});
+
+});
+
+server.get('/forgotPassword', (req,res) => {
+
+    res.sendFile('./forgotpassword.html',{root:__dirname});
+
+});
