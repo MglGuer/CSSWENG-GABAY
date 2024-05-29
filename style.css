@@ -90,7 +90,7 @@
 }
 
 label{
-    color: white;
+    /* use different color */
     margin-left: 4px;
     font-size: 16px;
 }
@@ -429,4 +429,35 @@ label{
 .reason{
     font-family: "Hammersmith One", sans-serif;
     font-size: 20px;
+}
+
+/* For data tracker */
+.data-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+}
+select:focus {
+    outline: none;
+    border-color: #6cb2eb;
+    box-shadow: 0 0 5px rgba(108, 178, 235, 0.5);
+}
+
+.data-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
 }
