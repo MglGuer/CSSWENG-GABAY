@@ -41,10 +41,6 @@ function errorFn(err){
     console.error(err);
 }
 
-
-
-
-
 function finalClose(){
     console.log('Close connection at the end!');
     mongoose.connection.close();
@@ -62,38 +58,50 @@ server.listen(port, function(){
 
 server.use(express.static(__dirname + '/public'));
 
-server.get('/', (req,res) => {
-
-    res.sendFile('./login.html',{root:__dirname});
-
+// server for login
+server.get('/', (req,resp) => {
+    resp.render('login',{
+        layout: 'index',
+        title: 'Login Page'
+    });
 });
 
-server.get('/dashboard', (req,res) => {
-
-    res.sendFile('./dashboard.html',{root:__dirname});
-
+// server to register new account
+server.get('/signup', (req,resp) => {
+    resp.render('signup',{
+        layout: 'index',
+        title: 'Registration Page'
+    });
 });
 
-server.get('/signup', (req,res) => {
-
-    res.sendFile('./signup.html',{root:__dirname});
-
+// server to change new password
+server.get('/forgotpassword', (req,resp) => {
+    resp.render('forgotpassword',{
+        layout: 'index',
+        title: 'Forgot Password Page'
+    });
 });
 
-server.get('/tracker', (req,res) => {
-
-    res.sendFile('./tracker.html',{root:__dirname});
-
+// server for dashboard
+server.get('/dashboard', (req,resp) => {
+    resp.render('dashboard',{
+        layout: 'index',
+        title: 'Dashboard Page'
+    });
 });
 
-server.get('/profile', (req,res) => {
-
-    res.sendFile('./profile.html',{root:__dirname});
-
+// server for tracker
+server.get('/tracker', (req,resp) => {
+    resp.render('tracker',{
+        layout: 'index',
+        title: 'Data Tracker Page'
+    });
 });
 
-server.get('/forgotPassword', (req,res) => {
-
-    res.sendFile('./forgotpassword.html',{root:__dirname});
-
+// server for profile
+server.get('/profile', (req,resp) => {
+    resp.render('profile',{
+        layout: 'index',
+        title: 'Profile Page'
+    });
 });
