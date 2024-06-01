@@ -433,7 +433,7 @@ label{
 
 /* For data tracker */
 .data-label {
-    width: 500px;
+    width: 550px;
     justify-content: center;
     font-size: 30px;
     display: block;
@@ -442,7 +442,7 @@ label{
 }
 
 .data-input {
-    width: 600px;
+    width: 700px;
     height: 40px;
     padding: 5px;
     margin-left: 50px;
@@ -453,7 +453,7 @@ label{
 }
 
 select {
-    width: 600px;
+    width: 700px;
     height: 40px;
     padding: 5px;
     margin-left: 50px;
@@ -497,11 +497,11 @@ select:focus {
 .submit-button {
     border: none;
     border-radius: 20px;
-    margin-top: 15px;
+    margin-left: 1220px;
+    margin-top: 30px;
     background-color: #9B112E; 
     color: #ffffff; 
     padding: 10px 20px; 
-    text-align: right;
     display: inline-block;
 }
 

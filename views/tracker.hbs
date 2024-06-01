@@ -51,7 +51,6 @@
     <div class="header">
         <h1>Data Tracker</h1>
     </div>
-    <div class="container-tracker"> 
         <form>
             <div class="container-for-tracker">
                 <div class="container-for-fields">
@@ -77,8 +76,18 @@
                     </div>
 
                     <div class="field">
-                        <label for="age" class="data-label">Age:</label>
-                        <input type="text" id="age" name="age" class="data-input">
+                        <label for="age" class="data-label">Age:</label>  
+                        <select id="age" name="age">
+                            <option value="18-months">0 to 18 months</option>
+                            <option value="9-years">19 months to 9 years</option>
+                            <option value="14-years">10 to 14 years</option>
+                            <option value="19-years">15 to 19 years</option>
+                            <option value="24-years">20 to 24 years</option>
+                            <option value="29-years">25 to 29 years</option>
+                            <option value="39-years">30 to 39 years</option>
+                            <option value="49-years">40 to 49 years</option>
+                            <option value="50-plus">50 years and older</option>
+                        </select>
                     </div>
                     
                     <div class="field">
@@ -142,5 +151,4 @@
                 <input type="submit" class="submit-button" value="Submit">
             </div>
         </form>
-    </div>
 </div>
