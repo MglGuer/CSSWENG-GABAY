@@ -321,21 +321,30 @@ label{
 }
 
 select.monthly, .yearly{
-    border: 2px solid black;
-    border-radius: 50px;
+    background-color: #9B112E; 
+    color: white;
+    border: 3px solid white; 
+    border-radius: 25px;
     margin: 10px;
-    padding: 8px;
+    padding: 10px;
     position: relative;
+    font-size: 16px;
+}
+
+select.monthly:hover, .yearly:hover{
+    background-color: white; 
+    color: #9B112E;
+    border: 3px solid #9B112E;
 }
 
 .filter div {
     cursor: pointer;
 }
 
-/* container */
+/* container for graphs */
 .container {
     display: grid;
-    grid-template-rows: repeat(4, 350px); 
+    grid-template-rows: repeat(4, 380px); 
     grid-template-columns: repeat(8, 1fr); 
     gap: 20px; 
 }
@@ -443,45 +452,9 @@ select.monthly, .yearly{
     font-size: 20px;
 }
 
-/* For data tracker */
-.data-label {
-    width: 550px;
-    justify-content: center;
-    font-size: 25px;
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
+/** DATA TRACKER PAGE **/
 
-.data-input {
-    width: 700px;
-    height: 40px;
-    padding: 5px;
-    margin-left: 50px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    font-size: 20px;
-}
-
-select {
-    width: 700px;
-    height: 40px;
-    padding: 5px;
-    margin-left: 50px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    font-size: 20px;
-}
-
-select:focus {
-    outline: none;
-    border-color: #6cb2eb;
-    box-shadow: 0 0 5px rgba(108, 178, 235, 0.5);
-}
-
-/* Container for data tracker */
+/* container */
 .container-for-tracker {
     width: 1500px; 
     height: 640px; 
@@ -505,6 +478,43 @@ select:focus {
     align-items: center;
     margin-top: 18px;
     justify-content: left;
+}
+
+.data-label {
+    width: 550px;
+    justify-content: center;
+    font-size: 25px;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.data-input {
+    width: 700px;
+    height: 40px;
+    padding: 5px;
+    margin-left: 50px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-size: 20px;
+}
+
+select#age, select#reason-hiv, select#vulnerable-population, select#linkage {
+    width: 700px;
+    height: 40px;
+    padding: 5px;
+    margin-left: 50px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-size: 20px;
+}
+
+select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, select#linkage:focus {
+    outline: none;
+    border-color: #6cb2eb;
+    box-shadow: 0 0 5px rgba(108, 178, 235, 0.5);
 }
 
 .submit-button {
@@ -533,6 +543,7 @@ select:focus {
     font-size: 20px;
 }
 
+/** PROFILE PAGE **/
 .container-for-profile {
     width: 1400px; 
     height: 500px; 
