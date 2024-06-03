@@ -320,7 +320,7 @@ label{
     justify-content: flex-end;
 }
 
-.monthly, .yearly{
+select.monthly, .yearly{
     border: 2px solid black;
     border-radius: 50px;
     margin: 10px;
@@ -375,6 +375,18 @@ label{
 .graph6 {
     grid-row: 4 / 5;
     grid-column: 6 / 9;
+}
+
+.chart {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    height: 100%;
+}
+
+.graph1.chart canvas, .graph2.chart canvas {
+    width: 100% !important;
+    height: 70% !important;
 }
 
 /* statistics */
@@ -471,7 +483,7 @@ select:focus {
 
 /* Container for data tracker */
 .container-for-tracker {
-    width: 1400px; 
+    width: 1500px; 
     height: 640px; 
     background-color: #FFECF0; 
     border: 2px solid black;
@@ -501,9 +513,17 @@ select:focus {
     margin-left: 1220px;
     margin-top: 30px;
     background-color: #9B112E; 
-    color: #ffffff; 
+    color: white;
+    border: 3px solid white; 
     padding: 10px 20px; 
     display: inline-block;
+    font-size: 16px;
+}
+
+.submit-button:hover {
+    background-color: white;
+    color: #9B112E;
+    border: 3px solid #9B112E;
 }
 
 .radio-option {
@@ -513,15 +533,10 @@ select:focus {
     font-size: 20px;
 }
 
-
-
-/* For Edit Profile*/
-
 .container-for-profile {
     width: 1400px; 
     height: 500px; 
     background-color: #FFECF0; 
-    border: 2px solid black;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -548,8 +563,3 @@ select:focus {
     background-color: #f9f9f9;
     font-size: 15px;
 }
-
-
-
-
-
