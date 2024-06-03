@@ -473,9 +473,10 @@ select:focus {
 .container-for-tracker {
     width: 1400px; 
     height: 640px; 
-    background-color: #fca3a3; 
+    background-color: #FFECF0; 
+    border: 2px solid black;
     display: flex;
-    justify-content: left;
+    justify-content: center;
     flex-direction: column;
     align-items: center;
     border-radius: 20px;
@@ -519,7 +520,8 @@ select:focus {
 .container-for-profile {
     width: 1400px; 
     height: 500px; 
-    background-color: #fca3a3; 
+    background-color: #FFECF0; 
+    border: 2px solid black;
     display: flex;
     flex-direction: column;
     align-items: center;
