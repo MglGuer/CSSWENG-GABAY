@@ -455,15 +455,16 @@ select.monthly:hover, .yearly:hover{
 
 /** DATA TRACKER PAGE **/
 .container-for-tracker {
-    width: 1500px; 
-    height: 640px; 
     background-color: #FFECF0; 
     border: 2px solid black;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    border-radius: 20px;
+    padding: 30px;
+    margin: 40px auto;
 }
 
 .container-for-fields {
@@ -475,7 +476,8 @@ select.monthly:hover, .yearly:hover{
 .field {
     display: flex;
     align-items: center;
-    margin-top: 18px;
+    margin-top: 16px;
+    margin-bottom: 16px;
     justify-content: left;
 }
 
