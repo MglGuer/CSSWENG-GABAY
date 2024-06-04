@@ -551,29 +551,56 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
     padding: 30px;
     margin: 30px;
+    width: fit-content;
+}
+.side-logo {
+    width: 250px;
+    height: 250px;
+    border-radius: 100%;
 }
 
-.password-field {
-    padding-top: 20px;
+.profile-fields {
+    flex-direction: column;
+    
+    margin-left: 90px;
 }
 
-.password-label {
-    width: 550px;
-    font-size: 25px;
-    font-weight: bold;
+.profile-input-field {
+    display: flex;
+    padding: 10px;
+    flex-direction:column;
+    
 }
 
-.password-input {
+.profile-label {
     width: 500px;
-    height: 30px;
-    margin-left: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    font-size: 15px;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 10px
 }
+
+.profile-textarea {
+    width: 1000px;
+    height: 50px;
+    border: 2px solid #ccc;
+    background-color: #f9f9f9;
+    border-color: black;
+    font-size: 22px;
+    border-radius: 10px;
+    font-weight: lighter;
+}
+
+.profile-submit-button {
+    border: none;
+    border-radius: 20px;
+    margin-top: 10px;
+    background-color: #9B112E; 
+    color: white;
+    border: 3px solid white; 
+    padding: 10px 20px; 
+    margin-left: 840px;
+    font-size: 18px;
+}
+
