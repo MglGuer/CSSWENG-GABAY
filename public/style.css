@@ -454,6 +454,8 @@ select.monthly:hover, .yearly:hover{
 }
 
 /** DATA TRACKER PAGE **/
+
+/* container */
 .container-for-tracker {
     background-color: #FFECF0; 
     border: 2px solid black;
@@ -529,6 +531,7 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
     padding: 10px 20px; 
     display: inline-block;
     font-size: 16px;
+    font-weight: bold;
 }
 
 .submit-button:hover {
@@ -551,31 +554,38 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
+    justify-content: center;
+    flex-direction: row;
     padding: 30px;
-    margin: 30px;
-    width: fit-content;
+    margin: 50px;
 }
-.side-logo {
+
+.side-logo{
+    width: 20%;
+    padding: 20px;
+}
+
+.side-logo img{
     width: 250px;
     height: 250px;
     border-radius: 100%;
 }
 
 .profile-fields {
+    width: 80%;
     flex-direction: column;
-    
-    margin-left: 90px;
+    padding: 20px;
 }
 
 .profile-input-field {
     display: flex;
     padding: 10px;
+    margin: 10px;
     flex-direction:column;
-    
 }
 
 .profile-label {
-    width: 500px;
+    width: 550px;
     font-size: 30px;
     font-weight: bold;
     margin-bottom: 10px
@@ -590,17 +600,25 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
     font-size: 22px;
     border-radius: 10px;
     font-weight: lighter;
+    padding: 10px;
 }
 
 .profile-submit-button {
     border: none;
     border-radius: 20px;
+    margin-left: 870px;
     margin-top: 10px;
     background-color: #9B112E; 
     color: white;
     border: 3px solid white; 
     padding: 10px 20px; 
-    margin-left: 840px;
-    font-size: 18px;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
 }
 
+.profile-submit-button:hover {
+    background-color: white;
+    color: #9B112E;
+    border: 3px solid #9B112E;
+}
