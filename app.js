@@ -105,3 +105,11 @@ server.get('/profile', (req,resp) => {
         title: 'Profile Page'
     });
 });
+
+// server for history log
+server.get('/history', (req,resp) => {
+    resp.render('history',{
+        layout: 'index',
+        title: 'History Log Page'
+    });
+});
