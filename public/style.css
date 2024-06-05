@@ -622,3 +622,28 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
     color: #9B112E;
     border: 3px solid #9B112E;
 }
+
+/** HISTORY PAGE **/
+.container-for-history {
+    background-color: #ffe4e1; 
+    padding: 20px;
+    margin: 20px 0; 
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.history-log {
+    width: 100%;
+    border-collapse: collapse;
+}
+.history-log th, .history-log td {
+    padding: 10px;
+    text-align: left;
+}
+.history-log th {
+    background-color: #dbb1b1; 
+}
+.details {
+    font-size: 24px; 
+    font-weight: bold; 
+    margin-bottom: 10px; 
+}
