@@ -1,111 +1,126 @@
-<div class="sidebar">
-    <div class="top">
-        <div class="logo">
-            <img id="logo-mini" src="./logo.png" alt="logo"/>
-            <span>HIV Advocacy Database (HAD)</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIV Advocacy Database (HAD)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="top">
+            <div class="logo">
+                <img id="logo-mini" src="./logo.png" alt="logo"/>
+                <span>HIV Advocacy Database (HAD)</span>
+            </div>
+            <i class="bx bx-menu" id="btn"></i>
         </div>
-        <i class="bx bx-menu" id="btn"></i>
-    </div>
-    
-    <ul>
-        <li>
-            <a href="/dashboard">
-                <i class="bx bxs-grid-alt"></i>
-                <span class="nav-item">Dashboard</span>
-            </a>
-            <span class="tooltip">Dashboard</span>
-        </li>
-        <li>
-            <a href="/tracker">
-                <i class="bx bxs-pencil"></i>
-                <span class="nav-item">Data Tracker</span>
-            </a>
-            <span class="tooltip">Data Tracker</span>
-        </li>
-        <li>
-            <a href="/profile">
-                <i class="bx bxs-user"></i>
-                <span class="nav-item">Profile</span>
-            </a>
-            <span class="tooltip">Profile</span>
-        </li>
-        <li class="active">
-            <a href="/history">
-                <i class="bx bx-list-ul"></i>
-                <span class="nav-item">History Log</span>
-            </a>
-            <span class="tooltip">History Log</span>
-        </li>
-        <li>
-            <a href="/login">
-                <i class="bx bxs-log-out"></i>
-                <span class="nav-item">Logout</span>
-            </a>
-            <span class="tooltip">Logout</span>
-        </li>
-    </ul>
+        
+        <ul>
+            <li>
+                <a href="/dashboard">
+                    <i class="bx bxs-grid-alt"></i>
+                    <span class="nav-item">Dashboard</span>
+                </a>
+                <span class="tooltip">Dashboard</span>
+            </li>
+            <li>
+                <a href="/tracker">
+                    <i class="bx bxs-pencil"></i>
+                    <span class="nav-item">Data Tracker</span>
+                </a>
+                <span class="tooltip">Data Tracker</span>
+            </li>
+            <li>
+                <a href="/profile">
+                    <i class="bx bxs-user"></i>
+                    <span class="nav-item">Profile</span>
+                </a>
+                <span class="tooltip">Profile</span>
+            </li>
+            <li class="active">
+                <a href="/history">
+                    <i class="bx bx-list-ul"></i>
+                    <span class="nav-item">History Log</span>
+                </a>
+                <span class="tooltip">History Log</span>
+            </li>
+            <li>
+                <a href="/login">
+                    <i class="bx bxs-log-out"></i>
+                    <span class="nav-item">Logout</span>
+                </a>
+                <span class="tooltip">Logout</span>
+            </li>
+        </ul>
 
-    <div class="user">
-        <img src="./gabay-logo.jpeg" alt="gabay org" class="user-img">
-        <div class="div">
-            <p class="bold">User's Name</p>
-            <p>Admin</p>
+        <div class="user">
+            <img src="./gabay-logo.jpeg" alt="gabay org" class="user-img">
+            <div class="div">
+                <p class="bold">User's Name</p>
+                <p>Admin</p>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="main-content">
-    <div class="header">
-        <h1>History Log</h1>
+   <div class="main-content">
+        <div class="header">
+            <h1>History Log</h1>
+        </div>
+        <div class="container-for-history">
+            <h2 class="details">Login History</h2>
+            <table class="history-log">
+                <thead>
+                    <tr>
+                        <th>ADMIN'S NAME</th>
+                        <th>EMAIL ADDRESS</th>
+                        <th>LAST LOGIN DATE/TIME</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>johndoe@gmail.com</td>
+                        <td>3/6/2019 11:53 AM</td>
+                    </tr>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>johndoe@gmail.com</td>
+                        <td>3/6/2019 11:53 AM</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="container-for-tracker">
+            <h2 class="details">Action History</h2>
+            <table class="history-log">
+                <thead>
+                    <tr>
+                        <th>ADMIN'S NAME</th>
+                        <th>EMAIL ADDRESS</th>
+                        <th>ACTION</th>
+                        <th>ACTION DATE/TIME</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>johndoe@gmail.com</td>
+                        <td>Changed Password</td>
+                        <td>3/6/2019 11:53 AM</td>
+                    </tr>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>johndoe@gmail.com</td>
+                        <td>Add new data</td>
+                        <td>3/6/2019 11:53 AM</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="container-for-history">
-        <h2 class="details">Login History</h2>
-        <table class="history-log">
-            <thead>
-                <tr>
-                    <th>User Name</th>
-                    <th>Email Address</th>
-                    <th>Last Login Date/Time</th>
-                    <th>IP Address</th>
-                    <th>Browser</th>
-                    <th>Successful?</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Example row -->
-                <tr>
-                    <td>admin</td>
-                    <td>informzqa@gmail.com</td>
-                    <td>3/6/2019 11:53 AM</td>
-                    <td>194.44.234.160</td>
-                    <td>Mozilla/5.0 (Windows NT 10.0; Win64; x64)</td>
-                    <td>✔</td>
-                </tr>
-                <!-- Add more rows as needed -->
-            </tbody>
-        </table>
-    </div>
-    <div class="container-for-tracker">
-        <h2 class="details">Action History</h2>
-        <table class="history-log">
-            <thead>
-                <tr>
-                    <th>User Name</th>
-                    <th>Email Address</th>
-                    <th>Action</th>
-                    <th>Action Date/Time</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Example row -->
-                <tr>
-                    <td>admin</td>
-                    <td>informzqa@gmail.com</td>
-                    <td>Created a new post</td>
-                    <td>3/6/2019 12:00 PM</td>
-                </tr>
-                <!-- Add more rows as needed -->
-            </tbody>
-        </table>
-    </div>
-</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
