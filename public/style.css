@@ -624,9 +624,10 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
 }
 
 /** HISTORY PAGE **/
-.container-for-history,
-.container-for-tracker {
-    background-color: #ffe4e1;
+.container-for-loginhistory,
+.container-for-actionhistory {
+    background-color: #FFECF0;
+    border: 2px solid black;
     padding: 20px;
     margin: 20px 0;
     border-radius: 15px;
@@ -645,7 +646,8 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
 }
 
 .history-log th {
-    background-color: #dbb1b1;
+    background-color: #9B112E;
+    color: #E2FFED;
 }
 
 .details {
