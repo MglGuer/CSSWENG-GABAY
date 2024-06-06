@@ -36,6 +36,9 @@ const patientModel = mongoose.model('patient', patientSchema);
 const session = require('express-session');
 const mongoStore = require('connect-mongodb-session')(session);
 
+//user Authentication module
+const userAuth = require('./src/userAuth.js');
+
 function errorFn(err){
     console.log('Error found. Please trace!');
     console.error(err);
