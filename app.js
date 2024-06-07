@@ -2,9 +2,6 @@
 //npm init -y
 //npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session 
 
-//user Authentication module
-const userAuth = require('./src/userAuth.js');
-
 const express = require('express');
 const server = express();
 
