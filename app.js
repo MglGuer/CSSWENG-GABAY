@@ -2,6 +2,9 @@
 //npm init -y
 //npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session 
 
+//user Authentication module
+const userAuth = require('./src/userAuth.js');
+
 const express = require('express');
 const server = express();
 
@@ -21,7 +24,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 const mongoose = require('mongoose');
-const uri = "mongodb://127.0.0.1:27017/GABAY"; //temp local connection
+const uri = "mongodb://127.0.0.1:27017/GABAY"; //temp mongodb atlas connection
 mongoose.connect(uri);
 
 const patientSchema = new mongoose.Schema({
@@ -35,9 +38,6 @@ const patientModel = mongoose.model('patient', patientSchema);
 
 const session = require('express-session');
 const mongoStore = require('connect-mongodb-session')(session);
-
-//user Authentication module
-const userAuth = require('./src/userAuth.js');
 
 function errorFn(err){
     console.log('Error found. Please trace!');
@@ -69,12 +69,42 @@ server.get('/', (req,resp) => {
     });
 });
 
+//TODO: check user email and password by searching the database
+server.post('/read-user', async (req,res) => {
+    //get data from form
+    const {} = req.body;
+
+    //get collection
+
+    //find matching email and password
+
+    //if authentication failed, show login failed
+    
+    //if authentication is successful, redirect to dashboard
+    res.redirect('/dashboard');
+    
+});
+
 // server to register new account
 server.get('/signup', (req,resp) => {
     resp.render('signup',{
         layout: 'index',
         title: 'Registration Page'
     });
+});
+
+//TODO: post user details into the database upon signing up
+server.post('/create-user', async (req,res) => {
+
+    //retrieve user details
+
+    //get db collection
+
+    //insert data
+
+    //when successful, return to login page
+    res.redirect('/');
+
 });
 
 // server to change new password
