@@ -21,7 +21,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 const mongoose = require('mongoose');
-const uri = "mongodb://127.0.0.1:27017/GABAY"; //temp mongodb atlas connection
+const uri = "mongodb://127.0.0.1:27017/GABAY"; //temp mongodb connection
 mongoose.connect(uri);
 
 const patientSchema = new mongoose.Schema({
@@ -69,7 +69,7 @@ server.get('/', (req,resp) => {
 //TODO: check user email and password by searching the database
 server.post('/read-user', async (req,res) => {
     //get data from form
-    const {} = req.body;
+    const {email, password} = req.body;
 
     //get collection
 
@@ -94,6 +94,7 @@ server.get('/signup', (req,resp) => {
 server.post('/create-user', async (req,res) => {
 
     //retrieve user details
+    const {name, email, password} = req.body;
 
     //get db collection
 
