@@ -8,29 +8,42 @@ const server = express();
 const bodyParser = require('body-parser');
 server.use(express.json()); 
 server.use(express.urlencoded({ extended: true }));
-
+//Handlebars
 const handlebars = require('express-handlebars');
 server.set('view engine', 'hbs');
 server.engine('hbs', handlebars.engine({
     extname: 'hbs'
 }));
-
+//Access public folder
 server.use(express.static('public'));
-
+//Bcrypt (Password Hashing)
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-
+//session
+const session = require('express-session');
+//MongoDB
+const { ServerApiVersion } = require('mongodb');
+const mongoStore = require('connect-mongodb-session')(session);
+const {MongoClient} = require("mongodb");
 const mongoose = require('mongoose');
 const uri = "mongodb+srv://vancerobles:ZgtbvnIiuXTeRxYB@gabay.uxaz23w.mongodb.net/";
+const client = new MongoClient(uri, {
+    serverApi:{
+        version: ServerApiVersion.v1,
+        stritct: false,
+        deprecationErrors: true,
+    }
+});
 
-try{
-    mongoose.connect(uri);
-    console.log("Connected to Database!");
-
-}
-catch{
-    console.error("Error connecting to MongoDB:", error);
-    process.exit(1); // Exit the process if there's an error connecting to MongoDB
+async function connectToDatabase(){
+    try{
+        await client.connect();
+        mongoose.connect(uri);
+    }
+    catch{
+        console.error("Error connecting to MongoDB:", error);
+        process.exit(1); // Exit the process if there's an error connecting to MongoDB
+    }
 }
 
 const patientSchema = new mongoose.Schema({
@@ -53,9 +66,6 @@ const userSchema = new mongoose.Schema({
 },{ versionKey: false });
 
 const userModel = mongoose.model('user', userSchema);
-
-const session = require('express-session');
-const mongoStore = require('connect-mongodb-session')(session);
 
 server.use(session({
     secret: 'gabay',
@@ -93,15 +103,18 @@ server.post('/read-user', async (req,res) => {
     //get data from form
     const {email, password} = req.body;
 
-    
     //get collection
+    const userCollection = client.db("test").collection("users");
 
+    //find matching email
+    const user = await userCollection.findOne({ email: email});
 
-    //find matching email and password
-
+    const match = await bcrypt.compare(password,user.password);
 
     //if authentication failed, show login failed
-
+    if(!user || !match){
+        return res.redirect('/login.html?error=invalid_credentials');
+    }
     
     //if authentication is successful, redirect to dashboard
     res.redirect('/dashboard');
@@ -128,7 +141,7 @@ server.post('/create-user', async (req,res) => {
     //check if email is used in database
     const user = await userCollection.findOne({ email: email});
 
-    if (!user){
+    if (user){
 
         res.redirect("/signup");
 
@@ -143,7 +156,14 @@ server.post('/create-user', async (req,res) => {
     })
 
     //insert data
-    
+    const result = await userCollection.insertOne({
+
+        name: name,
+        email: email,
+        password: hashedPassword,
+        isAdmin: false,
+
+    });
 
     //when successful, return to login page
     res.redirect('/');
