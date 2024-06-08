@@ -21,14 +21,17 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 const mongoose = require('mongoose');
-const uri = "mongodb+srv://vancerobles:ZgtbvnIiuXTeRxYB@gabay.uxaz23w.mongodb.net/"; //temp mongodb connection
+const uri = "mongodb+srv://vancerobles:ZgtbvnIiuXTeRxYB@gabay.uxaz23w.mongodb.net/";
 mongoose.connect(uri);
 
 const patientSchema = new mongoose.Schema({
-    name: { type: String },
-    birthday: {type: Date},
-    age: { type: Number },
-    reason: {type: String}
+    barangay: { type: String },
+    age_range: { type: Number },
+    tested_before: {type: Boolean},
+    test_result: {type: String},
+    reason: {type: String},
+    kvp: {type: String},
+    linkage: {type: String}
 },{ versionKey: false });
   
 const patientModel = mongoose.model('patient', patientSchema);
