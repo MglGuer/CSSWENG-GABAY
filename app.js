@@ -113,7 +113,8 @@ server.post('/read-user', async (req,res) => {
 
     //if authentication failed, show login failed
     if(!user || !match){
-        return res.redirect('/login.html?error=invalid_credentials');
+        //TODO: should send a response to say the password/username is invalid
+        return res.redirect('/');
     }
     
     //if authentication is successful, redirect to dashboard
@@ -143,7 +144,7 @@ server.post('/create-user', async (req,res) => {
 
     if (user){
 
-        res.redirect("/signup");
+        return res.redirect("/signup");
 
     }
 
@@ -166,7 +167,7 @@ server.post('/create-user', async (req,res) => {
     });
 
     //when successful, return to login page
-    res.redirect('/');
+    return res.redirect('/');
 
 });
 
