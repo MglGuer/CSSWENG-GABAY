@@ -102,7 +102,8 @@ server.get('/', (req,resp) => {
 server.get('/login', (req,resp) => {
     resp.render('login',{
         layout: 'index',
-        title: 'Login Page'
+        title: 'Login Page',
+        failed:req.query.failed,
     });
 });
 
@@ -121,8 +122,8 @@ server.post('/read-user', async (req,res) => {
 
     //if authentication failed, show login failed
     if(!user || !match){
-        //TODO: should send a response to say the password/username is invalid
-        return res.redirect('/');
+        //reload page with query
+        return res.redirect('/login?failed=true');
     }
     
     //TODO: add user into session
@@ -136,7 +137,8 @@ server.post('/read-user', async (req,res) => {
 server.get('/signup', (req,resp) => {
     resp.render('signup',{
         layout: 'index',
-        title: 'Registration Page'
+        title: 'Registration Page',
+        emailUsed:req.query.emailUsed,
     });
 });
 
@@ -153,8 +155,8 @@ server.post('/create-user', async (req,res) => {
     const user = await userCollection.findOne({ email: email});
 
     if (user){
-        //TODO: send response that email is already being used
-        return res.redirect("/signup");
+        //reload page with query
+        return res.redirect("/signup?emailUsed=true");
     }
 
     //hash password used
