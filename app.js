@@ -22,7 +22,16 @@ const saltRounds = 10;
 
 const mongoose = require('mongoose');
 const uri = "mongodb+srv://vancerobles:ZgtbvnIiuXTeRxYB@gabay.uxaz23w.mongodb.net/";
-mongoose.connect(uri);
+
+try{
+    mongoose.connect(uri);
+    console.log("Connected to Database!");
+
+}
+catch{
+    console.error("Error connecting to MongoDB:", error);
+    process.exit(1); // Exit the process if there's an error connecting to MongoDB
+}
 
 const patientSchema = new mongoose.Schema({
     barangay: { type: String },
@@ -84,11 +93,15 @@ server.post('/read-user', async (req,res) => {
     //get data from form
     const {email, password} = req.body;
 
+    
     //get collection
+
 
     //find matching email and password
 
+
     //if authentication failed, show login failed
+
     
     //if authentication is successful, redirect to dashboard
     res.redirect('/dashboard');
@@ -109,11 +122,28 @@ server.post('/create-user', async (req,res) => {
     //retrieve user details
     const {name, email, password} = req.body;
 
-    //check if email is used in database
-
     //get db collection
+    const userCollection = client.db("test").collection("users");
+    
+    //check if email is used in database
+    const user = await userCollection.findOne({ email: email});
+
+    if (!user){
+
+        res.redirect("/signup");
+
+    }
+
+    //hash password used
+    const hashedPassword = await new Promise((resolve, reject) => {
+        bcrypt.hash(password, saltRounds, function(err, hash) {
+          if (err) reject(err)
+          resolve(hash)
+        });
+    })
 
     //insert data
+    
 
     //when successful, return to login page
     res.redirect('/');
