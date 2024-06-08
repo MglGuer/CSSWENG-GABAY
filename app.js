@@ -29,32 +29,42 @@ const patientSchema = new mongoose.Schema({
     birthday: {type: Date},
     age: { type: Number },
     reason: {type: String}
-  },{ versionKey: false });
+},{ versionKey: false });
   
 const patientModel = mongoose.model('patient', patientSchema);
 
+const userSchema = new mongoose.Schema({
+    name: { type: String },
+    email: { type: String },
+    password: {type: String},
+    isAdmin: { type: Boolean },
+},{ versionKey: false });
+
+const userModel = mongoose.model('user', userSchema);
+
 const session = require('express-session');
 const mongoStore = require('connect-mongodb-session')(session);
+
+server.use(session({
+    secret: 'gabay',
+    saveUninitialized: true, 
+    resave: true,
+    store: new mongoStore({ 
+      uri: uri,
+      collection: 'sessionGabay',
+      expires: 1000*60*60 // 1 hour
+    })
+}));
+
+server.get('/session/destroy', function(req, resp) {
+    req.session.destroy();
+    resp.status(200).send('ok');
+});
 
 function errorFn(err){
     console.log('Error found. Please trace!');
     console.error(err);
 }
-
-function finalClose(){
-    console.log('Close connection at the end!');
-    mongoose.connection.close();
-    process.exit();
-}
-
-process.on('SIGTERM',finalClose);  
-process.on('SIGINT',finalClose);   
-process.on('SIGQUIT', finalClose); 
-
-const port = process.env.PORT | 3000;
-server.listen(port, function(){
-    console.log('Listening at port '+port);
-});
 
 server.use(express.static(__dirname + '/public'));
 
@@ -95,6 +105,8 @@ server.post('/create-user', async (req,res) => {
 
     //retrieve user details
     const {name, email, password} = req.body;
+
+    //check if email is used in database
 
     //get db collection
 
@@ -143,4 +155,20 @@ server.get('/history', (req,resp) => {
         layout: 'index',
         title: 'History Log Page'
     });
+});
+
+
+function finalClose(){
+    console.log('Close connection at the end!');
+    mongoose.connection.close();
+    process.exit();
+}
+
+process.on('SIGTERM',finalClose);  
+process.on('SIGINT',finalClose);   
+process.on('SIGQUIT', finalClose); 
+
+const port = process.env.PORT | 3000;
+server.listen(port, function(){
+    console.log('Listening at port '+port);
 });
