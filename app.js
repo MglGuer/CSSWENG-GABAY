@@ -21,7 +21,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 const mongoose = require('mongoose');
-const uri = "mongodb://127.0.0.1:27017/GABAY"; //temp mongodb connection
+const uri = "mongodb+srv://vancerobles:ZgtbvnIiuXTeRxYB@gabay.uxaz23w.mongodb.net/"; //temp mongodb connection
 mongoose.connect(uri);
 
 const patientSchema = new mongoose.Schema({
