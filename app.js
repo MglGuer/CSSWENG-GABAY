@@ -90,8 +90,16 @@ function errorFn(err){
 
 server.use(express.static(__dirname + '/public'));
 
-// server for login
+//server starts at login
 server.get('/', (req,resp) => {
+    resp.render('login',{
+        layout: 'index',
+        title: 'Login Page'
+    });
+});
+
+//login page
+server.get('/login', (req,resp) => {
     resp.render('login',{
         layout: 'index',
         title: 'Login Page'
@@ -116,6 +124,8 @@ server.post('/read-user', async (req,res) => {
         //TODO: should send a response to say the password/username is invalid
         return res.redirect('/');
     }
+    
+    //TODO: add user into session
     
     //if authentication is successful, redirect to dashboard
     res.redirect('/dashboard');
@@ -143,9 +153,8 @@ server.post('/create-user', async (req,res) => {
     const user = await userCollection.findOne({ email: email});
 
     if (user){
-
+        //TODO: send response that email is already being used
         return res.redirect("/signup");
-
     }
 
     //hash password used
@@ -211,6 +220,12 @@ server.get('/history', (req,resp) => {
     });
 });
 
+//TODO: log out
+server.get('logout', (req,res) => {
+
+
+
+})
 
 function finalClose(){
     console.log('Close connection at the end!');
