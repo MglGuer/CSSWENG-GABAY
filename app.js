@@ -131,7 +131,7 @@ server.post('/read-user', async (req,res) => {
     
     //TODO: add user into session
     req.session.username = user.name;
-
+    
     //if authentication is successful, redirect to dashboard
     res.redirect('/dashboard');
     
@@ -257,9 +257,11 @@ server.get('/history', (req,resp) => {
 });
 
 //TODO: log out
-server.get('logout', (req,res) => {
+server.get('/logout', (req,resp) => {
 
-
+    req.session.destroy(function(err) {
+        resp.redirect('/');
+    });
 
 })
 
