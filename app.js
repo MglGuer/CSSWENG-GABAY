@@ -95,10 +95,16 @@ server.use(express.static(__dirname + '/public'));
 
 //server starts at login
 server.get('/', (req,resp) => {
-    resp.render('login',{
-        layout: 'index',
-        title: 'Login Page'
-    });
+
+    if (req.session.username== undefined){
+        resp.render('login',{
+            layout: 'index',
+            title: 'Login Page'
+        });
+    }else{
+        resp.redirect('/dashboard');//redirect to dashboard if session exists
+    }
+    
 });
 
 //login page

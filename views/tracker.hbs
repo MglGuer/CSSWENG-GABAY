@@ -63,21 +63,21 @@
                 <div class="container-for-fields">
                     <div class="field">
                         <label for="baranggay" class="data-label">Barangay:</label>
-                        <input type="text" id="baranggay" name="baranggay" class="data-input">
+                        <input type="text" id="baranggay" name="baranggay" class="data-input" required>
                     </div>
 
                     <div class="field"> 
                         <label for="gender" class="data-label">Gender:</label>
                             <label class="radio-option">
-                                <input type="radio" name="gender" value="male">
+                                <input type="radio" name="gender" value="male" required>
                                 <span>Male</span>
                             </label>
                             <label class="radio-option">
-                                <input type="radio" name="gender" value="female">
+                                <input type="radio" name="gender" value="female" required>
                                 <span>Female</span>
                             </label>
                             <label class="radio-option">
-                                <input type="radio" name="gender" value="transgender">
+                                <input type="radio" name="gender" value="transgender" required>
                                 <span>Transgender</span>
                             </label>
                     </div>
@@ -100,11 +100,11 @@
                     <div class="field">
                         <label for="repeat" class="data-label">Has the person been tested before?</label>
                             <label class="radio-option">
-                                <input type="radio" name="tested" value="tested-yes">
+                                <input type="radio" name="tested" value="tested-yes" required>
                                 <span>Yes (First time tester)</span>
                             </label>
                             <label class="radio-option">
-                                <input type="radio" name="tested" value="tested-no">
+                                <input type="radio" name="tested" value="tested-no" required>
                                 <span>No (Has been tested before)</span>
                             </label>
                     </div>
@@ -112,15 +112,15 @@
                     <div class="field">
                         <label for="result" class="data-label">Test result: </label>
                             <label class="radio-option">
-                                <input type="radio" name="result" value="positive">
+                                <input type="radio" name="result" value="positive" required>
                                 <span>Positive</span>
                             </label>
                             <label class="radio-option">
-                                <input type="radio" name="result" value="negative">
+                                <input type="radio" name="result" value="negative" required>
                                 <span>Negative</span>
                             </label>
                             <label class="radio-option">
-                                <input type="radio" name="result" value="not-know">
+                                <input type="radio" name="result" value="not-know" required>
                                 <span>Don't Know (For repeat testers)</span>
                             </label>
                     </div>
