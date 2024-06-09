@@ -135,6 +135,7 @@ server.post('/read-user', async (req,res) => {
 
 // server to register new account
 server.get('/signup', (req,resp) => {
+
     resp.render('signup',{
         layout: 'index',
         title: 'Registration Page',

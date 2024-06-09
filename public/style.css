@@ -657,3 +657,7 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
     font-weight: bold;
     margin-bottom: 10px;
 }
+
+.error {
+    text-align: center;
+}
