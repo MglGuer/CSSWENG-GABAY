@@ -1,6 +1,7 @@
 //Install Command:
 //npm init -y
 //npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session 
+// example user | email: exampleuser1@gmail.com , password: password
 
 const express = require('express');
 const server = express();
@@ -48,7 +49,8 @@ async function connectToDatabase(){
 
 const patientSchema = new mongoose.Schema({
     barangay: { type: String },
-    age_range: { type: Number },
+    age_range: { type: String },
+    gender: {type: String},
     tested_before: {type: Boolean},
     test_result: {type: String},
     reason: {type: String},
@@ -104,7 +106,7 @@ server.get('/login', (req,resp) => {
     resp.render('login',{
         layout: 'index',
         title: 'Login Page',
-        failed:req.query.failed,
+        failed: req.query.failed,
     });
 });
 
@@ -184,6 +186,35 @@ server.post('/create-user', async (req,res) => {
     return res.redirect('/');
 
 });
+
+// server to push new patient data to db
+server.post('/add-record', async (req, res) => {
+
+    //retrieve details
+    const {baranggay, gender, age, tested, result, linkage} = req.body
+    const reason_hiv = req.body['reason-hiv']
+    const vulnerable_population = req.body['vulnerable-population']
+
+    const patientCollection = client.db("test").collection("patients"); // get db collection
+    const tested_before = tested === 'tested-yes'; // convert to bool
+
+    // insert data
+    const record = await patientCollection.insertOne({
+
+        barangay: baranggay,
+        age_range: age,
+        gender: gender,
+        tested_before: tested_before,
+        test_result: result,
+        reason: reason_hiv,
+        kvp: vulnerable_population,
+        linkage: linkage
+
+    });
+
+    console.log("Data sucessfully added.")
+    return res.redirect('/tracker?success=true');
+})
 
 // server to change new password
 server.get('/forgotpassword', (req,resp) => {
