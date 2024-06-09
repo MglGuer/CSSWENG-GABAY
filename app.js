@@ -71,6 +71,7 @@ server.use(session({
     secret: 'gabay',
     saveUninitialized: true, 
     resave: true,
+    username: "",
     store: new mongoStore({ 
       uri: uri,
       collection: 'sessionGabay',
@@ -127,7 +128,8 @@ server.post('/read-user', async (req,res) => {
     }
     
     //TODO: add user into session
-    
+    req.session.username = user.name;
+
     //if authentication is successful, redirect to dashboard
     res.redirect('/dashboard');
     
