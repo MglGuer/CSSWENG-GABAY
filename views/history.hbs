@@ -91,18 +91,14 @@
                 </tr>
             </thead>
             <tbody>
+                {{#each actionHistory}}
                 <tr>
-                    <td>John Doe</td>
-                    <td>johndoe@gmail.com</td>
-                    <td>Changed Password</td>
-                    <td>3/6/2019 11:53 AM</td>
+                    <td>{{this.name}}</td>
+                    <td>{{this.email}}</td>
+                    <td>{{this.action}}</td>
+                    <td>{{formatDate this.actionDateTime}}</td> 
                 </tr>
-                <tr>
-                    <td>John Doe</td>
-                    <td>johndoe@gmail.com</td>
-                    <td>Add new data</td>
-                    <td>3/6/2019 11:53 AM</td>
-                </tr>
+                {{/each}}
             </tbody>
         </table>
     </div>

@@ -93,6 +93,15 @@ const loginHistorySchema = new mongoose.Schema({
 
 const loginHistoryModel = mongoose.model('LoginHistory', loginHistorySchema);
 
+const actionHistorySchema = new mongoose.Schema({
+    name: { type: String },
+    email: { type: String },
+    action: { type: String },
+    actionDateTime: { type: Date, default: Date.now }
+},{ versionKey: false });
+
+const actionHistoryModel = mongoose.model('ActionHistory', actionHistorySchema);
+
 server.use(session({
     secret: 'gabay',
     saveUninitialized: true, 
@@ -223,35 +232,6 @@ server.post('/create-user', async (req,res) => {
 
 });
 
-// server to push new patient data to db
-server.post('/add-record', async (req, res) => {
-
-    // retrieve details
-    const {baranggay, gender, age, tested, result, linkage} = req.body
-    const reason_hiv = req.body['reason-hiv']
-    const vulnerable_population = req.body['vulnerable-population']
-
-    const patientCollection = client.db("test").collection("patients"); // get db collection
-    const tested_before = tested === 'tested-yes'; // convert to bool
-
-    // insert data
-    const record = await patientCollection.insertOne({
-
-        barangay: baranggay,
-        age_range: age,
-        gender: gender,
-        tested_before: tested_before,
-        test_result: result,
-        reason: reason_hiv,
-        kvp: vulnerable_population,
-        linkage: linkage
-
-    });
-
-    console.log("Data sucessfully added.")
-    return res.redirect('/tracker?message=Patient Data Record added succesfully');
-})
-
 // server to change new password
 server.get('/forgotpassword', (req,resp) => {
     resp.render('forgotpassword',{
@@ -319,6 +299,42 @@ server.get('/tracker', (req,resp) => {
     });
 });
 
+// server to push new patient data to db
+server.post('/add-record', async (req, res) => {
+
+    // retrieve details
+    const { baranggay, gender, age, tested, result, linkage } = req.body
+    const reason_hiv = req.body['reason-hiv']
+    const vulnerable_population = req.body['vulnerable-population']
+
+    const patientCollection = client.db("test").collection("patients"); // get db collection
+    const tested_before = tested === 'tested-yes'; // convert to bool
+
+    // insert data
+    const record = await patientCollection.insertOne({
+        barangay: baranggay,
+        age_range: age,
+        gender: gender,
+        tested_before: tested_before,
+        test_result: result,
+        reason: reason_hiv,
+        kvp: vulnerable_population,
+        linkage: linkage
+    });
+
+    // insert action history for adding new patient record
+    const actionHistoryCollection = client.db("test").collection("actionhistories");
+    await actionHistoryCollection.insertOne({
+        name: req.session.username,
+        email: req.session.email,
+        action: "Add new patient record",
+        actionDateTime: new Date()
+    });
+
+    console.log("Data sucessfully added.")
+    return res.redirect('/tracker?message=Patient Data Record added succesfully');
+});
+
 // server for profile
 server.get('/profile', async (req, res) => {
     if (!req.session.email) {
@@ -350,13 +366,15 @@ server.get('/profile', async (req, res) => {
     }
 });
 
-// 
+// server for updating user's information in profile page
 server.post('/update-profile', async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
         // get db collection
         const userCollection = client.db("test").collection("users");
+        const loginHistoryCollection = client.db("test").collection("loginhistories");
+        const actionHistoryCollection = client.db("test").collection("actionhistories");
         
         const updateFields = { name, email };
 
@@ -368,7 +386,23 @@ server.post('/update-profile', async (req, res) => {
         // update user data
         await userCollection.updateOne({ email: req.session.email }, { $set: updateFields });
 
-        req.session.email = email; // update session email if changed
+        // update session email if changed
+        req.session.email = email; 
+
+        // update login history with new user information
+        await loginHistoryCollection.updateMany({ email: req.session.email }, { $set: { email: email, name: name } });
+        
+        // update action history with new user information
+        await actionHistoryCollection.updateMany( { email: req.session.email }, { $set: { email: email, name: name } });
+        
+        // insert action history for updating user profile
+        await actionHistoryCollection.insertOne({
+            name: name,
+            email: email,
+            action: "Update profile information",
+            actionDateTime: new Date()
+        });
+
         res.redirect('/profile?message=User information updated successfully');
     } catch (error) {
         console.error("Error updating profile:", error);
@@ -376,17 +410,17 @@ server.post('/update-profile', async (req, res) => {
     }
 });
 
-
 // server for history log
 server.get('/history', async (req, res) => {
     try {
         // get db collection
         const loginHistoryCollection = client.db("test").collection("loginhistories");
+        const actionHistoryCollection = client.db("test").collection("actionhistories");
 
-        // fetch login history documents
+        // fetch login and action history documents
         const loginHistory = await loginHistoryCollection.find().toArray();
+        const actionHistory = await actionHistoryCollection.find().toArray();
 
-        // render the history page with login history data
         res.render('history', {
             layout: 'index',
             title: 'History Log Page',
@@ -395,14 +429,14 @@ server.get('/history', async (req, res) => {
                 email: req.session.email,
                 role: req.session.role
             },
-            loginHistory: loginHistory
+            loginHistory: loginHistory,
+            actionHistory: actionHistory
         });
     } catch (error) {
         console.error("Error fetching login history:", error);
         res.status(500).send("Internal Server Error");
     }
 });
-
 
 // TODO: log out
 server.get('/logout', (req,resp) => {
