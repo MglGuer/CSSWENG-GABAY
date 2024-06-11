@@ -84,7 +84,8 @@
 
                     <div class="field">
                         <label for="age" class="data-label">Age:</label>  
-                        <select id="age" name="age">
+                        <select id="age" name="age" required>
+                            <option value="" disabled selected>Select age range</option>
                             <option value="18-months">0 to 18 months</option>
                             <option value="9-years">19 months to 9 years</option>
                             <option value="14-years">10 to 14 years</option>
@@ -127,7 +128,8 @@
 
                     <div class="field">
                         <label for="reason-hiv" class="data-label">Reason for HIV test:</label>  
-                        <select id="reason-hiv" name="reason-hiv">
+                        <select id="reason-hiv" name="reason-hiv" required>
+                            <option value="" disabled selected>Select reason</option>
                             <option value="unprotected">Unprotected Sex</option>
                             <option value="injectable-drugs">Use of injectable drugs</option>
                             <option value="pregnancy">Pregnancy</option>
@@ -145,7 +147,8 @@
 
                     <div class="field">
                         <label for="vulnerable-population" class="data-label">Key or Vulnerable Population (KVP) at higher risk</label>
-                        <select id="vulnerable-population" name="vulnerable-population">
+                        <select id="vulnerable-population" name="vulnerable-population" required>
+                            <option value="" disabled selected>Select population</option>
                             <option value="pwid">Person who injects drugs (PWID) or other needle sharing</option>
                             <option value="msm">Gay and other Men having Sex with Men (MSM)</option>
                             <option value="transgenders">Transgenders</option>
@@ -164,7 +167,8 @@
 
                     <div class="field">
                         <label for="linkage" class="data-label">Linkage</label>
-                        <select id="linkage" name="linkage">
+                        <select id="linkage" name="linkage" required>
+                            <option value="" disabled selected>Select linkage</option>
                             <option value="treatment-facility">Linked to Treatment Facility</option>
                             <option value="follow-up">Linkage not yet confirmed, under follow-up</option>
                             <option value="unconfirmed">linkage unconfirmed (after 3 months follow-up)</option>
