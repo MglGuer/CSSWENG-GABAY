@@ -9,20 +9,25 @@ const server = express();
 const bodyParser = require('body-parser');
 server.use(express.json()); 
 server.use(express.urlencoded({ extended: true }));
-//Handlebars
+
+// handlebars
 const handlebars = require('express-handlebars');
 server.set('view engine', 'hbs');
 server.engine('hbs', handlebars.engine({
     extname: 'hbs'
 }));
-//Access public folder
+
+// access public folder
 server.use(express.static('public'));
-//Bcrypt (Password Hashing)
+
+//bcrypt (Password Hashing)
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+
 //session
 const session = require('express-session');
-//MongoDB
+ 
+// mongoDB
 const { ServerApiVersion } = require('mongodb');
 const mongoStore = require('connect-mongodb-session')(session);
 const {MongoClient} = require("mongodb");
@@ -43,7 +48,7 @@ async function connectToDatabase(){
     }
     catch{
         console.error("Error connecting to MongoDB:", error);
-        process.exit(1); // Exit the process if there's an error connecting to MongoDB
+        process.exit(1); // exit the process if there's an error connecting to MongoDB
     }
 }
 
@@ -91,9 +96,8 @@ function errorFn(err){
     console.error(err);
 }
 
-server.use(express.static(__dirname + '/public'));
 
-//server starts at login
+// server starts at login
 server.get('/', (req,resp) => {
 
     if (req.session.username== undefined){
@@ -102,7 +106,7 @@ server.get('/', (req,resp) => {
             title: 'Login Page'
         });
     }else{
-        resp.redirect('/dashboard');//redirect to dashboard if session exists
+        resp.redirect('/dashboard'); //redirect to dashboard if session exists
     }
     
 });
@@ -116,29 +120,29 @@ server.get('/login', (req,resp) => {
     });
 });
 
-//TODO: check user email and password by searching the database
+// TODO: check user email and password by searching the database
 server.post('/read-user', async (req,res) => {
-    //get data from form
+    // get data from form
     const {email, password} = req.body;
 
-    //get collection
+    // get collection
     const userCollection = client.db("test").collection("users");
 
-    //find matching email
+    // find matching email
     const user = await userCollection.findOne({ email: email});
 
     const match = await bcrypt.compare(password,user.password);
 
-    //if authentication failed, show login failed
+    // if authentication failed, show login failed
     if(!user || !match){
-        //reload page with query
+        // reload page with query
         return res.redirect('/login?failed=true');
     }
     
-    //TODO: add user into session
+    // TODO: add user into session
     req.session.username = user.name;
     
-    //if authentication is successful, redirect to dashboard
+    // if authentication is successful, redirect to dashboard
     res.redirect('/dashboard');
     
 });
@@ -153,24 +157,24 @@ server.get('/signup', (req,resp) => {
     });
 });
 
-//TODO: post user details into the database upon signing up
+// TODO: post user details into the database upon signing up
 server.post('/create-user', async (req,res) => {
 
-    //retrieve user details
+    // retrieve user details
     const {name, email, password} = req.body;
 
-    //get db collection
+    // get db collection
     const userCollection = client.db("test").collection("users");
     
-    //check if email is used in database
+    // check if email is used in database
     const user = await userCollection.findOne({ email: email});
 
     if (user){
-        //reload page with query
+        // reload page with query
         return res.redirect("/signup?emailUsed=true");
     }
 
-    //hash password used
+    // hash password used
     const hashedPassword = await new Promise((resolve, reject) => {
         bcrypt.hash(password, saltRounds, function(err, hash) {
           if (err) reject(err)
@@ -178,7 +182,7 @@ server.post('/create-user', async (req,res) => {
         });
     })
 
-    //insert data
+    // insert data
     const result = await userCollection.insertOne({
 
         name: name,
@@ -188,7 +192,7 @@ server.post('/create-user', async (req,res) => {
 
     });
 
-    //when successful, return to login page
+    // when successful, return to login page
     return res.redirect('/');
 
 });
@@ -196,7 +200,7 @@ server.post('/create-user', async (req,res) => {
 // server to push new patient data to db
 server.post('/add-record', async (req, res) => {
 
-    //retrieve details
+    // retrieve details
     const {baranggay, gender, age, tested, result, linkage} = req.body
     const reason_hiv = req.body['reason-hiv']
     const vulnerable_population = req.body['vulnerable-population']
@@ -228,6 +232,39 @@ server.get('/forgotpassword', (req,resp) => {
         layout: 'index',
         title: 'Forgot Password Page'
     });
+});
+
+// server to post user's new password into the database when forgotten
+server.post('/forgot-password', async (req, res) => {
+    const { email, password, confirmPassword } = req.body;
+
+    // check if passwords match
+    if (password !== confirmPassword) {
+        return res.redirect('/forgotpassword?error=Passwords do not match');
+    }
+
+    try {
+        // get collection
+        const userCollection = client.db("test").collection("users");
+
+        // find user by email
+        const user = await userCollection.findOne({ email: email });
+
+        if (!user) {
+            return res.redirect('/forgotpassword?error=Email not found');
+        }
+
+        // hash the new password
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // update the user's password in the database
+        await userCollection.updateOne({ email: email }, { $set: { password: hashedPassword } });
+
+        res.redirect('/login?passwordChanged=true');
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
 // server for dashboard
@@ -262,7 +299,7 @@ server.get('/history', (req,resp) => {
     });
 });
 
-//TODO: log out
+// TODO: log out
 server.get('/logout', (req,resp) => {
 
     req.session.destroy(function(err) {
