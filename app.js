@@ -55,12 +55,12 @@ async function connectToDatabase(){
 const patientSchema = new mongoose.Schema({
     barangay: { type: String },
     age_range: { type: String },
-    gender: {type: String},
-    tested_before: {type: Boolean},
-    test_result: {type: String},
-    reason: {type: String},
-    kvp: {type: String},
-    linkage: {type: String}
+    gender: { type: String },
+    tested_before: { type: Boolean },
+    test_result: { type: String },
+    reason: { type: String },
+    kvp: { type: String },
+    linkage: { type: String }
 },{ versionKey: false });
   
 const patientModel = mongoose.model('patient', patientSchema);
@@ -68,7 +68,8 @@ const patientModel = mongoose.model('patient', patientSchema);
 const userSchema = new mongoose.Schema({
     name: { type: String },
     email: { type: String },
-    password: {type: String},
+    password: { type: String },
+    role: { type:String },
     isAdmin: { type: Boolean },
 },{ versionKey: false });
 
@@ -141,6 +142,7 @@ server.post('/read-user', async (req,res) => {
     
     // TODO: add user into session
     req.session.username = user.name;
+    req.session.email = user.email;
     
     // if authentication is successful, redirect to dashboard
     res.redirect('/dashboard');
@@ -188,7 +190,8 @@ server.post('/create-user', async (req,res) => {
         name: name,
         email: email,
         password: hashedPassword,
-        isAdmin: false,
+        role: 'Admin', 
+        isAdmin: true 
 
     });
 
@@ -284,12 +287,59 @@ server.get('/tracker', (req,resp) => {
 });
 
 // server for profile
-server.get('/profile', (req,resp) => {
-    resp.render('profile',{
-        layout: 'index',
-        title: 'Profile Page'
-    });
+server.get('/profile', async (req, res) => {
+    if (!req.session.email) {
+        return res.redirect('/login');
+    }
+
+    try {
+        const userCollection = client.db("test").collection("users");
+        const user = await userCollection.findOne({ email: req.session.email });
+
+        if (!user) {
+            return res.redirect('/login');
+        }
+
+        res.render('profile', {
+            layout: 'index',
+            title: 'Profile Page',
+            user: {
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                isAdmin: user.isAdmin,
+            }
+        });
+    } catch (error) {
+        console.error("Error retrieving user data:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
+
+// 
+server.post('/update-profile', async (req, res) => {
+    const { name, email, password } = req.body;
+
+    try {
+        const userCollection = client.db("test").collection("users");
+        
+        const updateFields = { name, email };
+
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            updateFields.password = hashedPassword;
+        }
+
+        await userCollection.updateOne({ email: req.session.email }, { $set: updateFields });
+
+        req.session.email = email; // update session email if changed
+        res.redirect('/profile');
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 
 // server for history log
 server.get('/history', (req,resp) => {

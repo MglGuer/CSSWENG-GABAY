@@ -4,7 +4,7 @@
             <img id="logo-mini" src="./logo.png" alt="logo"/>
             <span>HIV Advocacy Database (HAD)</span>
         </div>
-        <i class ="bx bx-menu" id="btn"></i>
+        <i class="bx bx-menu" id="btn"></i>
     </div>
     
     <ul>
@@ -48,8 +48,8 @@
     <div class="user">
         <img src="./gabay-logo.jpeg" alt="gabay org" class="user-img">
         <div class="div">
-            <p class="bold">User's Name</p>
-            <p>Admin</p>
+            <p class="bold">{{user.name}}</p>
+            <p>{{#if user.isAdmin}}Admin{{else}}User{{/if}}</p>
         </div>
     </div>
 </div>
@@ -60,50 +60,35 @@
         <h1>Edit Profile</h1>
     </div>
 
-    <form>
-
+    <form action="update-profile" method="post">
         <div class="container-for-profile">
-
             <div class="side-logo">
                 <img src="./gabay-logo.jpeg" alt="gabay org" class="side-logo">
             </div>
 
             <div class="profile-fields">
-
                 <div class="profile-input-field">
-
                     <label for="name" class="profile-label">NAME</label>
-                    <input type="text" class="profile-textarea">
-
+                    <input type="text" name="name" class="profile-textarea" value="{{user.name}}" required>
                 </div>
 
                 <div class="profile-input-field">
-
-                    <label for="name" class="profile-label">ROLE</label>
-                    <input type="text" class="profile-textarea">
-
+                    <label for="role" class="profile-label">ROLE</label>
+                    <input type="text" name="role" class="profile-textarea" value="{{user.role}}" readonly>
                 </div>
 
                 <div class="profile-input-field">
-
-                    <label for="name" class="profile-label">EMAIL</label>
-                    <input type="email" class="profile-textarea">
-
+                    <label for="email" class="profile-label">EMAIL</label>
+                    <input type="email" name="email" class="profile-textarea" value="{{user.email}}" required>
                 </div>
 
                 <div class="profile-input-field">
-
                     <label for="current-password" class="profile-label">PASSWORD</label>
-                    <input type="password" class="profile-textarea">
-
+                    <input type="password" name="password" class="profile-textarea" placeholder="Enter new password">
                 </div>
 
                 <input type="submit" class="profile-submit-button" value="Save Changes">
-                
             </div>
-
         </div>
-        
     </form>
-
 </div>
