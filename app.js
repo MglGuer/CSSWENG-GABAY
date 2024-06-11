@@ -143,6 +143,7 @@ server.post('/read-user', async (req,res) => {
     // TODO: add user into session
     req.session.username = user.name;
     req.session.email = user.email;
+    req.session.role = user.role;
     
     // if authentication is successful, redirect to dashboard
     res.redirect('/dashboard');
@@ -274,7 +275,12 @@ server.post('/forgot-password', async (req, res) => {
 server.get('/dashboard', (req,resp) => {
     resp.render('dashboard',{
         layout: 'index',
-        title: 'Dashboard Page'
+        title: 'Dashboard Page',
+        user: {
+            name: req.session.username,
+            email: req.session.email,
+            role: req.session.role
+        }
     });
 });
 
@@ -282,7 +288,12 @@ server.get('/dashboard', (req,resp) => {
 server.get('/tracker', (req,resp) => {
     resp.render('tracker',{
         layout: 'index',
-        title: 'Data Tracker Page'
+        title: 'Data Tracker Page',
+        user: {
+            name: req.session.username,
+            email: req.session.email,
+            role: req.session.role
+        }
     });
 });
 
@@ -345,7 +356,12 @@ server.post('/update-profile', async (req, res) => {
 server.get('/history', (req,resp) => {
     resp.render('history',{
         layout: 'index',
-        title: 'History Log Page'
+        title: 'History Log Page',
+        user: {
+            name: req.session.username,
+            email: req.session.email,
+            role: req.session.role
+        }
     });
 });
 
