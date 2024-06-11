@@ -1,6 +1,8 @@
-//Install Command:
-//npm init -y
-//npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session moment
+// Install Command
+// npm init -y
+// npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session moment
+
+
 // example user | email: exampleuser1@gmail.com , password: password
 
 const express = require('express');
@@ -12,7 +14,7 @@ server.use(express.urlencoded({ extended: true }));
 
 // handlebars
 const handlebars = require('express-handlebars');
-const moment = require('moment');
+const moment = require('moment');   // to format date for login history in history log page
 server.set('view engine', 'hbs');
 server.engine('hbs', handlebars.engine({
     extname: 'hbs',
@@ -26,11 +28,11 @@ server.engine('hbs', handlebars.engine({
 // access public folder
 server.use(express.static('public'));
 
-//bcrypt (Password Hashing)
+// bcrypt (Password Hashing)
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-//session
+// session
 const session = require('express-session');
  
 // mongoDB
@@ -152,15 +154,16 @@ server.post('/read-user', async (req,res) => {
     // if authentication failed, show login failed
     if(!user || !match){
         // reload page with query
-        return res.redirect('/login?error=User does not exists');
+        return res.redirect('/login?error=User does not exist');
     }
 
-    // save login history
-    const loginHistory = new loginHistoryModel({
+    // insert login history data into the db
+    const loginHistoryCollection = client.db("test").collection("loginhistories");
+    await loginHistoryCollection.insertOne({
         name: user.name,
-        email: user.email
+        email: user.email,
+        lastLoginDateTime: new Date() 
     });
-    await loginHistory.save();
     
     // TODO: add user into session
     req.session.username = user.name;
@@ -174,7 +177,6 @@ server.post('/read-user', async (req,res) => {
 
 // server to register new account
 server.get('/signup', (req,resp) => {
-
     resp.render('signup',{
         layout: 'index',
         title: 'Registration Page',
@@ -207,15 +209,13 @@ server.post('/create-user', async (req,res) => {
         });
     })
 
-    // insert data
+    // insert data into the db
     const result = await userCollection.insertOne({
-
         name: name,
         email: email,
         password: hashedPassword,
         role: 'Admin', 
         isAdmin: true 
-
     });
 
     // when successful, return to login page
@@ -380,7 +380,13 @@ server.post('/update-profile', async (req, res) => {
 // server for history log
 server.get('/history', async (req, res) => {
     try {
-        const loginHistory = await loginHistoryModel.find().lean().exec();
+        // get db collection
+        const loginHistoryCollection = client.db("test").collection("loginhistories");
+
+        // fetch login history documents
+        const loginHistory = await loginHistoryCollection.find().toArray();
+
+        // render the history page with login history data
         res.render('history', {
             layout: 'index',
             title: 'History Log Page',
