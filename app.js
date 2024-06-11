@@ -137,7 +137,7 @@ server.post('/read-user', async (req,res) => {
     // if authentication failed, show login failed
     if(!user || !match){
         // reload page with query
-        return res.redirect('/login?failed=true');
+        return res.redirect('/login?error=User does not exists');
     }
     
     // TODO: add user into session
@@ -227,7 +227,7 @@ server.post('/add-record', async (req, res) => {
     });
 
     console.log("Data sucessfully added.")
-    return res.redirect('/tracker?success=true');
+    return res.redirect('/tracker?message=Patient Data Record added succesfully');
 })
 
 // server to change new password
@@ -248,7 +248,7 @@ server.post('/forgot-password', async (req, res) => {
     }
 
     try {
-        // get collection
+        // get db collection
         const userCollection = client.db("test").collection("users");
 
         // find user by email
@@ -264,7 +264,7 @@ server.post('/forgot-password', async (req, res) => {
         // update the user's password in the database
         await userCollection.updateOne({ email: email }, { $set: { password: hashedPassword } });
 
-        res.redirect('/login?passwordChanged=true');
+        res.redirect('/login?message=Password updated successfully');
     } catch (error) {
         console.error("Error resetting password:", error);
         res.status(500).send("Internal Server Error");
@@ -304,6 +304,7 @@ server.get('/profile', async (req, res) => {
     }
 
     try {
+        // get db collection
         const userCollection = client.db("test").collection("users");
         const user = await userCollection.findOne({ email: req.session.email });
 
@@ -332,6 +333,7 @@ server.post('/update-profile', async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
+        // get db collection
         const userCollection = client.db("test").collection("users");
         
         const updateFields = { name, email };
@@ -340,11 +342,12 @@ server.post('/update-profile', async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, saltRounds);
             updateFields.password = hashedPassword;
         }
-
+        
+        // update user data
         await userCollection.updateOne({ email: req.session.email }, { $set: updateFields });
 
         req.session.email = email; // update session email if changed
-        res.redirect('/profile');
+        res.redirect('/profile?message=User information updated successfully');
     } catch (error) {
         console.error("Error updating profile:", error);
         res.status(500).send("Internal Server Error");
