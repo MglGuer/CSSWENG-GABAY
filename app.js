@@ -274,16 +274,34 @@ server.post('/forgot-password', async (req, res) => {
 });
 
 // server for dashboard
-server.get('/dashboard', (req,resp) => {
-    resp.render('dashboard',{
-        layout: 'index',
-        title: 'Dashboard Page',
-        user: {
-            name: req.session.username,
-            email: req.session.email,
-            role: req.session.role
-        }
-    });
+server.get('/dashboard', async (req, resp) => {
+    try {
+        // get db collection
+        const patientCollection = client.db("test").collection("patients");
+
+        // retrieve statistics from the patient collection
+        const totalPatientsTested = await patientCollection.countDocuments();
+        const positivePatientsTested = await patientCollection.countDocuments({ test_result: 'positive' });
+        const negativePatientsTested = await patientCollection.countDocuments({ test_result: 'negative' });
+
+        resp.render('dashboard', {
+            layout: 'index',
+            title: 'Dashboard Page',
+            user: {
+                name: req.session.username,
+                email: req.session.email,
+                role: req.session.role
+            },
+            statistics: {
+                totalPatientsTested: totalPatientsTested,
+                positivePatientsTested: positivePatientsTested,
+                negativePatientsTested: negativePatientsTested
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching dashboard statistics:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
 // server for tracker
