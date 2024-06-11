@@ -1,6 +1,6 @@
 //Install Command:
 //npm init -y
-//npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session 
+//npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session moment
 // example user | email: exampleuser1@gmail.com , password: password
 
 const express = require('express');
@@ -12,9 +12,15 @@ server.use(express.urlencoded({ extended: true }));
 
 // handlebars
 const handlebars = require('express-handlebars');
+const moment = require('moment');
 server.set('view engine', 'hbs');
 server.engine('hbs', handlebars.engine({
-    extname: 'hbs'
+    extname: 'hbs',
+    helpers: {
+        formatDate: function (date) {
+            return moment(date).format('MM/DD/YYYY, h:mm:ss A');
+        }
+    }
 }));
 
 // access public folder
@@ -52,6 +58,8 @@ async function connectToDatabase(){
     }
 }
 
+connectToDatabase();
+
 const patientSchema = new mongoose.Schema({
     barangay: { type: String },
     age_range: { type: String },
@@ -75,6 +83,14 @@ const userSchema = new mongoose.Schema({
 
 const userModel = mongoose.model('user', userSchema);
 
+const loginHistorySchema = new mongoose.Schema({
+    name: { type: String },
+    email: { type: String },
+    lastLoginDateTime: { type: Date, default: Date.now }
+},{ versionKey: false });
+
+const loginHistoryModel = mongoose.model('LoginHistory', loginHistorySchema);
+
 server.use(session({
     secret: 'gabay',
     saveUninitialized: true, 
@@ -97,7 +113,6 @@ function errorFn(err){
     console.error(err);
 }
 
-
 // server starts at login
 server.get('/', (req,resp) => {
 
@@ -112,7 +127,7 @@ server.get('/', (req,resp) => {
     
 });
 
-//login page
+// login page
 server.get('/login', (req,resp) => {
     resp.render('login',{
         layout: 'index',
@@ -139,6 +154,13 @@ server.post('/read-user', async (req,res) => {
         // reload page with query
         return res.redirect('/login?error=User does not exists');
     }
+
+    // save login history
+    const loginHistory = new loginHistoryModel({
+        name: user.name,
+        email: user.email
+    });
+    await loginHistory.save();
     
     // TODO: add user into session
     req.session.username = user.name;
@@ -356,17 +378,25 @@ server.post('/update-profile', async (req, res) => {
 
 
 // server for history log
-server.get('/history', (req,resp) => {
-    resp.render('history',{
-        layout: 'index',
-        title: 'History Log Page',
-        user: {
-            name: req.session.username,
-            email: req.session.email,
-            role: req.session.role
-        }
-    });
+server.get('/history', async (req, res) => {
+    try {
+        const loginHistory = await loginHistoryModel.find().lean().exec();
+        res.render('history', {
+            layout: 'index',
+            title: 'History Log Page',
+            user: {
+                name: req.session.username,
+                email: req.session.email,
+                role: req.session.role
+            },
+            loginHistory: loginHistory
+        });
+    } catch (error) {
+        console.error("Error fetching login history:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
+
 
 // TODO: log out
 server.get('/logout', (req,resp) => {

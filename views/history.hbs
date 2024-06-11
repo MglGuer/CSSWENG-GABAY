@@ -69,16 +69,13 @@
                 </tr>
             </thead>
             <tbody>
+                {{#each loginHistory}}
                 <tr>
-                    <td>John Doe</td>
-                    <td>johndoe@gmail.com</td>
-                    <td>3/6/2019 11:53 AM</td>
+                    <td>{{this.name}}</td>
+                    <td>{{this.email}}</td>
+                    <td>{{formatDate this.lastLoginDateTime}}</td>
                 </tr>
-                <tr>
-                    <td>John Doe</td>
-                    <td>johndoe@gmail.com</td>
-                    <td>3/6/2019 11:53 AM</td>
-                </tr>
+                {{/each}}
             </tbody>
         </table>
     </div>
