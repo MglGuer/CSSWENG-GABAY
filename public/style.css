@@ -46,7 +46,6 @@
 }
 
 .main {
-    font-family: "Hammersmith One", sans-serif;
     font-size: 32px; 
 }
 
@@ -304,6 +303,12 @@
     font-weight: 600;
 }
 
+/* FOOTER */
+.footer {
+    background-color: #eee;
+    color: #9B112E;
+    text-align: center;
+}
 
 /** DASHBOARD PAGE **/
 .main-content{
@@ -349,7 +354,8 @@ select.monthly:hover, .yearly:hover{
     display: grid;
     grid-template-rows: repeat(3, 1fr); 
     grid-template-columns: repeat(6, 1fr); 
-    gap: 20px; 
+    gap: 20px;
+    padding: 20px; 
 }
 
 /* grid items / graphs */
@@ -452,8 +458,8 @@ select.monthly:hover, .yearly:hover{
 
 /* graphs */
 .reason{
-    font-family: "Hammersmith One", sans-serif;
     font-size: 20px;
+    font-weight: 600;
 }
 
 /** DATA TRACKER PAGE **/
@@ -556,11 +562,16 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
     border: 2px solid black;
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    display: flex;
     justify-content: center;
-    flex-direction: row;
     padding: 30px;
-    margin: 50px;
+    margin: 30px;
+}
+
+.container-for-organization{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .side-logo{
@@ -574,9 +585,54 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
     border-radius: 100%;
 }
 
+.information span {
+    display: block;
+    text-align: center;
+    margin-bottom: 20px; 
+}
+
+.org{
+    font-weight: bold;
+    font-size: 32px;
+    color: #9B112E;
+}
+
+.address{
+    font-size: 21px;
+}
+
+.contact-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; 
+    margin-top: 1rem;
+}
+
+.contact-item{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 18px;
+}
+
+.contact-item i {
+    font-size: 24px;
+    color: #9B112E;
+}
+
+.contact-item a {
+    color: black;
+    text-decoration: none;
+}
+
+.contact-item a:hover {
+    text-decoration: underline;
+}
+
 .profile-fields {
+    display: flex;
     width: 80%;
-    flex-direction: column;
     padding: 20px;
 }
 
@@ -595,7 +651,7 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
 }
 
 .profile-textarea {
-    width: 1000px;
+    width: 650px;
     height: 50px;
     border: 2px solid #ccc;
     background-color: #f9f9f9;
@@ -607,10 +663,8 @@ select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, s
 }
 
 .profile-submit-button {
-    border: none;
     border-radius: 20px;
-    margin-left: 870px;
-    margin-top: 10px;
+    margin-left: 1220px;
     background-color: #9B112E; 
     color: white;
     border: 3px solid white; 

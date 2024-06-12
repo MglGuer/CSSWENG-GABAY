@@ -57,38 +57,62 @@
 <div class="main-content">
 
     <div class="header">
-        <h1>Edit Profile</h1>
+        <h1>Profile</h1>
     </div>
-
-    <form action="update-profile" method="post">
-        <div class="container-for-profile">
+    
+    <div class="container-for-profile">
+        <div class="container-for-organization">
             <div class="side-logo">
                 <img src="./gabay-logo.jpeg" alt="gabay org" class="side-logo">
             </div>
-
-            <div class="profile-fields">
-                <div class="profile-input-field">
-                    <label for="name" class="profile-label">NAME</label>
-                    <input type="text" name="name" class="profile-textarea" value="{{user.name}}" required>
+            <div class="container-for-information">
+                <div class="information">
+                    <span class="org">Guide and Advocacy to Build on Aspirations of Yahweh (GABAY) Inc.</span>
+                    <span class="address">Principal Address: Block 25 Lot 66 Neovista Homes, Bagumbong, Caloocan City</span>
+                    <span class="address">Office Address: Blk 174 Lot 6 Phase 8 Package 11, Bagong Silang, Caloocan City</span>
                 </div>
-
-                <div class="profile-input-field">
-                    <label for="role" class="profile-label">ROLE</label>
-                    <input type="text" name="role" class="profile-textarea" value="{{user.role}}" readonly>
+                <div class="contact-info">
+                    <span class="contact-item">
+                        <i class="bx bxs-phone"></i> (+632) 8352 - 4930 / (0950) 705-3118
+                    </span>
+                    <span class="contact-item">
+                        <i class="bx bxs-envelope"></i> gabay.caloocan2017@gmail.com
+                    </span>
+                    <span class="contact-item">
+                        <i class="bx bxl-facebook-circle"></i> <a href="https://www.facebook.com/people/Guide-and-Advocacy-to-Build-on-Aspirations-of-Yahweh-Inc/100094331334641/">facebook.com/GABAY</a>
+                    </span>
                 </div>
-
-                <div class="profile-input-field">
-                    <label for="email" class="profile-label">EMAIL</label>
-                    <input type="email" name="email" class="profile-textarea" value="{{user.email}}" required>
-                </div>
-
-                <div class="profile-input-field">
-                    <label for="current-password" class="profile-label">PASSWORD</label>
-                    <input type="password" name="password" class="profile-textarea" placeholder="Enter new password">
-                </div>
-
-                <input type="submit" class="profile-submit-button" value="Save Changes">
             </div>
         </div>
-    </form>
+        
+        <form action="update-profile" method="post"> 
+        <div class="profile-fields">
+            <div class="profile-input-field">
+                <label for="name" class="profile-label">NAME</label>
+                <input type="text" name="name" class="profile-textarea" value="{{user.name}}" required>
+            </div>
+
+            <div class="profile-input-field">
+                <label for="role" class="profile-label">ROLE</label>
+                <input type="text" name="role" class="profile-textarea" value="{{user.role}}" readonly>
+            </div>
+        </div>
+        <div class="profile-fields">
+            <div class="profile-input-field">
+                <label for="email" class="profile-label">EMAIL</label>
+                <input type="email" name="email" class="profile-textarea" value="{{user.email}}" required>
+            </div>
+
+            <div class="profile-input-field">
+                <label for="current-password" class="profile-label">PASSWORD</label>
+                <input type="password" name="password" class="profile-textarea" placeholder="Enter new password">
+            </div>
+        </div>
+            <input type="submit" class="profile-submit-button" value="Save Changes">
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 HIV Advocacy Database. All rights reserved.</p>
+    </div>
 </div>
