@@ -223,8 +223,8 @@ server.post('/create-user', async (req,res) => {
         name: name,
         email: email,
         password: hashedPassword,
-        role: 'Admin', 
-        isAdmin: true 
+        role: 'Member', 
+        isAdmin: false 
     });
 
     // when successful, return to login page
