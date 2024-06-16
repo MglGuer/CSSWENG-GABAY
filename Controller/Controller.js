@@ -11,6 +11,7 @@ const server = express();
 const bodyParser = require('body-parser');
 server.use(express.json()); 
 server.use(express.urlencoded({ extended: true }));
+server.use(express.static('Model'));
 
 
 server.use(session({
