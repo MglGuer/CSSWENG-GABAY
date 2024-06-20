@@ -22,7 +22,7 @@
             </a>
             <span class="tooltip">Data Tracker</span>
         </li>
-        <li>
+        <li class="active">
             <a href="/data">
                 <i class="bx bx-table"></i>
                 <span class="nav-item">Data Log</span>
@@ -36,7 +36,7 @@
             </a>
             <span class="tooltip">Profile</span>
         </li>
-        <li class="active">
+        <li>
             <a href="/history">
                 <i class="bx bx-list-ul"></i>
                 <span class="nav-item">History Log</span>
@@ -63,53 +63,81 @@
 
 <div class="main-content">
     <div class="header">
-        <h1>History Log</h1>
+        <h1>Data Log</h1>
     </div>
     
-    <div class="container-for-loginhistory">
-        <h2 class="headline">Login History</h2>
-        <table class="history-log">
+    <div class="container-for-data">
+        <h2 class="headline">Biomedical Records</h2>
+        <table class="data-log">
             <thead>
                 <tr>
-                    <th>NAME</th>
-                    <th>ROLE</th>
-                    <th>EMAIL ADDRESS</th>
-                    <th>LAST LOGIN DATE/TIME</th>
+                    <th>Gender</th>
+                    <th>Location</th>
+                    <th>Barangay</th>
+                    <th>Remarks</th>
+                    <th>Age Range</th>
+                    <th>Tested Before</th>
+                    <th>Test Result</th>
+                    <th>Reason</th>
+                    <th>KVP</th>
+                    <th>Linkage</th>
+                    <th>Encoder</th>
+                    <th>Date Encoded</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {{#each loginHistory}}
+                {{#each biomedicalPatients}}
                 <tr>
-                    <td>{{this.name}}</td>
-                    <td>{{this.role}}</td>
-                    <td>{{this.email}}</td>
-                    <td>{{formatDate this.lastLoginDateTime}}</td>
+                    <td>{{gender}}</td>
+                    <td>{{location}}</td>
+                    <td>{{barangay}}</td>
+                    <td>{{remarks}}</td>
+                    <td>{{age_range}}</td>
+                    <td>{{tested_before}}</td>
+                    <td>{{test_result}}</td>
+                    <td>{{reason}}</td>
+                    <td>{{kvp}}</td>
+                    <td>{{linkage}}</td>
+                    <td>{{encoder}}</td>
+                    <td>{{formatDate date_encoded}}</td>
+                    <td>
+                        <a href="/edit/{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
+                        <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
+                    </td>
                 </tr>
                 {{/each}}
             </tbody>
         </table>
     </div>
 
-    <div class="container-for-actionhistory">
-        <h2 class="headline">Action History</h2>
-        <table class="history-log">
+    <div class="container-for-data">
+        <h2 class="headline">Nonbiomedical Records</h2>
+        <table class="data-log">
             <thead>
                 <tr>
-                    <th>NAME</th>
-                    <th>ROLE</th>
-                    <th>EMAIL ADDRESS</th>
-                    <th>ACTION</th>
-                    <th>ACTION DATE/TIME</th>
+                    <th>Gender</th>
+                    <th>Stigma</th>
+                    <th>Discrimination</th>
+                    <th>Violence</th>
+                    <th>Encoder</th>
+                    <th>Date Encoded</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {{#each actionHistory}}
+                {{#each nonBiomedicalPatients}}
                 <tr>
-                    <td>{{this.name}}</td>
-                    <td>{{this.role}}</td>
-                    <td>{{this.email}}</td>
-                    <td>{{this.action}}</td>
-                    <td>{{formatDate this.actionDateTime}}</td> 
+                    <td>{{gender}}</td>
+                    <td>{{stigma}}</td>
+                    <td>{{discrimination}}</td>
+                    <td>{{violence}}</td>
+                    <td>{{encoder}}</td>
+                    <td>{{formatDate date_encoded}}</td>
+                    <td>
+                        <a href="/edit/{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
+                        <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
+                    </td>
                 </tr>
                 {{/each}}
             </tbody>

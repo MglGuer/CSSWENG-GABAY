@@ -63,15 +63,22 @@ async function connectToDatabase(){
 connectToDatabase();
 
 const patientSchema = new mongoose.Schema({
-    barangay: { type: String },
-    age_range: { type: String },
+    data_type: { type: String, required: true }, // to determine if data is biomedical or non-biomedical
     gender: { type: String },
+    barangay: { type: Number },
+    remarks: { type: String },
+    age_range: { type: String },
     tested_before: { type: Boolean },
     test_result: { type: String },
     reason: { type: String },
     kvp: { type: String },
-    linkage: { type: String }
-},{ versionKey: false });
+    linkage: { type: String },
+    stigma: { type: String },
+    discrimination: { type: String },
+    violence: { type: String },
+    encoder: { type: String },   
+    date_encoded: { type: Date, default: Date.now, required: true } 
+}, { versionKey: false });
   
 const patientModel = mongoose.model('patient', patientSchema);
 
@@ -321,40 +328,52 @@ server.get('/tracker', (req,resp) => {
 });
 
 // server to push new patient data to db
+// server to push new patient data to db
 server.post('/add-record', async (req, res) => {
+    const { data_type, gender, location, barangay, remarks, age,
+        tested, result, linkage, stigma, discrimination,  violence } = req.body;
 
-    // retrieve details
-    const { baranggay, gender, age, tested, result, linkage } = req.body
-    const reason_hiv = req.body['reason-hiv']
-    const vulnerable_population = req.body['vulnerable-population']
+    const reason_hiv = req.body['reason-hiv'];
+    const vulnerable_population = req.body['vulnerable-population'];
 
-    const patientCollection = client.db("test").collection("patients"); // get db collection
-    const tested_before = tested === 'tested-yes'; // convert to bool
+    const patientCollection = client.db("test").collection("patients");
 
-    // insert data
-    const record = await patientCollection.insertOne({
-        barangay: baranggay,
-        age_range: age,
-        gender: gender,
-        tested_before: tested_before,
-        test_result: result,
-        reason: reason_hiv,
-        kvp: vulnerable_population,
-        linkage: linkage
-    });
+    try {
+        const record = await patientCollection.insertOne({
+            data_type: data_type,
+            gender: gender,
+            date_encoded: new Date(),
+            encoder: req.session.username,
+            location: (data_type === 'biomedical') ? location : '',
+            barangay: (data_type === 'biomedical') ? barangay : '',
+            remarks: (data_type === 'biomedical') ? remarks : '',
+            age_range: (data_type === 'biomedical') ? age : '',
+            tested_before: (data_type === 'biomedical') ? (tested === 'tested-yes') : false,
+            test_result: (data_type === 'biomedical') ? result : '',
+            reason: (data_type === 'biomedical') ? reason_hiv : '',
+            kvp: (data_type === 'biomedical') ? vulnerable_population : '',
+            linkage: (data_type === 'biomedical') ? linkage : '',
+            stigma: (data_type === 'nonbiomedical') ? stigma : '',
+            discrimination: (data_type === 'nonbiomedical') ? discrimination : '',
+            violence: (data_type === 'nonbiomedical') ? violence : ''
+        });
 
-    // insert action history for adding new patient record
-    const actionHistoryCollection = client.db("test").collection("actionhistories");
-    await actionHistoryCollection.insertOne({
-        name: req.session.username,
-        role: req.session.role,
-        email: req.session.email,
-        action: "Add new patient record",
-        actionDateTime: new Date()
-    });
+        // insert action history
+        const actionHistoryCollection = client.db("test").collection("actionhistories");
+        await actionHistoryCollection.insertOne({
+            name: req.session.username,
+            role: req.session.role,
+            email: req.session.email,
+            action: "Add new patient record",
+            actionDateTime: new Date()
+        });
 
-    console.log("Data sucessfully added.")
-    return res.redirect('/tracker?message=Patient Data Record added succesfully');
+        console.log("Patient data successfully added");
+        return res.redirect('/tracker?message=Patient Data Record added successfully');
+    } catch (err) {
+        console.error("Error adding patient data:", err);
+        return res.status(500).send("Error adding patient data");
+    }
 });
 
 // server for profile
@@ -458,6 +477,71 @@ server.get('/history', async (req, res) => {
     } catch (error) {
         console.error("Error fetching login history:", error);
         res.status(500).send("Internal Server Error");
+    }
+});
+
+// server for data log
+server.get('/data', async (req, res) => {
+    try {
+      const biomedicalPatients = await patientModel.find({ data_type: 'biomedical' }).exec();
+      const nonBiomedicalPatients = await patientModel.find({ data_type: 'nonbiomedical' }).exec();
+  
+      res.render('data', { 
+        layout: 'index',
+        title: 'Data Log Page',
+        biomedicalPatients, 
+        nonBiomedicalPatients 
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
+    }
+});
+  
+// edit patient record 
+server.get('/edit/:id', async (req, res) => {
+    try {
+        const patient = await patientModel.findById(req.params.id);
+        res.render('edit', { patient: patient });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// update patient record 
+server.post('/edit/:id', async (req, res) => {
+    try {
+        const { gender, barangay, remarks, age_range, tested_before, test_result, reason, kvp, linkage, stigma, discrimination, violence } = req.body;
+        await patientModel.findByIdAndUpdate(req.params.id, {
+            gender: gender,
+            barangay: barangay,
+            remarks: remarks,
+            age_range: age_range,
+            tested_before: tested_before === 'true', // Convert to Boolean
+            test_result: test_result,
+            reason: reason,
+            kvp: kvp,
+            linkage: linkage,
+            stigma: stigma,
+            discrimination: discrimination,
+            violence: violence
+        });
+        res.redirect('/data'); 
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// delete patient record 
+server.get('/delete/:id', async (req, res) => {
+    try {
+        await patientModel.findByIdAndRemove(req.params.id);
+        res.redirect('/data');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
     }
 });
 

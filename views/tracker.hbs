@@ -23,6 +23,13 @@
             <span class="tooltip">Data Tracker</span>
         </li>
         <li>
+            <a href="/data">
+                <i class="bx bx-table"></i>
+                <span class="nav-item">Data Log</span>
+            </a>
+            <span class="tooltip">Data Log</span>
+        </li>
+        <li>
             <a href="/profile">
                 <i class="bx bxs-user"></i>
                 <span class="nav-item">Profile</span>
@@ -58,126 +65,188 @@
     <div class="header">
         <h1>Data Tracker</h1>
     </div>
-        <form action="add-record" method="post">
-            <div class="container-for-tracker">
-                <div class="container-for-fields">
-                    <div class="field">
-                        <label for="baranggay" class="data-label">Barangay:</label>
-                        <input type="number" id="baranggay" name="baranggay" class="data-input" min="1" max="188" required>
-                    </div>
 
-                    <div class="field"> 
-                        <label for="gender" class="data-label">Gender:</label>
-                            <label class="radio-option">
-                                <input type="radio" name="gender" value="male" required>
-                                <span>Male</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="gender" value="female" required>
-                                <span>Female</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="gender" value="transgender" required>
-                                <span>Transgender</span>
-                            </label>
-                    </div>
-
-                    <div class="field">
-                        <label for="age" class="data-label">Age:</label>  
-                        <select id="age" name="age" required>
-                            <option value="" disabled selected>Select age range</option>
-                            <option value="18-months">0 to 18 months</option>
-                            <option value="9-years">19 months to 9 years</option>
-                            <option value="14-years">10 to 14 years</option>
-                            <option value="19-years">15 to 19 years</option>
-                            <option value="24-years">20 to 24 years</option>
-                            <option value="29-years">25 to 29 years</option>
-                            <option value="39-years">30 to 39 years</option>
-                            <option value="49-years">40 to 49 years</option>
-                            <option value="50-plus">50 years and older</option>
-                        </select>
-                    </div>
-                    
-                    <div class="field">
-                        <label for="repeat" class="data-label">Has the person been tested before?</label>
-                            <label class="radio-option">
-                                <input type="radio" name="tested" value="tested-yes" required>
-                                <span>Yes (First time tester)</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="tested" value="tested-no" required>
-                                <span>No (Has been tested before)</span>
-                            </label>
-                    </div>
-
-                    <div class="field">
-                        <label for="result" class="data-label">Test result: </label>
-                            <label class="radio-option">
-                                <input type="radio" name="result" value="positive" required>
-                                <span>Positive</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="result" value="negative" required>
-                                <span>Negative</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="result" value="not-know" required>
-                                <span>Don't Know (For repeat testers)</span>
-                            </label>
-                    </div>
-
-                    <div class="field">
-                        <label for="reason-hiv" class="data-label">Reason for HIV test:</label>  
-                        <select id="reason-hiv" name="reason-hiv" required>
-                            <option value="" disabled selected>Select reason</option>
-                            <option value="unprotected">Unprotected Sex</option>
-                            <option value="injectable-drugs">Use of injectable drugs</option>
-                            <option value="pregnancy">Pregnancy</option>
-                            <option value="exposed-child">HIV-exposed child</option>
-                            <option value="pitc">PITC - III health</option>
-                            <option value="positive-partner">HIV positive partner</option>
-                            <option value="rape">Non consensual sex and rape</option>
-                            <option value="bloodtransfusion">History of bloodtransfusion or exposure to contaminated equipment</option>
-                            <option value="hcw">Occupational hazard health care worker (HCW)</option>
-                            <option value="administrative">Administrative reason</option>
-                            <option value="history">Subjective ill health or history of sexually transmitted infection(s)</option>
-                            <option value="no-reason">No specific reason disclosed</option>
-                        </select>
-                    </div>
-
-                    <div class="field">
-                        <label for="vulnerable-population" class="data-label">Key or Vulnerable Population (KVP) at higher risk</label>
-                        <select id="vulnerable-population" name="vulnerable-population" required>
-                            <option value="" disabled selected>Select population</option>
-                            <option value="pwid">Person who injects drugs (PWID) or other needle sharing</option>
-                            <option value="msm">Gay and other Men having Sex with Men (MSM)</option>
-                            <option value="transgenders">Transgenders</option>
-                            <option value="sex-worker">Sex /entertainment worker</option>
-                            <option value="pdl">Prisoner / detainee</option>
-                            <option value="migrant">Mobile and migrant populations</option>
-                            <option value="pwud">Person who uses non-injectable drugs (PWUD)</option>
-                            <option value="uniformed">Uniformed forces (military, police, security)</option>
-                            <option value="sexual-partners">Sexual Partners of identified KP at higher risk</option>
-                            <option value="agew">Adolescent Girls and Young Women (AGEW)</option>
-                            <option value="disability">Persons with disability</option>
-                            <option value="plhiv">HIV-negative sexual partners of PLHIV</option>
-                            <option value="not-disclosed">No key or vulnerable population known or not disclosed</option>
-                        </select>
-                    </div>
-
-                    <div class="field">
-                        <label for="linkage" class="data-label">Linkage</label>
-                        <select id="linkage" name="linkage" required>
-                            <option value="" disabled selected>Select linkage</option>
-                            <option value="treatment-facility">Linked to Treatment Facility</option>
-                            <option value="follow-up">Linkage not yet confirmed, under follow-up</option>
-                            <option value="unconfirmed">linkage unconfirmed (after 3 months follow-up)</option>
-                        </select>
-                    </div>
+    <form action="add-record" method="post">
+        <div class="container-for-tracker">
+            <div class="container-for-fields">
+                <div class="field">
+                    <label for="data_type" class="data-label">Is the data Biomedical or Non-biomedical?</label>
+                    <label class="radio-option">
+                        <input type="radio" name="data_type" value="biomedical" onclick="toggleFields()" required>
+                        <span>Biomedical</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="data_type" value="nonbiomedical" onclick="toggleFields()" required>
+                        <span>Non-biomedical</span>
+                    </label>
                 </div>
-                <input type="submit" class="submit-button" value="Submit">
+
+                <div class="field">
+                    <label for="gender" class="data-label">Gender:</label>
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="male" required>
+                            <span>Male</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="female" required>
+                            <span>Female</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="transgender" required>
+                            <span>Transgender</span>
+                    </label>
+                </div>
+
+                <!-- Biomedical fields -->
+                <div class="biomedicalfield"> 
+                    <label for="location" class="data-label">Location:</label>
+                        <label class="radio-option">
+                            <input type="radio" name="location" value="caloocan" required>
+                            <span>Caloocan</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="location" value="not_in_caloocan" required>
+                            <span>Not in Caloocan</span>
+                        </label>
+                </div>
+
+                <div class="biomedicalfield" id="barangay-field">
+                    <label for="barangay" class="data-label">Barangay:</label>
+                    <input type="number" id="barangay" name="barangay" class="data-input" min="1" max="188">
+                </div>
+
+                <div class="biomedicalfield" id="remarks-field">
+                    <label for="remarks" class="data-label">Remarks:</label>
+                    <input type="text" id="remarks" name="remarks" class="data-input">
+                </div>
+
+                <div class="biomedicalfield">
+                    <label for="age" class="data-label">Age:</label>  
+                    <select id="age" name="age" required>
+                        <option value="" disabled selected>Select age range</option>
+                        <option value="18-months">0 to 18 months</option>
+                        <option value="9-years">19 months to 9 years</option>
+                        <option value="14-years">10 to 14 years</option>
+                        <option value="19-years">15 to 19 years</option>
+                        <option value="24-years">20 to 24 years</option>
+                        <option value="29-years">25 to 29 years</option>
+                        <option value="39-years">30 to 39 years</option>
+                        <option value="49-years">40 to 49 years</option>
+                        <option value="50-plus">50 years and older</option>
+                    </select>
+                </div>
+                
+                <div class="biomedicalfield">
+                    <label for="repeat" class="data-label">Has the person been tested before?</label>
+                        <label class="radio-option">
+                            <input type="radio" name="tested" value="tested-yes" required>
+                            <span>Yes (First time tester)</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="tested" value="tested-no" required>
+                            <span>No (Has been tested before)</span>
+                        </label>
+                </div>
+
+                <div class="biomedicalfield">
+                    <label for="result" class="data-label">Test result: </label>
+                        <label class="radio-option">
+                            <input type="radio" name="result" value="positive" required>
+                            <span>Positive</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="result" value="negative" required>
+                            <span>Negative</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="result" value="not-know" required>
+                            <span>Don't Know (For repeat testers)</span>
+                        </label>
+                </div>
+
+                <div class="biomedicalfield">
+                    <label for="reason-hiv" class="data-label">Reason for HIV test:</label>  
+                    <select id="reason-hiv" name="reason-hiv" required>
+                        <option value="" disabled selected>Select reason</option>
+                        <option value="unprotected">Unprotected Sex</option>
+                        <option value="injectable-drugs">Use of injectable drugs</option>
+                        <option value="pregnancy">Pregnancy</option>
+                        <option value="exposed-child">HIV-exposed child</option>
+                        <option value="pitc">PITC - III health</option>
+                        <option value="positive-partner">HIV positive partner</option>
+                        <option value="rape">Non consensual sex and rape</option>
+                        <option value="bloodtransfusion">History of bloodtransfusion or exposure to contaminated equipment</option>
+                        <option value="hcw">Occupational hazard health care worker (HCW)</option>
+                        <option value="administrative">Administrative reason</option>
+                        <option value="history">Subjective ill health or history of sexually transmitted infection(s)</option>
+                        <option value="no-reason">No specific reason disclosed</option>
+                    </select>
+                </div>
+
+                <div class="biomedicalfield">
+                    <label for="vulnerable-population" class="data-label">Key or Vulnerable Population (KVP) at higher risk</label>
+                    <select id="vulnerable-population" name="vulnerable-population" required>
+                        <option value="" disabled selected>Select population</option>
+                        <option value="pwid">Person who injects drugs (PWID) or other needle sharing</option>
+                        <option value="msm">Gay and other Men having Sex with Men (MSM)</option>
+                        <option value="transgenders">Transgenders</option>
+                        <option value="sex-worker">Sex /entertainment worker</option>
+                        <option value="pdl">Prisoner / detainee</option>
+                        <option value="migrant">Mobile and migrant populations</option>
+                        <option value="pwud">Person who uses non-injectable drugs (PWUD)</option>
+                        <option value="uniformed">Uniformed forces (military, police, security)</option>
+                        <option value="sexual-partners">Sexual Partners of identified KP at higher risk</option>
+                        <option value="agew">Adolescent Girls and Young Women (AGEW)</option>
+                        <option value="disability">Persons with disability</option>
+                        <option value="plhiv">HIV-negative sexual partners of PLHIV</option>
+                        <option value="not-disclosed">No key or vulnerable population known or not disclosed</option>
+                    </select>
+                </div>
+
+                <div class="biomedicalfield">
+                    <label for="linkage" class="data-label">Linkage</label>
+                    <select id="linkage" name="linkage" required>
+                        <option value="" disabled selected>Select linkage</option>
+                        <option value="treatment-facility">Linked to Treatment Facility</option>
+                        <option value="follow-up">Linkage not yet confirmed, under follow-up</option>
+                        <option value="unconfirmed">Linkage unconfirmed (after 3 months follow-up)</option>
+                    </select>
+                </div>
+
+                <!-- Non-biomedical fields -->
+                <div class="nonbiomedicalfield">
+                    <label for="stigma" class="data-label">Stigma:</label>
+                    <select id="stigma" name="stigma">
+                        <option value="" disabled selected>Select category</option>
+                        <option value="Public Stigma">Public Stigma</option>
+                        <option value="Family Stigma">Family Stigma</option>
+                        <option value="Self-stigma">Self-stigma</option>
+                    </select>
+                </div>
+
+                <div class="nonbiomedicalfield">
+                    <label for="discrimination" class="data-label">Discrimination:</label>
+                    <select id="discrimination" name="discrimination">
+                        <option value="" disabled selected>Select category</option>
+                        <option value="Verbal Abuse">Verbal Abuse</option>
+                        <option value="Physical Abuse">Physical Abuse</option>
+                        <option value="Emotional Abuse">Emotional Abuse</option>
+                    </select>
+                </div>
+
+                <div class="nonbiomedicalfield">
+                    <label for="violence" class="data-label">Violence:</label>
+                    <select id="violence" name="violence">
+                        <option value="" disabled selected>Select category</option>
+                        <option value="Economic Abuse">Economic Abuse</option>
+                        <option value="Sexual Abuse">Sexual Abuse</option>
+                        <option value="Hate Crime">Hate Crime</option>
+                    </select>
+                </div>
             </div>
-        </form>
+            <input type="submit" class="submit-button" value="Submit">
+        </div>
+    </form>
 
     <div class="footer">
         <p>&copy; 2024 HIV Advocacy Database. All rights reserved.</p>

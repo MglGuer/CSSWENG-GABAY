@@ -7,15 +7,22 @@
 const mongoose = require('mongoose');
 
 const patientSchema = new mongoose.Schema({
-    barangay: { type: String },
-    age_range: { type: String },
+    data_type: { type: String, required: true }, // to determine if data is biomedical or non-biomedical
     gender: { type: String },
+    barangay: { type: Number },
+    remarks: { type: String },
+    age_range: { type: String },
     tested_before: { type: Boolean },
     test_result: { type: String },
     reason: { type: String },
     kvp: { type: String },
-    linkage: { type: String }
-},{ versionKey: false });
+    linkage: { type: String },
+    stigma: { type: String },
+    discrimination: { type: String },
+    violence: { type: String },
+    encoder: { type: String },   
+    date_encoded: { type: Date, default: Date.now, required: true } 
+}, { versionKey: false });
 
 const userSchema = new mongoose.Schema({
     name: { type: String },
