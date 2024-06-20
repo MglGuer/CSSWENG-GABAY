@@ -182,6 +182,7 @@ server.post('/read-user', async (req,res) => {
     const loginHistoryCollection = client.db("test").collection("loginhistories");
     await loginHistoryCollection.insertOne({
         name: user.name,
+        role: user.role,
         email: user.email,
         lastLoginDateTime: new Date() 
     });
@@ -295,6 +296,7 @@ server.post('/add-record', async (req, res) => {
     const actionHistoryCollection = client.db("test").collection("actionhistories");
     await actionHistoryCollection.insertOne({
         name: req.session.username,
+        role: req.session.role,
         email: req.session.email,
         action: "Add new patient record",
         actionDateTime: new Date()
@@ -367,6 +369,7 @@ server.post('/update-profile', async (req, res) => {
         // insert action history for updating user profile
         await actionHistoryCollection.insertOne({
             name: name,
+            role: req.session.role,
             email: email,
             action: "Update profile information",
             actionDateTime: new Date()

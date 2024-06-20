@@ -27,12 +27,14 @@ const userSchema = new mongoose.Schema({
 
 const loginHistorySchema = new mongoose.Schema({
     name: { type: String },
+    role: { type: String },
     email: { type: String },
     lastLoginDateTime: { type: Date, default: Date.now }
 },{ versionKey: false });
 
 const actionHistorySchema = new mongoose.Schema({
     name: { type: String },
+    role: { type: String },
     email: { type: String },
     action: { type: String },
     actionDateTime: { type: Date, default: Date.now }
