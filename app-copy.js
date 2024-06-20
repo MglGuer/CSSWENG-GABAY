@@ -328,7 +328,6 @@ server.get('/tracker', (req,resp) => {
 });
 
 // server to push new patient data to db
-// server to push new patient data to db
 server.post('/add-record', async (req, res) => {
     const { data_type, gender, location, barangay, remarks, age,
         tested, result, linkage, stigma, discrimination,  violence } = req.body;

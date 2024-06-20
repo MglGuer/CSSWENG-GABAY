@@ -83,31 +83,31 @@
 
                 <div class="field">
                     <label for="gender" class="data-label">Gender:</label>
-                        <label class="radio-option">
-                            <input type="radio" name="gender" value="male" required>
-                            <span>Male</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="gender" value="female" required>
-                            <span>Female</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="gender" value="transgender" required>
-                            <span>Transgender</span>
+                    <label class="radio-option">
+                        <input type="radio" name="gender" value="male" required>
+                        <span>Male</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="gender" value="female" required>
+                        <span>Female</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="gender" value="transgender" required>
+                        <span>Transgender</span>
                     </label>
                 </div>
 
                 <!-- Biomedical fields -->
                 <div class="biomedicalfield"> 
                     <label for="location" class="data-label">Location:</label>
-                        <label class="radio-option">
-                            <input type="radio" name="location" value="caloocan" required>
-                            <span>Caloocan</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="location" value="not_in_caloocan" required>
-                            <span>Not in Caloocan</span>
-                        </label>
+                    <label class="radio-option">
+                        <input type="radio" name="location" value="caloocan" >
+                        <span>Caloocan</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="location" value="not_in_caloocan" >
+                        <span>Not in Caloocan</span>
+                    </label>
                 </div>
 
                 <div class="biomedicalfield" id="barangay-field">
@@ -122,16 +122,16 @@
 
                 <div class="biomedicalfield">
                     <label for="age" class="data-label">Age:</label>  
-                    <select id="age" name="age" required>
+                    <select id="age" name="age" >
                         <option value="" disabled selected>Select age range</option>
-                        <option value="18-months">0 to 18 months</option>
-                        <option value="9-years">19 months to 9 years</option>
-                        <option value="14-years">10 to 14 years</option>
-                        <option value="19-years">15 to 19 years</option>
-                        <option value="24-years">20 to 24 years</option>
-                        <option value="29-years">25 to 29 years</option>
-                        <option value="39-years">30 to 39 years</option>
-                        <option value="49-years">40 to 49 years</option>
+                        <option value="0 to 18 months">0 to 18 months</option>
+                        <option value="19 months to 9 years">19 months to 9 years</option>
+                        <option value="10 to 14 years">10 to 14 years</option>
+                        <option value="15 to 19 years">15 to 19 years</option>
+                        <option value="20 to 24 years">20 to 24 years</option>
+                        <option value="25 to 29 years">25 to 29 years</option>
+                        <option value="30 to 39 years">30 to 39 years</option>
+                        <option value="40 to 49 years">40 to 49 years</option>
                         <option value="50-plus">50 years and older</option>
                     </select>
                 </div>
@@ -139,11 +139,11 @@
                 <div class="biomedicalfield">
                     <label for="repeat" class="data-label">Has the person been tested before?</label>
                         <label class="radio-option">
-                            <input type="radio" name="tested" value="tested-yes" required>
+                            <input type="radio" name="tested" value="tested-yes" >
                             <span>Yes (First time tester)</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="tested" value="tested-no" required>
+                            <input type="radio" name="tested" value="tested-no" >
                             <span>No (Has been tested before)</span>
                         </label>
                 </div>
@@ -151,22 +151,22 @@
                 <div class="biomedicalfield">
                     <label for="result" class="data-label">Test result: </label>
                         <label class="radio-option">
-                            <input type="radio" name="result" value="positive" required>
+                            <input type="radio" name="result" value="positive" >
                             <span>Positive</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="result" value="negative" required>
+                            <input type="radio" name="result" value="negative" >
                             <span>Negative</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="result" value="not-know" required>
+                            <input type="radio" name="result" value="not-know" >
                             <span>Don't Know (For repeat testers)</span>
                         </label>
                 </div>
 
                 <div class="biomedicalfield">
                     <label for="reason-hiv" class="data-label">Reason for HIV test:</label>  
-                    <select id="reason-hiv" name="reason-hiv" required>
+                    <select id="reason-hiv" name="reason-hiv" >
                         <option value="" disabled selected>Select reason</option>
                         <option value="unprotected">Unprotected Sex</option>
                         <option value="injectable-drugs">Use of injectable drugs</option>
@@ -185,7 +185,7 @@
 
                 <div class="biomedicalfield">
                     <label for="vulnerable-population" class="data-label">Key or Vulnerable Population (KVP) at higher risk</label>
-                    <select id="vulnerable-population" name="vulnerable-population" required>
+                    <select id="vulnerable-population" name="vulnerable-population" >
                         <option value="" disabled selected>Select population</option>
                         <option value="pwid">Person who injects drugs (PWID) or other needle sharing</option>
                         <option value="msm">Gay and other Men having Sex with Men (MSM)</option>
@@ -205,7 +205,7 @@
 
                 <div class="biomedicalfield">
                     <label for="linkage" class="data-label">Linkage</label>
-                    <select id="linkage" name="linkage" required>
+                    <select id="linkage" name="linkage" >
                         <option value="" disabled selected>Select linkage</option>
                         <option value="treatment-facility">Linked to Treatment Facility</option>
                         <option value="follow-up">Linkage not yet confirmed, under follow-up</option>
@@ -243,6 +243,7 @@
                         <option value="Hate Crime">Hate Crime</option>
                     </select>
                 </div>
+                
             </div>
             <input type="submit" class="submit-button" value="Submit">
         </div>

@@ -18,11 +18,27 @@ function toggleFields() {
     const nonbiomedicalFields = document.querySelectorAll('.nonbiomedicalfield');
 
     if (dataType === 'biomedical') {
-        biomedicalFields.forEach(field => field.style.display = 'flex');
-        nonbiomedicalFields.forEach(field => field.style.display = 'none');
+        biomedicalFields.forEach(field => {
+            field.style.display = 'flex';
+            const inputs = field.querySelectorAll('input, select');
+            inputs.forEach(input => input.required = true);
+        });
+        nonbiomedicalFields.forEach(field => {
+            field.style.display = 'none';
+            const inputs = field.querySelectorAll('input, select');
+            inputs.forEach(input => input.required = false);
+        });
     } else {
-        biomedicalFields.forEach(field => field.style.display = 'none');
-        nonbiomedicalFields.forEach(field => field.style.display = 'flex');
+        biomedicalFields.forEach(field => {
+            field.style.display = 'none';
+            const inputs = field.querySelectorAll('input, select');
+            inputs.forEach(input => input.required = false);
+        });
+        nonbiomedicalFields.forEach(field => {
+            field.style.display = 'flex';
+            const inputs = field.querySelectorAll('input, select');
+            inputs.forEach(input => input.required = true);
+        });
     }
 }
 
@@ -50,14 +66,6 @@ document.addEventListener('DOMContentLoaded', function () {
     handleResponse();
     toggleFields(); 
     toggleLocationFields(); 
-
-    // Add event listener to data_type radio buttons
-    const dataTypeRadioButtons = document.querySelectorAll('input[name="data_type"]');
-    dataTypeRadioButtons.forEach(radio => radio.addEventListener('change', toggleFields));
-
-    // Add event listener to location radio buttons
-    const locationRadioButtons = document.querySelectorAll('input[name="location"]');
-    locationRadioButtons.forEach(radio => radio.addEventListener('change', toggleLocationFields));
 
     let btn = document.querySelector('#btn');
     let sidebar = document.querySelector('.sidebar');

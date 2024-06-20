@@ -484,12 +484,16 @@ select.monthly:hover, .yearly:hover{
     flex-direction: column;
 }
 
-.field {
+.field, .biomedicalfield, .nonbiomedicalfield{
     display: flex;
     align-items: center;
     margin-top: 16px;
     margin-bottom: 16px;
     justify-content: left;
+}
+
+.biomedicalfield, .nonbiomedicalfield, #barangay-field, #remarks-field {
+    display: none;
 }
 
 .data-label {
@@ -512,7 +516,7 @@ select.monthly:hover, .yearly:hover{
     font-size: 20px;
 }
 
-select#age, select#reason-hiv, select#vulnerable-population, select#linkage {
+.biomedicalfield select, .nonbiomedicalfield select {
     width: 700px;
     height: 40px;
     padding: 5px;
@@ -523,7 +527,7 @@ select#age, select#reason-hiv, select#vulnerable-population, select#linkage {
     font-size: 20px;
 }
 
-select#age:focus, select#reason-hiv:focus, select#vulnerable-population:focus, select#linkage:focus {
+.biomedicalfield select:focus, .nonbiomedicalfield select:focus{
     outline: none;
     border-color: #6cb2eb;
     box-shadow: 0 0 5px rgba(108, 178, 235, 0.5);
