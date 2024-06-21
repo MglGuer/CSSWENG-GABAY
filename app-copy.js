@@ -22,6 +22,10 @@ server.engine('hbs', handlebars.engine({
         formatDate: function (date) {
             return moment(date).format('MM/DD/YYYY, h:mm:ss A');
         }
+    },
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
     }
 }));
 
@@ -62,9 +66,9 @@ async function connectToDatabase(){
 
 connectToDatabase();
 
-const patientSchema = new mongoose.Schema({
-    data_type: { type: String, required: true }, // to determine if data is biomedical or non-biomedical
-    gender: { type: String },
+// sub-schema for biomedical data
+const biomedicalSchema = new mongoose.Schema({
+    location: { type: String },
     barangay: { type: Number },
     remarks: { type: String },
     age_range: { type: String },
@@ -72,12 +76,24 @@ const patientSchema = new mongoose.Schema({
     test_result: { type: String },
     reason: { type: String },
     kvp: { type: String },
-    linkage: { type: String },
+    linkage: { type: String }
+}, { _id: false });
+
+// sub-schema for non-biomedical data
+const nonBiomedicalSchema = new mongoose.Schema({
     stigma: { type: String },
     discrimination: { type: String },
-    violence: { type: String },
-    encoder: { type: String },   
-    date_encoded: { type: Date, default: Date.now, required: true } 
+    violence: { type: String }
+}, { _id: false });
+
+// main schema
+const patientSchema = new mongoose.Schema({
+    data_type: { type: String, required: true },
+    gender: { type: String },
+    biomedical: biomedicalSchema,
+    nonbiomedical: nonBiomedicalSchema,
+    encoder: { type: String },
+    date_encoded: { type: Date, default: Date.now}
 }, { versionKey: false });
   
 const patientModel = mongoose.model('patient', patientSchema);
@@ -330,35 +346,44 @@ server.get('/tracker', (req,resp) => {
 // server to push new patient data to db
 server.post('/add-record', async (req, res) => {
     const { data_type, gender, location, barangay, remarks, age,
-        tested, result, linkage, stigma, discrimination,  violence } = req.body;
+        tested, result, linkage, stigma, discrimination, violence } = req.body;
 
     const reason_hiv = req.body['reason-hiv'];
     const vulnerable_population = req.body['vulnerable-population'];
 
-    const patientCollection = client.db("test").collection("patients");
-
     try {
-        const record = await patientCollection.insertOne({
+        const patientData = {
             data_type: data_type,
             gender: gender,
             date_encoded: new Date(),
-            encoder: req.session.username,
-            location: (data_type === 'biomedical') ? location : '',
-            barangay: (data_type === 'biomedical') ? barangay : '',
-            remarks: (data_type === 'biomedical') ? remarks : '',
-            age_range: (data_type === 'biomedical') ? age : '',
-            tested_before: (data_type === 'biomedical') ? (tested === 'tested-yes') : false,
-            test_result: (data_type === 'biomedical') ? result : '',
-            reason: (data_type === 'biomedical') ? reason_hiv : '',
-            kvp: (data_type === 'biomedical') ? vulnerable_population : '',
-            linkage: (data_type === 'biomedical') ? linkage : '',
-            stigma: (data_type === 'nonbiomedical') ? stigma : '',
-            discrimination: (data_type === 'nonbiomedical') ? discrimination : '',
-            violence: (data_type === 'nonbiomedical') ? violence : ''
-        });
+            encoder: req.session.username
+        };
 
-        // insert action history
-        const actionHistoryCollection = client.db("test").collection("actionhistories");
+        if (data_type === 'biomedical') {
+            patientData.biomedical = {
+                location: location,
+                barangay: barangay,
+                remarks: remarks,
+                age_range: age,
+                tested_before: tested === 'tested-yes',
+                test_result: result,
+                reason: reason_hiv,
+                kvp: vulnerable_population,
+                linkage: linkage
+            };
+        } else if (data_type === 'nonbiomedical') {
+            patientData.nonbiomedical = {
+                stigma: stigma,
+                discrimination: discrimination,
+                violence: violence
+            };
+        }
+
+        const newPatient = new patientModel(patientData);
+        await newPatient.save();
+
+        // Insert action history
+        const actionHistoryCollection = mongoose.connection.collection('actionhistories');
         await actionHistoryCollection.insertOne({
             name: req.session.username,
             role: req.session.role,
@@ -482,12 +507,14 @@ server.get('/history', async (req, res) => {
 // server for data log
 server.get('/data', async (req, res) => {
     try {
-      const biomedicalPatients = await patientModel.find({ data_type: 'biomedical' }).exec();
-      const nonBiomedicalPatients = await patientModel.find({ data_type: 'nonbiomedical' }).exec();
+        const patients = await patientModel.find().exec();
+        const biomedicalPatients = patients.filter(patient => patient.data_type === 'biomedical');
+        const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'nonbiomedical');
   
       res.render('data', { 
         layout: 'index',
         title: 'Data Log Page',
+        patients,
         biomedicalPatients, 
         nonBiomedicalPatients 
       });

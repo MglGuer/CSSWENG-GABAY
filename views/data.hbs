@@ -90,15 +90,15 @@
                 {{#each biomedicalPatients}}
                 <tr>
                     <td>{{gender}}</td>
-                    <td>{{location}}</td>
-                    <td>{{barangay}}</td>
-                    <td>{{remarks}}</td>
-                    <td>{{age_range}}</td>
-                    <td>{{tested_before}}</td>
-                    <td>{{test_result}}</td>
-                    <td>{{reason}}</td>
-                    <td>{{kvp}}</td>
-                    <td>{{linkage}}</td>
+                    <td>{{biomedical.location}}</td>
+                    <td>{{biomedical.barangay}}</td>
+                    <td>{{biomedical.remarks}}</td>
+                    <td>{{biomedical.age_range}}</td>
+                    <td>{{biomedical.tested_before}}</td>
+                    <td>{{biomedical.test_result}}</td>
+                    <td>{{biomedical.reason}}</td>
+                    <td>{{biomedical.kvp}}</td>
+                    <td>{{biomedical.linkage}}</td>
                     <td>{{encoder}}</td>
                     <td>{{formatDate date_encoded}}</td>
                     <td>
@@ -129,9 +129,9 @@
                 {{#each nonBiomedicalPatients}}
                 <tr>
                     <td>{{gender}}</td>
-                    <td>{{stigma}}</td>
-                    <td>{{discrimination}}</td>
-                    <td>{{violence}}</td>
+                    <td>{{nonbiomedical.stigma}}</td>
+                    <td>{{nonbiomedical.discrimination}}</td>
+                    <td>{{nonbiomedical.violence}}</td>
                     <td>{{encoder}}</td>
                     <td>{{formatDate date_encoded}}</td>
                     <td>
