@@ -50,11 +50,11 @@ function toggleLocationFields() {
 
     if (location) {
         if (location.value === 'caloocan') {
-            barangayField.style.display = 'block';
+            barangayField.style.display = 'flex';
             remarksField.style.display = 'none';
         } else if (location.value === 'not_in_caloocan') {
             barangayField.style.display = 'none';
-            remarksField.style.display = 'block';
+            remarksField.style.display = 'flex';
         }
     } else {
         barangayField.style.display = 'none';
@@ -73,5 +73,14 @@ document.addEventListener('DOMContentLoaded', function () {
     btn.onclick = function () {
         sidebar.classList.toggle('active');
     };
+
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+      deleteButtons.forEach(button => {
+          button.addEventListener('click', function(event) {
+            if (!confirm('Are you sure you want to delete this record?')) {
+                event.preventDefault();
+            }
+        });
+    });
 
 });

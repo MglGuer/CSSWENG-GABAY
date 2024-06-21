@@ -492,7 +492,7 @@ select.monthly:hover, .yearly:hover{
     justify-content: left;
 }
 
-.biomedicalfield, .nonbiomedicalfield, #barangay-field, #remarks-field {
+.biomedicalfield, .nonbiomedicalfield, #barangay-field, #remarks-field{
     display: none;
 }
 
@@ -730,13 +730,13 @@ select.monthly:hover, .yearly:hover{
     margin: 20px 0;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow-x: auto; /* Enable horizontal scroll if needed */
+    overflow-x: auto; 
 }
 
 .data-log {
     width: 100%;
     border-collapse: collapse;
-    white-space: nowrap; /* Prevent text wrapping */
+    white-space: nowrap; 
 }
 
 .data-log th,
@@ -762,6 +762,6 @@ select.monthly:hover, .yearly:hover{
     color: #fff;
     border: none;
     border-radius: 4px;
-    background-color: #007BFF;
+    background-color: black;
     margin-right: 5px;
 }

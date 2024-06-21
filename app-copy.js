@@ -382,7 +382,7 @@ server.post('/add-record', async (req, res) => {
         const newPatient = new patientModel(patientData);
         await newPatient.save();
 
-        // Insert action history
+        // insert action history
         const actionHistoryCollection = mongoose.connection.collection('actionhistories');
         await actionHistoryCollection.insertOne({
             name: req.session.username,
@@ -510,13 +510,17 @@ server.get('/data', async (req, res) => {
         const patients = await patientModel.find().exec();
         const biomedicalPatients = patients.filter(patient => patient.data_type === 'biomedical');
         const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'nonbiomedical');
+        const biomedicalCount = biomedicalPatients.length;
+        const nonBiomedicalCount = nonBiomedicalPatients.length;
   
       res.render('data', { 
         layout: 'index',
         title: 'Data Log Page',
         patients,
         biomedicalPatients, 
-        nonBiomedicalPatients 
+        nonBiomedicalPatients,
+        biomedicalCount,
+        nonBiomedicalCount 
       });
     } catch (err) {
       console.error(err);
@@ -563,7 +567,17 @@ server.post('/edit/:id', async (req, res) => {
 // delete patient record 
 server.get('/delete/:id', async (req, res) => {
     try {
-        await patientModel.findByIdAndRemove(req.params.id);
+        await patientModel.findByIdAndDelete(req.params.id);
+        const actionHistoryCollection = client.db("test").collection("actionhistories");
+        
+        // insert action history for deleting patient record
+        await actionHistoryCollection.insertOne({
+            name: req.session.username,
+            role: req.session.role,
+            email: email,
+            action: "Deleted patient record",
+            actionDateTime: new Date()
+        });
         res.redirect('/data');
     } catch (err) {
         console.error(err);

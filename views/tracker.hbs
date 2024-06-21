@@ -101,21 +101,21 @@
                 <div class="biomedicalfield"> 
                     <label for="location" class="data-label">Location:</label>
                     <label class="radio-option">
-                        <input type="radio" name="location" value="caloocan" >
+                        <input type="radio" name="location" value="caloocan" onclick="toggleLocationFields()">
                         <span>Caloocan</span>
                     </label>
                     <label class="radio-option">
-                        <input type="radio" name="location" value="not_in_caloocan" >
+                        <input type="radio" name="location" value="not_in_caloocan" onclick="toggleLocationFields()">
                         <span>Not in Caloocan</span>
                     </label>
                 </div>
 
-                <div class="biomedicalfield" id="barangay-field">
+                <div id="barangay-field">
                     <label for="barangay" class="data-label">Barangay:</label>
                     <input type="number" id="barangay" name="barangay" class="data-input" min="1" max="188">
                 </div>
 
-                <div class="biomedicalfield" id="remarks-field">
+                <div id="remarks-field">
                     <label for="remarks" class="data-label">Remarks:</label>
                     <input type="text" id="remarks" name="remarks" class="data-input">
                 </div>
