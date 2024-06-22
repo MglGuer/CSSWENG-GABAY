@@ -543,9 +543,10 @@ server.get('/edit/:id', async (req, res) => {
 // server for updating a patient record
 server.post('/edit/:id', async (req, res) => {
     try {
-        const { gender, barangay, remarks, age_range, tested_before, test_result, reason, kvp, linkage, stigma, discrimination, violence } = req.body;
+        const { gender, location, barangay, remarks, age_range, tested_before, test_result, reason, kvp, linkage, stigma, discrimination, violence } = req.body;
         await patientModel.findByIdAndUpdate(req.params.id, {
             gender: gender,
+            'biomedical.location': location,
             'biomedical.barangay': barangay,
             'biomedical.remarks': remarks,
             'biomedical.age_range': age_range,
@@ -569,7 +570,7 @@ server.post('/edit/:id', async (req, res) => {
             action: "Edited patient record",
             actionDateTime: new Date()
         });
-        res.redirect('/data?message=Patient record updated successfully');
+        res.status(200).json({ success: true });
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');

@@ -219,13 +219,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     editForm.addEventListener('submit', async function (event) {
         event.preventDefault();
-
+    
         const formData = new FormData(editForm);
         const id = formData.get('id');
         const data = Object.fromEntries(formData.entries());
-        console.log('Submitting updated data for patient ID:', id, data); // Debug log
-
-        // Send updated data to the server
+        console.log('Submitting updated data for patient ID:', id, data);
+    
         try {
             const response = await fetch(`/edit/${id}`, {
                 method: 'POST',
@@ -234,12 +233,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: JSON.stringify(data),
             });
-
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
             const result = await response.json();
             if (result.success) {
                 alert('Patient information updated successfully');
                 editModal.style.display = "none";
-                // Optionally, refresh the page or update the displayed patient list
+                window.location.href = `/data`;
             } else {
                 alert('An error occurred while updating the patient information');
             }
@@ -248,6 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('An error occurred while updating patient data.');
         }
     });
+    
 
     const deleteButtons = document.querySelectorAll('.btn-delete');
     deleteButtons.forEach(button => {
