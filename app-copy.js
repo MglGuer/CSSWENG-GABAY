@@ -22,6 +22,11 @@ server.engine('hbs', handlebars.engine({
     helpers: {
         formatDate: function (date) {
             return moment(date).format('MM/DD/YYYY, h:mm:ss A');
+        },
+        eq: (a, b) => a === b,
+        or: (...args) => {
+            args.pop(); 
+            return args.some(arg => arg);
         }
     },
     runtimeOptions: {
@@ -220,43 +225,47 @@ server.get('/signup', (req,resp) => {
     });
 });
 
-// TODO: post user details into the database upon signing up
-server.post('/create-user', async (req,res) => {
-
+// post user details into the database upon signing up
+server.post('/create-user', async (req, res) => {
     // retrieve user details
-    const {name, email, password} = req.body;
+    const { name, email, password, role } = req.body;
 
     // get db collection
     const userCollection = client.db("test").collection("users");
     
     // check if email is used in database
-    const user = await userCollection.findOne({ email: email});
+    const user = await userCollection.findOne({ email: email });
 
-    if (user){
+    if (user) {
         // reload page with query
         return res.redirect("/signup?emailUsed=true");
     }
 
     // hash password used
     const hashedPassword = await new Promise((resolve, reject) => {
-        bcrypt.hash(password, saltRounds, function(err, hash) {
-          if (err) reject(err)
-          resolve(hash)
+        bcrypt.hash(password, saltRounds, function (err, hash) {
+            if (err) reject(err);
+            resolve(hash);
         });
-    })
+    });
+
+    // determine admin status based on role
+    let isAdmin = false;
+    if (role === 'Data Manager') {
+        isAdmin = true;
+    }
 
     // insert data into the db
     const result = await userCollection.insertOne({
         name: name,
         email: email,
         password: hashedPassword,
-        role: 'Member', 
-        isAdmin: false 
+        role: role,
+        isAdmin: isAdmin
     });
 
     // when successful, return to login page
     return res.redirect('/');
-
 });
 
 // server to change new password
@@ -517,6 +526,7 @@ server.get('/data', async (req, res) => {
       res.render('data', { 
         layout: 'index',
         title: 'Data Log Page',
+        user: req.session.role,
         patients,
         biomedicalPatients, 
         nonBiomedicalPatients,

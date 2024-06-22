@@ -15,6 +15,7 @@
             </a>
             <span class="tooltip">Dashboard</span>
         </li>
+        {{#if (or (eq user.role "Data Encoder") (eq user.role "Data Manager"))}}
         <li class="active">
             <a href="/tracker">
                 <i class="bx bxs-pencil"></i>
@@ -22,6 +23,8 @@
             </a>
             <span class="tooltip">Data Tracker</span>
         </li>
+        {{/if}}
+        {{#if (eq user.role "Data Manager")}}
         <li>
             <a href="/data">
                 <i class="bx bx-table"></i>
@@ -29,6 +32,7 @@
             </a>
             <span class="tooltip">Data Log</span>
         </li>
+        {{/if}}
         <li>
             <a href="/profile">
                 <i class="bx bxs-user"></i>
@@ -36,6 +40,7 @@
             </a>
             <span class="tooltip">Profile</span>
         </li>
+        {{#if (eq user.role "Data Manager")}}
         <li>
             <a href="/history">
                 <i class="bx bx-list-ul"></i>
@@ -43,6 +48,7 @@
             </a>
             <span class="tooltip">History Log</span>
         </li>
+        {{/if}}
         <li>
             <a href="/logout">
                 <i class="bx bxs-log-out"></i>

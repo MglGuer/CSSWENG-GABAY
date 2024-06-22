@@ -65,7 +65,8 @@
 
 .form-group input[type="text"],
 .form-group input[type="email"], 
-.form-group input[type="password"] {
+.form-group input[type="password"],
+.form-group select {
     width: 100%;
     padding: 1vh;
     background-color: #9B112E;
