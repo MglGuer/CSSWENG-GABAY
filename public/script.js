@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                     <div class="edit-biomedicalfield">
                         <label for="age" class="data-label">Age:</label>  
-                        <select id="age" name="age">
+                        <select id="age" name="age_range">
                             <option value="" disabled>Select age range</option>
                             <option value="0 to 18 months" ${patient.biomedical.age_range === '0 to 18 months' ? 'selected' : ''}>0 to 18 months</option>
                             <option value="19 months to 9 years" ${patient.biomedical.age_range === '19 months to 9 years' ? 'selected' : ''}>19 months to 9 years</option>
