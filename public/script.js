@@ -102,15 +102,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="edit-biomedicalfield">
                         <label for="test_result" class="data-label">Test result:</label>
                         <label class="radio-option">
-                            <input type="radio" name="test_result" value="Positive" ${patient.biomedical.tested_result ? 'checked' : ''}>
+                            <input type="radio" name="test_result" value="Positive" ${patient.biomedical.test_result ? 'checked' : ''}>
                             <span>Positive</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="test_result" value="Negative" ${!patient.biomedical.tested_result ? 'checked' : ''}>
+                            <input type="radio" name="test_result" value="Negative" ${!patient.biomedical.test_result ? 'checked' : ''}>
                             <span>Negative</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="test_result" value="Do Not Know" ${!patient.biomedical.tested_result ? 'checked' : ''}>
+                            <input type="radio" name="test_result" value="Do Not Know" ${!patient.biomedical.test_result ? 'checked' : ''}>
                             <span>Don't Know (For repeat testers)</span>
                         </label>
                     </div>
