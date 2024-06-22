@@ -9,6 +9,7 @@ const express = require('express');
 const server = express();
 
 const bodyParser = require('body-parser');
+server.use(bodyParser.json());
 server.use(express.json()); 
 server.use(express.urlencoded({ extended: true }));
 
@@ -22,6 +23,10 @@ server.engine('hbs', handlebars.engine({
         formatDate: function (date) {
             return moment(date).format('MM/DD/YYYY, h:mm:ss A');
         }
+    },
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
     }
 }));
 

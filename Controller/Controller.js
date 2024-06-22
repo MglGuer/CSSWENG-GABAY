@@ -9,10 +9,10 @@ const express = require('express');
 const server = express();
 
 const bodyParser = require('body-parser');
+server.use(bodyParser.json());
 server.use(express.json()); 
 server.use(express.urlencoded({ extended: true }));
 server.use(express.static('Model'));
-
 
 server.use(session({
     secret: 'gabay',
@@ -121,6 +121,61 @@ server.get('/tracker', (req,resp) => {
     });
 });
 
+// server for data log
+server.get('/data', async (req, res) => {
+    try {
+        const patients = await patientModel.find().exec();
+        const biomedicalPatients = patients.filter(patient => patient.data_type === 'biomedical');
+        const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'nonbiomedical');
+        const biomedicalCount = biomedicalPatients.length;
+        const nonBiomedicalCount = nonBiomedicalPatients.length;
+  
+      res.render('data', { 
+        layout: 'index',
+        title: 'Data Log Page',
+        patients,
+        biomedicalPatients, 
+        nonBiomedicalPatients,
+        biomedicalCount,
+        nonBiomedicalCount 
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
+    }
+});
+
+// server for profile
+server.get('/profile', async (req, res) => {
+    if (!req.session.email) {
+        return res.redirect('/login');
+    }
+
+    try {
+        // get db collection
+        const userCollection = client.db("test").collection("users");
+        const user = await userCollection.findOne({ email: req.session.email });
+
+        if (!user) {
+            return res.redirect('/login');
+        }
+
+        res.render('profile', {
+            layout: 'index',
+            title: 'Profile Page',
+            user: {
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                isAdmin: user.isAdmin,
+            }
+        });
+    } catch (error) {
+        console.error("Error retrieving user data:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 // server for history log
 server.get('/history', async (req, res) => {
     try {
@@ -157,7 +212,6 @@ server.get('/logout', (req,resp) => {
     });
 
 })
-
 
 // TODO: check user email and password by searching the database
 server.post('/read-user', async (req,res) => {
@@ -271,69 +325,127 @@ server.post('/forgot-password', async (req, res) => {
 
 // server to push new patient data to db
 server.post('/add-record', async (req, res) => {
+    const { data_type, gender, location, barangay, remarks, age,
+        tested, result, linkage, stigma, discrimination, violence } = req.body;
 
-    // retrieve details
-    const { baranggay, gender, age, tested, result, linkage } = req.body
-    const reason_hiv = req.body['reason-hiv']
-    const vulnerable_population = req.body['vulnerable-population']
-
-    const patientCollection = client.db("test").collection("patients"); // get db collection
-    const tested_before = tested === 'tested-yes'; // convert to bool
-
-    // insert data
-    const record = await patientCollection.insertOne({
-        barangay: baranggay,
-        age_range: age,
-        gender: gender,
-        tested_before: tested_before,
-        test_result: result,
-        reason: reason_hiv,
-        kvp: vulnerable_population,
-        linkage: linkage
-    });
-
-    // insert action history for adding new patient record
-    const actionHistoryCollection = client.db("test").collection("actionhistories");
-    await actionHistoryCollection.insertOne({
-        name: req.session.username,
-        role: req.session.role,
-        email: req.session.email,
-        action: "Add new patient record",
-        actionDateTime: new Date()
-    });
-
-    console.log("Data sucessfully added.")
-    return res.redirect('/tracker?message=Patient Data Record added succesfully');
-});
-
-// server for profile
-server.get('/profile', async (req, res) => {
-    if (!req.session.email) {
-        return res.redirect('/login');
-    }
+    const reason_hiv = req.body['reason-hiv'];
+    const vulnerable_population = req.body['vulnerable-population'];
 
     try {
-        // get db collection
-        const userCollection = client.db("test").collection("users");
-        const user = await userCollection.findOne({ email: req.session.email });
+        const patientData = {
+            data_type: data_type,
+            gender: gender,
+            date_encoded: new Date(),
+            encoder: req.session.username
+        };
 
-        if (!user) {
-            return res.redirect('/login');
+        if (data_type === 'biomedical') {
+            patientData.biomedical = {
+                location: location,
+                barangay: barangay,
+                remarks: remarks,
+                age_range: age,
+                tested_before: tested,
+                test_result: result,
+                reason: reason_hiv,
+                kvp: vulnerable_population,
+                linkage: linkage
+            };
+        } else if (data_type === 'nonbiomedical') {
+            patientData.nonbiomedical = {
+                stigma: stigma,
+                discrimination: discrimination,
+                violence: violence
+            };
         }
 
-        res.render('profile', {
-            layout: 'index',
-            title: 'Profile Page',
-            user: {
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                isAdmin: user.isAdmin,
-            }
+        const newPatient = new patientModel(patientData);
+        await newPatient.save();
+
+        // insert action history
+        const actionHistoryCollection = mongoose.connection.collection('actionhistories');
+        await actionHistoryCollection.insertOne({
+            name: req.session.username,
+            role: req.session.role,
+            email: req.session.email,
+            action: "Add new patient record",
+            actionDateTime: new Date()
         });
-    } catch (error) {
-        console.error("Error retrieving user data:", error);
-        res.status(500).send("Internal Server Error");
+
+        console.log("Patient data successfully added");
+        return res.redirect('/tracker?message=Patient Data Record added successfully');
+    } catch (err) {
+        console.error("Error adding patient data:", err);
+        return res.status(500).send("Error adding patient data");
+    }
+});
+
+// server for editing a patient record
+server.get('/edit/:id', async (req, res) => {
+    try {
+        const patient = await patientModel.findById(req.params.id);
+        res.json({ patient: patient });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// server for updating a patient record
+server.post('/edit/:id', async (req, res) => {
+    try {
+        const { gender, location, barangay, remarks, age_range, tested_before, test_result, reason, kvp, linkage, stigma, discrimination, violence } = req.body;
+        await patientModel.findByIdAndUpdate(req.params.id, {
+            gender: gender,
+            'biomedical.location': location,
+            'biomedical.barangay': barangay,
+            'biomedical.remarks': remarks,
+            'biomedical.age_range': age_range,
+            'biomedical.tested_before': tested_before,
+            'biomedical.test_result': test_result,
+            'biomedical.reason': reason,
+            'biomedical.kvp': kvp,
+            'biomedical.linkage': linkage,
+            'nonbiomedical.stigma': stigma,
+            'nonbiomedical.discrimination': discrimination,
+            'nonbiomedical.violence': violence
+        });
+
+        const actionHistoryCollection = client.db("test").collection("actionhistories");
+        
+        // insert action history for deleting patient record
+        await actionHistoryCollection.insertOne({
+            name: req.session.username,
+            role: req.session.role,
+            email: req.session.email,
+            action: "Edited patient record",
+            actionDateTime: new Date()
+        });
+        res.status(200).json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// server for deleting a patient record 
+server.get('/delete/:id', async (req, res) => {
+    try {
+        await patientModel.findByIdAndDelete(req.params.id);
+        const actionHistoryCollection = client.db("test").collection("actionhistories");
+        
+        // insert action history for deleting patient record
+        await actionHistoryCollection.insertOne({
+            name: req.session.username,
+            role: req.session.role,
+            email: req.session.email,
+            action: "Deleted patient record",
+            actionDateTime: new Date()
+        });
+        res.redirect('/data');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
     }
 });
 

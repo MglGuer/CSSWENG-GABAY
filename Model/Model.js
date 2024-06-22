@@ -6,24 +6,37 @@
 
 const mongoose = require('mongoose');
 
-const patientSchema = new mongoose.Schema({
-    data_type: { type: String, required: true }, // to determine if data is biomedical or non-biomedical
-    gender: { type: String },
+// sub-schema for patient if the data is a biomedical patient record
+const biomedicalSchema = new mongoose.Schema({
+    location: { type: String },
     barangay: { type: Number },
     remarks: { type: String },
     age_range: { type: String },
-    tested_before: { type: Boolean },
+    tested_before: { type: String },
     test_result: { type: String },
     reason: { type: String },
     kvp: { type: String },
-    linkage: { type: String },
+    linkage: { type: String }
+}, { _id: false });
+
+// sub-schema for patient if the data is a nonbiomedical patient record
+const nonBiomedicalSchema = new mongoose.Schema({
     stigma: { type: String },
     discrimination: { type: String },
-    violence: { type: String },
-    encoder: { type: String },   
-    date_encoded: { type: Date, default: Date.now, required: true } 
+    violence: { type: String }
+}, { _id: false });
+
+// main schema for patient
+const patientSchema = new mongoose.Schema({
+    data_type: { type: String, required: true },
+    gender: { type: String },
+    biomedical: biomedicalSchema,
+    nonbiomedical: nonBiomedicalSchema,
+    encoder: { type: String },
+    date_encoded: { type: Date, default: Date.now}
 }, { versionKey: false });
 
+// schema for user
 const userSchema = new mongoose.Schema({
     name: { type: String },
     email: { type: String },
@@ -32,6 +45,7 @@ const userSchema = new mongoose.Schema({
     isAdmin: { type: Boolean },
 },{ versionKey: false });
 
+// schema for login history
 const loginHistorySchema = new mongoose.Schema({
     name: { type: String },
     role: { type: String },
@@ -39,6 +53,7 @@ const loginHistorySchema = new mongoose.Schema({
     lastLoginDateTime: { type: Date, default: Date.now }
 },{ versionKey: false });
 
+// schema for action history
 const actionHistorySchema = new mongoose.Schema({
     name: { type: String },
     role: { type: String },
@@ -60,17 +75,12 @@ module.exports = {
     ActionHistory: mongoose.model('ActionHistory', actionHistorySchema)
 };
 
-
-
 /* 
     The CRUD functions should be placed here as well as data validation.
 
 */
 
-
-
-
-// TODO: check user email and password by searching the database
+// check user email and password by searching the database
 server.post('/read-user', async (req,res) => {
     // get data from form
     const {email, password} = req.body;
@@ -107,7 +117,7 @@ server.post('/read-user', async (req,res) => {
     
 });
 
-// TODO: post user details into the database upon signing up
+// post user details into the database upon signing up
 server.post('/create-user', async (req,res) => {
 
     // retrieve user details
@@ -181,38 +191,96 @@ server.post('/forgot-password', async (req, res) => {
 
 // server to push new patient data to db
 server.post('/add-record', async (req, res) => {
+    const { data_type, gender, location, barangay, remarks, age,
+        tested, result, linkage, stigma, discrimination, violence } = req.body;
 
-    // retrieve details
-    const { baranggay, gender, age, tested, result, linkage } = req.body
-    const reason_hiv = req.body['reason-hiv']
-    const vulnerable_population = req.body['vulnerable-population']
+    const reason_hiv = req.body['reason-hiv'];
+    const vulnerable_population = req.body['vulnerable-population'];
 
-    const patientCollection = client.db("test").collection("patients"); // get db collection
-    const tested_before = tested === 'tested-yes'; // convert to bool
+    try {
+        const patientData = {
+            data_type: data_type,
+            gender: gender,
+            date_encoded: new Date(),
+            encoder: req.session.username
+        };
 
-    // insert data
-    const record = await patientCollection.insertOne({
-        barangay: baranggay,
-        age_range: age,
-        gender: gender,
-        tested_before: tested_before,
-        test_result: result,
-        reason: reason_hiv,
-        kvp: vulnerable_population,
-        linkage: linkage
-    });
+        if (data_type === 'biomedical') {
+            patientData.biomedical = {
+                location: location,
+                barangay: barangay,
+                remarks: remarks,
+                age_range: age,
+                tested_before: tested,
+                test_result: result,
+                reason: reason_hiv,
+                kvp: vulnerable_population,
+                linkage: linkage
+            };
+        } else if (data_type === 'nonbiomedical') {
+            patientData.nonbiomedical = {
+                stigma: stigma,
+                discrimination: discrimination,
+                violence: violence
+            };
+        }
 
-    // insert action history for adding new patient record
-    const actionHistoryCollection = client.db("test").collection("actionhistories");
-    await actionHistoryCollection.insertOne({
-        name: req.session.username,
-        email: req.session.email,
-        action: "Add new patient record",
-        actionDateTime: new Date()
-    });
+        const newPatient = new patientModel(patientData);
+        await newPatient.save();
 
-    console.log("Data sucessfully added.")
-    return res.redirect('/tracker?message=Patient Data Record added succesfully');
+        // insert action history
+        const actionHistoryCollection = mongoose.connection.collection('actionhistories');
+        await actionHistoryCollection.insertOne({
+            name: req.session.username,
+            role: req.session.role,
+            email: req.session.email,
+            action: "Add new patient record",
+            actionDateTime: new Date()
+        });
+
+        console.log("Patient data successfully added");
+        return res.redirect('/tracker?message=Patient Data Record added successfully');
+    } catch (err) {
+        console.error("Error adding patient data:", err);
+        return res.status(500).send("Error adding patient data");
+    }
+});
+
+// server for updating a patient record
+server.post('/edit/:id', async (req, res) => {
+    try {
+        const { gender, location, barangay, remarks, age_range, tested_before, test_result, reason, kvp, linkage, stigma, discrimination, violence } = req.body;
+        await patientModel.findByIdAndUpdate(req.params.id, {
+            gender: gender,
+            'biomedical.location': location,
+            'biomedical.barangay': barangay,
+            'biomedical.remarks': remarks,
+            'biomedical.age_range': age_range,
+            'biomedical.tested_before': tested_before,
+            'biomedical.test_result': test_result,
+            'biomedical.reason': reason,
+            'biomedical.kvp': kvp,
+            'biomedical.linkage': linkage,
+            'nonbiomedical.stigma': stigma,
+            'nonbiomedical.discrimination': discrimination,
+            'nonbiomedical.violence': violence
+        });
+
+        const actionHistoryCollection = client.db("test").collection("actionhistories");
+        
+        // insert action history for deleting patient record
+        await actionHistoryCollection.insertOne({
+            name: req.session.username,
+            role: req.session.role,
+            email: req.session.email,
+            action: "Edited patient record",
+            actionDateTime: new Date()
+        });
+        res.status(200).json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
 });
 
 // server for profile
