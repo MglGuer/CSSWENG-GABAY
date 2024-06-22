@@ -530,17 +530,16 @@ select.monthly:hover, .yearly:hover{
 }
 
 .submit-button, .edit-button {
-    border: none;
     border-radius: 20px;
-    margin-left: 1220px;
     margin-top: 10px;
     background-color: #9B112E; 
     color: white;
-    border: 3px solid white; 
+    border: 3px solid #9B112E; 
     padding: 10px 20px; 
     display: inline-block;
     font-size: 16px;
     font-weight: bold;
+    text-wrap: nowrap;
 }
 
 .submit-button:hover, .edit-button:hover {
@@ -555,6 +554,7 @@ select.monthly:hover, .yearly:hover{
     margin-right: 22px; 
     font-size: 20px;
 }
+
 /** PROFILE PAGE **/
 .container-for-profile {
     background-color: #FFECF0; 

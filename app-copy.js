@@ -73,7 +73,7 @@ const biomedicalSchema = new mongoose.Schema({
     barangay: { type: Number },
     remarks: { type: String },
     age_range: { type: String },
-    tested_before: { type: Boolean },
+    tested_before: { type: String },
     test_result: { type: String },
     reason: { type: String },
     kvp: { type: String },
@@ -366,7 +366,7 @@ server.post('/add-record', async (req, res) => {
                 barangay: barangay,
                 remarks: remarks,
                 age_range: age,
-                tested_before: tested === 'tested-yes',
+                tested_before: tested,
                 test_result: result,
                 reason: reason_hiv,
                 kvp: vulnerable_population,
@@ -549,7 +549,7 @@ server.post('/edit/:id', async (req, res) => {
             'biomedical.barangay': barangay,
             'biomedical.remarks': remarks,
             'biomedical.age_range': age_range,
-            'biomedical.tested_before': tested_before === 'true',
+            'biomedical.tested_before': tested_before,
             'biomedical.test_result': test_result,
             'biomedical.reason': reason,
             'biomedical.kvp': kvp,
@@ -558,7 +558,18 @@ server.post('/edit/:id', async (req, res) => {
             'nonbiomedical.discrimination': discrimination,
             'nonbiomedical.violence': violence
         });
-        res.json({ success: true });
+
+        const actionHistoryCollection = client.db("test").collection("actionhistories");
+        
+        // insert action history for deleting patient record
+        await actionHistoryCollection.insertOne({
+            name: req.session.username,
+            role: req.session.role,
+            email: req.session.email,
+            action: "Edited patient record",
+            actionDateTime: new Date()
+        });
+        res.redirect('/data?message=Patient record updated successfully');
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');

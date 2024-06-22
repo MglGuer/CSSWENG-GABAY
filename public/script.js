@@ -37,15 +37,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="field">
                         <label for="gender" class="data-label">Gender:</label>
                         <label class="radio-option">
-                            <input type="radio" name="gender" value="male" ${patient.gender === 'male' ? 'checked' : ''} required>
+                            <input type="radio" name="gender" value="Male" ${patient.gender === 'Male' ? 'checked' : ''} required>
                             <span>Male</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="gender" value="female" ${patient.gender === 'female' ? 'checked' : ''} required>
+                            <input type="radio" name="gender" value="Female" ${patient.gender === 'Female' ? 'checked' : ''} required>
                             <span>Female</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="gender" value="transgender" ${patient.gender === 'transgender' ? 'checked' : ''} required>
+                            <input type="radio" name="gender" value="Transgender" ${patient.gender === 'Transgender' ? 'checked' : ''} required>
                             <span>Transgender</span>
                         </label>
                     </div>`;
@@ -57,11 +57,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="edit-biomedicalfield">
                         <label for="location" class="data-label">Location:</label>
                         <label class="radio-option">
-                            <input type="radio" name="location" value="caloocan" ${patient.biomedical.location === 'caloocan' ? 'checked' : ''} onclick="toggleLocationFields()">
+                            <input type="radio" name="location" value="Caloocan" ${patient.biomedical.location === 'Caloocan' ? 'checked' : ''} onclick="toggleLocationFields()">
                             <span>Caloocan</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="location" value="not_in_caloocan" ${patient.biomedical.location === 'not_in_caloocan' ? 'checked' : ''} onclick="toggleLocationFields()">
+                            <input type="radio" name="location" value="Not in Caloocan" ${patient.biomedical.location === 'Not in Caloocan' ? 'checked' : ''} onclick="toggleLocationFields()">
                             <span>Not in Caloocan</span>
                         </label>
                     </div>
@@ -91,41 +91,45 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="edit-biomedicalfield">
                         <label for="tested_before" class="data-label">Has the person been tested before?</label>
                         <label class="radio-option">
-                            <input type="radio" name="tested_before" value="true" ${patient.biomedical.tested_before ? 'checked' : ''}>
+                            <input type="radio" name="tested_before" value="Yes" ${patient.biomedical.tested_before ? 'checked' : ''}>
                             <span>Yes</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="tested_before" value="false" ${!patient.biomedical.tested_before ? 'checked' : ''}>
+                            <input type="radio" name="tested_before" value="No" ${!patient.biomedical.tested_before ? 'checked' : ''}>
                             <span>No</span>
                         </label>
                     </div>
                     <div class="edit-biomedicalfield">
                         <label for="test_result" class="data-label">Test result:</label>
                         <label class="radio-option">
-                            <input type="radio" name="test_result" value="positive" ${patient.biomedical.test_result === 'positive' ? 'checked' : ''}>
+                            <input type="radio" name="test_result" value="Positive" ${patient.biomedical.tested_result ? 'checked' : ''}>
                             <span>Positive</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="test_result" value="negative" ${patient.biomedical.test_result === 'negative' ? 'checked' : ''}>
+                            <input type="radio" name="test_result" value="Negative" ${!patient.biomedical.tested_result ? 'checked' : ''}>
                             <span>Negative</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="test_result" value="Do Not Know" ${!patient.biomedical.tested_result ? 'checked' : ''}>
+                            <span>Don't Know (For repeat testers)</span>
                         </label>
                     </div>
                     <div class="edit-biomedicalfield">
                         <label for="reason" class="data-label">Reason for taking the test:</label>
                         <select id="reason" name="reason">
                             <option value="" disabled selected>Select reason</option>
-                            <option value="unprotected" ${patient.biomedical.reason === 'unprotected' ? 'selected' : ''}>Unprotected Sex</option>
-                            <option value="injectable-drugs" ${patient.biomedical.reason === 'injectable-drugs' ? 'selected' : ''}>Use of injectable drugs</option>
-                            <option value="pregnancy" ${patient.biomedical.reason === 'pregnancy' ? 'selected' : ''}>Pregnancy</option>
-                            <option value="exposed-child" ${patient.biomedical.reason === 'exposed-child' ? 'selected' : ''}>HIV-exposed child</option>
-                            <option value="pitc" ${patient.biomedical.reason === 'pitc' ? 'selected' : ''}>PITC - III health</option>
-                            <option value="positive-partner" ${patient.biomedical.reason === 'positive-partner' ? 'selected' : ''}>HIV positive partner</option>
-                            <option value="rape" ${patient.biomedical.reason === 'rape' ? 'selected' : ''}>Non consensual sex and rape</option>
-                            <option value="bloodtransfusion" ${patient.biomedical.reason === 'bloodtransfusion' ? 'selected' : ''}>History of blood transfusion or exposure to contaminated equipment</option>
-                            <option value="hcw" ${patient.biomedical.reason === 'hcw' ? 'selected' : ''}>Occupational hazard health care worker (HCW)</option>
-                            <option value="administrative" ${patient.biomedical.reason === 'administrative' ? 'selected' : ''}>Administrative reason</option>
-                            <option value="history" ${patient.biomedical.reason === 'history' ? 'selected' : ''}>Subjective ill health or history of sexually transmitted infection(s)</option>
-                            <option value="no-reason" ${patient.biomedical.reason === 'no-reason' ? 'selected' : ''}>No specific reason disclosed</option>
+                            <option value="Unprotected Sex" ${patient.biomedical.reason === 'Unprotected Sex' ? 'selected' : ''}>Unprotected Sex</option>
+                            <option value="Injectable drugs" ${patient.biomedical.reason === 'Injectable drugs' ? 'selected' : ''}>Use of injectable drugs</option>
+                            <option value="Pregnancy" ${patient.biomedical.reason === 'Pregnancy' ? 'selected' : ''}>Pregnancy</option>
+                            <option value="Exposed-child" ${patient.biomedical.reason === 'Exposed-child' ? 'selected' : ''}>HIV-exposed child</option>
+                            <option value="PITC" ${patient.biomedical.reason === 'PITC' ? 'selected' : ''}>PITC - III health</option>
+                            <option value="Positive-partner" ${patient.biomedical.reason === 'Positive-partner' ? 'selected' : ''}>HIV positive partner</option>
+                            <option value="Rape" ${patient.biomedical.reason === 'Rape' ? 'selected' : ''}>Non consensual sex and rape</option>
+                            <option value="Bloodtransfusion" ${patient.biomedical.reason === 'Bloodtransfusion' ? 'selected' : ''}>History of blood transfusion or exposure to contaminated equipment</option>
+                            <option value="HCW" ${patient.biomedical.reason === 'HCW' ? 'selected' : ''}>Occupational hazard health care worker (HCW)</option>
+                            <option value="Administrative" ${patient.biomedical.reason === 'Administrative' ? 'selected' : ''}>Administrative reason</option>
+                            <option value="History" ${patient.biomedical.reason === 'History' ? 'selected' : ''}>Subjective ill health or history of sexually transmitted infection(s)</option>
+                            <option value="No reason" ${patient.biomedical.reason === 'No reason' ? 'selected' : ''}>No specific reason disclosed</option>
                         </select>
                     </div>
 
@@ -133,19 +137,19 @@ document.addEventListener('DOMContentLoaded', function () {
                         <label for="kvp" class="data-label">Key or Vulnerable Population (KVP) at higher risk:</label>
                         <select id="kvp" name="kvp">
                             <option value="" disabled selected>Select population</option>
-                            <option value="pwid" ${patient.biomedical.kvp === 'pwid' ? 'selected' : ''}>Person who injects drugs (PWID) or other needle sharing</option>
-                            <option value="msm" ${patient.biomedical.kvp === 'msm' ? 'selected' : ''}>Gay and other Men having Sex with Men (MSM)</option>
-                            <option value="transgenders" ${patient.biomedical.kvp === 'transgenders' ? 'selected' : ''}>Transgenders</option>
-                            <option value="sex-worker" ${patient.biomedical.kvp === 'sex-worker' ? 'selected' : ''}>Sex/entertainment worker</option>
-                            <option value="pdl" ${patient.biomedical.kvp === 'pdl' ? 'selected' : ''}>Prisoner/detainee</option>
-                            <option value="migrant" ${patient.biomedical.kvp === 'migrant' ? 'selected' : ''}>Mobile and migrant populations</option>
-                            <option value="pwud" ${patient.biomedical.kvp === 'pwud' ? 'selected' : ''}>Person who uses non-injectable drugs (PWUD)</option>
-                            <option value="uniformed" ${patient.biomedical.kvp === 'uniformed' ? 'selected' : ''}>Uniformed forces (military, police, security)</option>
-                            <option value="sexual-partners" ${patient.biomedical.kvp === 'sexual-partners' ? 'selected' : ''}>Sexual Partners of identified KP at higher risk</option>
-                            <option value="agew" ${patient.biomedical.kvp === 'agew' ? 'selected' : ''}>Adolescent Girls and Young Women (AGEW)</option>
-                            <option value="disability" ${patient.biomedical.kvp === 'disability' ? 'selected' : ''}>Persons with disability</option>
-                            <option value="plhiv" ${patient.biomedical.kvp === 'plhiv' ? 'selected' : ''}>HIV-negative sexual partners of PLHIV</option>
-                            <option value="not-disclosed" ${patient.biomedical.kvp === 'not-disclosed' ? 'selected' : ''}>No key or vulnerable population known or not disclosed</option>
+                            <option value="PWID" ${patient.biomedical.kvp === 'PWID' ? 'selected' : ''}>Person who injects drugs (PWID) or other needle sharing</option>
+                            <option value="MSM" ${patient.biomedical.kvp === 'MSM' ? 'selected' : ''}>Gay and other Men having Sex with Men (MSM)</option>
+                            <option value="Transgenders" ${patient.biomedical.kvp === 'Transgenders' ? 'selected' : ''}>Transgenders</option>
+                            <option value="Sex-worker" ${patient.biomedical.kvp === 'Sex-worker' ? 'selected' : ''}>Sex/entertainment worker</option>
+                            <option value="Prisoner" ${patient.biomedical.kvp === 'Prisoner' ? 'selected' : ''}>Prisoner/detainee</option>
+                            <option value="Migrant" ${patient.biomedical.kvp === 'Migrant' ? 'selected' : ''}>Mobile and migrant populations</option>
+                            <option value="PWUD" ${patient.biomedical.kvp === 'PWUD' ? 'selected' : ''}>Person who uses non-injectable drugs (PWUD)</option>
+                            <option value="Uniformed forces" ${patient.biomedical.kvp === 'Uniformed forces' ? 'selected' : ''}>Uniformed forces (military, police, security)</option>
+                            <option value="Sexual-partners" ${patient.biomedical.kvp === 'Sexual-partners' ? 'selected' : ''}>Sexual Partners of identified KP at higher risk</option>
+                            <option value="AGEW" ${patient.biomedical.kvp === 'AGEW' ? 'selected' : ''}>Adolescent Girls and Young Women (AGEW)</option>
+                            <option value="PWD" ${patient.biomedical.kvp === 'PWD' ? 'selected' : ''}>Persons with disability</option>
+                            <option value="PLHIV" ${patient.biomedical.kvp === 'PLHIV' ? 'selected' : ''}>HIV-negative sexual partners of PLHIV</option>
+                            <option value="Not disclosed" ${patient.biomedical.kvp === 'Not disclosed' ? 'selected' : ''}>No key or vulnerable population known or not disclosed</option>
                         </select>
                     </div>
 
@@ -153,9 +157,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         <label for="linkage" class="data-label">Linkage:</label>
                         <select id="linkage" name="linkage">
                             <option value="" disabled selected>Select linkage</option>
-                            <option value="treatment-facility" ${patient.biomedical.linkage === 'treatment-facility' ? 'selected' : ''}>Linked to Treatment Facility</option>
-                            <option value="follow-up" ${patient.biomedical.linkage === 'follow-up' ? 'selected' : ''}>Linkage not yet confirmed, under follow-up</option>
-                            <option value="unconfirmed" ${patient.biomedical.linkage === 'unconfirmed' ? 'selected' : ''}>Linkage unconfirmed (after 3 months follow-up)</option>
+                            <option value="Treatment Facility" ${patient.biomedical.linkage === 'Treatment facility' ? 'selected' : ''}>Linked to Treatment Facility</option>
+                            <option value="Follow-up" ${patient.biomedical.linkage === 'Follow-up' ? 'selected' : ''}>Linkage not yet confirmed, under follow-up</option>
+                            <option value="Unconfirmed" ${patient.biomedical.linkage === 'Unconfirmed' ? 'selected' : ''}>Linkage unconfirmed (after 3 months follow-up)</option>
                         </select>
                     </div>`;
                 } else if (patient.data_type === 'nonbiomedical') {
@@ -307,10 +311,10 @@ function toggleLocationFields() {
     const remarksField = document.getElementById('remarks-field');
 
     if (location) {
-        if (location.value === 'caloocan') {
+        if (location.value === 'Caloocan') {
             barangayField.style.display = 'flex';
             remarksField.style.display = 'none';
-        } else if (location.value === 'not_in_caloocan') {
+        } else if (location.value === 'Not in Caloocan') {
             barangayField.style.display = 'none';
             remarksField.style.display = 'flex';
         }
