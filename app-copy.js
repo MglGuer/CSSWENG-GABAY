@@ -412,33 +412,15 @@ server.post('/add-record', async (req, res) => {
 
 // server for profile
 server.get('/profile', async (req, res) => {
-    if (!req.session.email) {
-        return res.redirect('/login');
-    }
-
-    try {
-        // get db collection
-        const userCollection = client.db("test").collection("users");
-        const user = await userCollection.findOne({ email: req.session.email });
-
-        if (!user) {
-            return res.redirect('/login');
+    res.render('profile', {
+        layout: 'index',
+        title: 'Profile Page',
+        user: {
+            name: req.session.username,
+            email: req.session.email,
+            role: req.session.role,
         }
-
-        res.render('profile', {
-            layout: 'index',
-            title: 'Profile Page',
-            user: {
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                isAdmin: user.isAdmin,
-            }
-        });
-    } catch (error) {
-        console.error("Error retrieving user data:", error);
-        res.status(500).send("Internal Server Error");
-    }
+    });
 });
 
 // server for updating user's information in profile page
