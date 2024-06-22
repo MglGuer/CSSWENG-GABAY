@@ -91,26 +91,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="edit-biomedicalfield">
                         <label for="tested_before" class="data-label">Has the person been tested before?</label>
                         <label class="radio-option">
-                            <input type="radio" name="tested_before" value="Yes" ${patient.biomedical.tested_before ? 'checked' : ''}>
-                            <span>Yes</span>
+                            <input type="radio" name="tested_before" value="Yes" ${patient.biomedical.tested_before  === 'Yes' ? 'checked' : ''}>
+                            <span>Yes (Has been tested before)</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="tested_before" value="No" ${!patient.biomedical.tested_before ? 'checked' : ''}>
-                            <span>No</span>
+                            <input type="radio" name="tested_before" value="No" ${patient.biomedical.tested_before  === 'No' ? 'checked' : ''}>
+                            <span>No (First Time Tester)</span>
                         </label>
                     </div>
                     <div class="edit-biomedicalfield">
                         <label for="test_result" class="data-label">Test result:</label>
                         <label class="radio-option">
-                            <input type="radio" name="test_result" value="Positive" ${patient.biomedical.test_result ? 'checked' : ''}>
+                            <input type="radio" name="test_result" value="Positive" ${patient.biomedical.test_result === 'Positive' ? 'checked' : ''}>
                             <span>Positive</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="test_result" value="Negative" ${!patient.biomedical.test_result ? 'checked' : ''}>
+                            <input type="radio" name="test_result" value="Negative" ${patient.biomedical.test_result === 'Negative' ? 'checked' : ''}>
                             <span>Negative</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="test_result" value="Do Not Know" ${!patient.biomedical.test_result ? 'checked' : ''}>
+                            <input type="radio" name="test_result" value="Do Not Know" ${patient.biomedical.test_result === 'Do Not Know' ? 'checked' : ''}>
                             <span>Don't Know (For repeat testers)</span>
                         </label>
                     </div>

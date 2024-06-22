@@ -526,7 +526,11 @@ server.get('/data', async (req, res) => {
       res.render('data', { 
         layout: 'index',
         title: 'Data Log Page',
-        user: req.session.role,
+        user: {
+            name: req.session.username,
+            email: req.session.email,
+            role: req.session.role
+        },
         patients,
         biomedicalPatients, 
         nonBiomedicalPatients,
