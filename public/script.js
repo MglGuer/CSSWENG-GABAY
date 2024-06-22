@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <label for="linkage" class="data-label">Linkage:</label>
                         <select id="linkage" name="linkage">
                             <option value="" disabled selected>Select linkage</option>
-                            <option value="Treatment Facility" ${patient.biomedical.linkage === 'Treatment facility' ? 'selected' : ''}>Linked to Treatment Facility</option>
+                            <option value="Treatment facility" ${patient.biomedical.linkage === 'Treatment facility' ? 'selected' : ''}>Linked to Treatment Facility</option>
                             <option value="Follow-up" ${patient.biomedical.linkage === 'Follow-up' ? 'selected' : ''}>Linkage not yet confirmed, under follow-up</option>
                             <option value="Unconfirmed" ${patient.biomedical.linkage === 'Unconfirmed' ? 'selected' : ''}>Linkage unconfirmed (after 3 months follow-up)</option>
                         </select>
@@ -326,4 +326,9 @@ function toggleLocationFields() {
         barangayField.style.display = 'none';
         remarksField.style.display = 'none';
     }
+}
+
+function clearForm() {
+    var form = document.getElementById('tracker-form');
+    form.reset();
 }

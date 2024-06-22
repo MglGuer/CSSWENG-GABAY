@@ -471,26 +471,29 @@ select.monthly:hover, .yearly:hover{
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
-    justify-content: center;
     flex-direction: column;
-    align-items: center;
     padding: 30px;
     margin: 30px;
 }
 
 .container-for-fields {
     display: flex;
-    justify-content: left;
     flex-direction: column;
+    width: 100%;
+}
+
+.add-record, .edit-record {
+    display: flex; 
+    justify-content: flex-end; 
+    gap: 10px; 
+    margin-top: 10px;
 }
 
 .field, .biomedicalfield, .nonbiomedicalfield,
 .edit-biomedicalfield, .edit-nonbiomedicalfield {
     display: flex;
-    align-items: center;
     margin-top: 16px;
     margin-bottom: 16px;
-    justify-content: left;
 }
 
 .biomedicalfield, .nonbiomedicalfield, #barangay-field, #remarks-field{
@@ -498,28 +501,16 @@ select.monthly:hover, .yearly:hover{
 }
 
 .data-label {
-    width: 550px;
+    width: 500px;
     justify-content: center;
-    font-size: 25px;
+    font-size: 22px;
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-.data-input {
-    width: 700px;
-    height: 40px;
-    padding: 5px;
-    margin-left: 50px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    font-size: 20px;
-}
-
-.biomedicalfield select, .nonbiomedicalfield select,
+.data-input, .biomedicalfield select, .nonbiomedicalfield select,
 .edit-biomedicalfield select, .edit-nonbiomedicalfield select {
-    width: 700px;
     height: 40px;
     padding: 5px;
     margin-left: 50px;
@@ -527,9 +518,10 @@ select.monthly:hover, .yearly:hover{
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     font-size: 20px;
+    flex: 1;
 }
 
-.submit-button, .edit-button {
+.clear-button, .submit-button, .edit-button {
     border-radius: 20px;
     margin-top: 10px;
     background-color: #9B112E; 
@@ -540,9 +532,10 @@ select.monthly:hover, .yearly:hover{
     font-size: 16px;
     font-weight: bold;
     text-wrap: nowrap;
+    cursor: pointer;
 }
 
-.submit-button:hover, .edit-button:hover {
+.clear-button:hover, .submit-button:hover, .edit-button:hover {
     background-color: white;
     color: #9B112E;
     border: 3px solid #9B112E;

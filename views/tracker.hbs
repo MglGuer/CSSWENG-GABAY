@@ -67,7 +67,7 @@
     </div>
 
     <div class="container-for-tracker">
-        <form action="add-record" method="post">
+        <form action="add-record" method="post" id="tracker-form">
             <div class="container-for-fields">
                 <div class="field">
                     <label for="data_type" class="data-label">Is the data Biomedical or Non-biomedical?</label>
@@ -250,6 +250,7 @@
                 </div>
                 
                 <div class="add-record">
+                    <input type="button" class="clear-button" value="Clear Form" onclick="clearForm()">
                     <input type="submit" class="submit-button" value="Submit">
                 </div>
                 
