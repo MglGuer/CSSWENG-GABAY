@@ -59,161 +59,7 @@ server.get('/login', (req,resp) => {
     });
 });
 
-
-// server to register new account
-server.get('/signup', (req,resp) => {
-    resp.render('signup',{
-        layout: 'index',
-        title: 'Registration Page',
-        emailUsed:req.query.emailUsed,
-    });
-});
-
-// server to change new password
-server.get('/forgotpassword', (req,resp) => {
-    resp.render('forgotpassword',{
-        layout: 'index',
-        title: 'Forgot Password Page'
-    });
-});
-
-// server for dashboard
-server.get('/dashboard', async (req, resp) => {
-    try {
-        // get db collection
-        const patientCollection = client.db("test").collection("patients");
-
-        // retrieve statistics from the patient collection
-        const totalPatientsTested = await patientCollection.countDocuments();
-        const positivePatientsTested = await patientCollection.countDocuments({ test_result: 'positive' });
-        const negativePatientsTested = await patientCollection.countDocuments({ test_result: 'negative' });
-
-        resp.render('dashboard', {
-            layout: 'index',
-            title: 'Dashboard Page',
-            user: {
-                name: req.session.username,
-                email: req.session.email,
-                role: req.session.role
-            },
-            statistics: {
-                totalPatientsTested: totalPatientsTested,
-                positivePatientsTested: positivePatientsTested,
-                negativePatientsTested: negativePatientsTested
-            }
-        });
-    } catch (error) {
-        console.error("Error fetching dashboard statistics:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
-
-// server for tracker
-server.get('/tracker', (req,resp) => {
-    resp.render('tracker',{
-        layout: 'index',
-        title: 'Data Tracker Page',
-        user: {
-            name: req.session.username,
-            email: req.session.email,
-            role: req.session.role
-        }
-    });
-});
-
-// server for data log
-server.get('/data', async (req, res) => {
-    try {
-        const patients = await patientModel.find().exec();
-        const biomedicalPatients = patients.filter(patient => patient.data_type === 'biomedical');
-        const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'nonbiomedical');
-        const biomedicalCount = biomedicalPatients.length;
-        const nonBiomedicalCount = nonBiomedicalPatients.length;
-  
-      res.render('data', { 
-        layout: 'index',
-        title: 'Data Log Page',
-        patients,
-        biomedicalPatients, 
-        nonBiomedicalPatients,
-        biomedicalCount,
-        nonBiomedicalCount 
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-    }
-});
-
-// server for profile
-server.get('/profile', async (req, res) => {
-    if (!req.session.email) {
-        return res.redirect('/login');
-    }
-
-    try {
-        // get db collection
-        const userCollection = client.db("test").collection("users");
-        const user = await userCollection.findOne({ email: req.session.email });
-
-        if (!user) {
-            return res.redirect('/login');
-        }
-
-        res.render('profile', {
-            layout: 'index',
-            title: 'Profile Page',
-            user: {
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                isAdmin: user.isAdmin,
-            }
-        });
-    } catch (error) {
-        console.error("Error retrieving user data:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
-
-// server for history log
-server.get('/history', async (req, res) => {
-    try {
-        // get db collection
-        const loginHistoryCollection = client.db("test").collection("loginhistories");
-        const actionHistoryCollection = client.db("test").collection("actionhistories");
-
-        // fetch login and action history documents
-        const loginHistory = await loginHistoryCollection.find().toArray();
-        const actionHistory = await actionHistoryCollection.find().toArray();
-
-        res.render('history', {
-            layout: 'index',
-            title: 'History Log Page',
-            user: {
-                name: req.session.username,
-                email: req.session.email,
-                role: req.session.role
-            },
-            loginHistory: loginHistory,
-            actionHistory: actionHistory
-        });
-    } catch (error) {
-        console.error("Error fetching login history:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
-
-// TODO: log out
-server.get('/logout', (req,resp) => {
-
-    req.session.destroy(function(err) {
-        resp.redirect('/');
-    });
-
-})
-
-// TODO: check user email and password by searching the database
+// server for checking user email and password by searching the database
 server.post('/read-user', async (req,res) => {
     // get data from form
     const {email, password} = req.body;
@@ -251,46 +97,76 @@ server.post('/read-user', async (req,res) => {
     
 });
 
-// TODO: post user details into the database upon signing up
-server.post('/create-user', async (req,res) => {
+// server for logging out
+server.get('/logout', (req,resp) => {
 
+    req.session.destroy(function(err) {
+        resp.redirect('/');
+    });
+
+})
+
+// server to register new account
+server.get('/signup', (req,resp) => {
+    resp.render('signup',{
+        layout: 'index',
+        title: 'Registration Page',
+        emailUsed:req.query.emailUsed,
+    });
+});
+
+// server for saving user details into the database upon signing up
+server.post('/create-user', async (req, res) => {
     // retrieve user details
-    const {name, email, password} = req.body;
+    const { name, email, password, role } = req.body;
 
     // get db collection
     const userCollection = client.db("test").collection("users");
     
     // check if email is used in database
-    const user = await userCollection.findOne({ email: email});
+    const user = await userCollection.findOne({ email: email });
 
-    if (user){
+    if (user) {
         // reload page with query
         return res.redirect("/signup?emailUsed=true");
     }
 
     // hash password used
     const hashedPassword = await new Promise((resolve, reject) => {
-        bcrypt.hash(password, saltRounds, function(err, hash) {
-          if (err) reject(err)
-          resolve(hash)
+        bcrypt.hash(password, saltRounds, function (err, hash) {
+            if (err) reject(err);
+            resolve(hash);
         });
-    })
+    });
+
+    // determine admin status based on role
+    let isAdmin = false;
+    if (role === 'Data Manager') {
+        isAdmin = true;
+    }
 
     // insert data into the db
     const result = await userCollection.insertOne({
         name: name,
         email: email,
         password: hashedPassword,
-        role: 'Member', 
-        isAdmin: false 
+        role: role,
+        isAdmin: isAdmin
     });
 
     // when successful, return to login page
     return res.redirect('/');
-
 });
 
-// server to post user's new password into the database when forgotten
+// server to change new password 
+server.get('/forgotpassword', (req,resp) => {
+    resp.render('forgotpassword',{
+        layout: 'index',
+        title: 'Forgot Password Page'
+    });
+});
+
+// server to save user's new password into the database when forgotten
 server.post('/forgot-password', async (req, res) => {
     const { email, password, confirmPassword } = req.body;
 
@@ -321,6 +197,50 @@ server.post('/forgot-password', async (req, res) => {
         console.error("Error resetting password:", error);
         res.status(500).send("Internal Server Error");
     }
+});
+
+// server for dashboard page
+server.get('/dashboard', async (req, resp) => {
+    try {
+        // get db collection
+        const patientCollection = client.db("test").collection("patients");
+
+        // retrieve statistics from the patient collection
+        const totalPatientsTested = await patientCollection.countDocuments();
+        const positivePatientsTested = await patientCollection.countDocuments({ test_result: 'positive' });
+        const negativePatientsTested = await patientCollection.countDocuments({ test_result: 'negative' });
+
+        resp.render('dashboard', {
+            layout: 'index',
+            title: 'Dashboard Page',
+            user: {
+                name: req.session.username,
+                email: req.session.email,
+                role: req.session.role
+            },
+            statistics: {
+                totalPatientsTested: totalPatientsTested,
+                positivePatientsTested: positivePatientsTested,
+                negativePatientsTested: negativePatientsTested
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching dashboard statistics:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+// server for tracker page
+server.get('/tracker', (req,resp) => {
+    resp.render('tracker',{
+        layout: 'index',
+        title: 'Data Tracker Page',
+        user: {
+            name: req.session.username,
+            email: req.session.email,
+            role: req.session.role
+        }
+    });
 });
 
 // server to push new patient data to db
@@ -377,6 +297,30 @@ server.post('/add-record', async (req, res) => {
     } catch (err) {
         console.error("Error adding patient data:", err);
         return res.status(500).send("Error adding patient data");
+    }
+});
+
+// server for data log page
+server.get('/data', async (req, res) => {
+    try {
+        const patients = await patientModel.find().exec();
+        const biomedicalPatients = patients.filter(patient => patient.data_type === 'biomedical');
+        const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'nonbiomedical');
+        const biomedicalCount = biomedicalPatients.length;
+        const nonBiomedicalCount = nonBiomedicalPatients.length;
+  
+      res.render('data', { 
+        layout: 'index',
+        title: 'Data Log Page',
+        patients,
+        biomedicalPatients, 
+        nonBiomedicalPatients,
+        biomedicalCount,
+        nonBiomedicalCount 
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
     }
 });
 
@@ -449,6 +393,19 @@ server.get('/delete/:id', async (req, res) => {
     }
 });
 
+// server for profile page
+server.get('/profile', async (req, res) => {
+    res.render('profile', {
+        layout: 'index',
+        title: 'Profile Page',
+        user: {
+            name: req.session.username,
+            email: req.session.email,
+            role: req.session.role,
+        }
+    });
+});
+
 // server for updating user's information in profile page
 server.post('/update-profile', async (req, res) => {
     const { name, email, password } = req.body;
@@ -490,6 +447,34 @@ server.post('/update-profile', async (req, res) => {
         res.redirect('/profile?message=User information updated successfully');
     } catch (error) {
         console.error("Error updating profile:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+// server for history log
+server.get('/history', async (req, res) => {
+    try {
+        // get db collection
+        const loginHistoryCollection = client.db("test").collection("loginhistories");
+        const actionHistoryCollection = client.db("test").collection("actionhistories");
+
+        // fetch login and action history documents
+        const loginHistory = await loginHistoryCollection.find().toArray();
+        const actionHistory = await actionHistoryCollection.find().toArray();
+
+        res.render('history', {
+            layout: 'index',
+            title: 'History Log Page',
+            user: {
+                name: req.session.username,
+                email: req.session.email,
+                role: req.session.role
+            },
+            loginHistory: loginHistory,
+            actionHistory: actionHistory
+        });
+    } catch (error) {
+        console.error("Error fetching login history:", error);
         res.status(500).send("Internal Server Error");
     }
 });

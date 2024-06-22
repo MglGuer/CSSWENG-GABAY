@@ -67,6 +67,9 @@ async function connectToDatabase(){
 
 connectToDatabase();
 
+const routes = require('./Controller/Controller.js');
+server.use('/', routes);
+
 function finalClose(){
     console.log('Close connection at the end!');
     mongoose.connection.close();

@@ -118,42 +118,46 @@ server.post('/read-user', async (req,res) => {
 });
 
 // post user details into the database upon signing up
-server.post('/create-user', async (req,res) => {
-
+server.post('/create-user', async (req, res) => {
     // retrieve user details
-    const {name, email, password} = req.body;
+    const { name, email, password, role } = req.body;
 
     // get db collection
     const userCollection = client.db("test").collection("users");
     
     // check if email is used in database
-    const user = await userCollection.findOne({ email: email});
+    const user = await userCollection.findOne({ email: email });
 
-    if (user){
+    if (user) {
         // reload page with query
         return res.redirect("/signup?emailUsed=true");
     }
 
     // hash password used
     const hashedPassword = await new Promise((resolve, reject) => {
-        bcrypt.hash(password, saltRounds, function(err, hash) {
-          if (err) reject(err)
-          resolve(hash)
+        bcrypt.hash(password, saltRounds, function (err, hash) {
+            if (err) reject(err);
+            resolve(hash);
         });
-    })
+    });
+
+    // determine admin status based on role
+    let isAdmin = false;
+    if (role === 'Data Manager') {
+        isAdmin = true;
+    }
 
     // insert data into the db
     const result = await userCollection.insertOne({
         name: name,
         email: email,
         password: hashedPassword,
-        role: 'Member', 
-        isAdmin: false 
+        role: role,
+        isAdmin: isAdmin
     });
 
     // when successful, return to login page
     return res.redirect('/');
-
 });
 
 // server to post user's new password into the database when forgotten
@@ -204,6 +208,7 @@ server.post('/add-record', async (req, res) => {
             date_encoded: new Date(),
             encoder: req.session.username
         };
+        const actionHistoryCollection = mongoose.connection.collection('actionhistories');
 
         if (data_type === 'biomedical') {
             patientData.biomedical = {
@@ -217,26 +222,30 @@ server.post('/add-record', async (req, res) => {
                 kvp: vulnerable_population,
                 linkage: linkage
             };
+            await actionHistoryCollection.insertOne({
+                name: req.session.username,
+                role: req.session.role,
+                email: req.session.email,
+                action: "Add new biomedical patient record",
+                actionDateTime: new Date()
+            });
         } else if (data_type === 'nonbiomedical') {
             patientData.nonbiomedical = {
                 stigma: stigma,
                 discrimination: discrimination,
                 violence: violence
             };
+            await actionHistoryCollection.insertOne({
+                name: req.session.username,
+                role: req.session.role,
+                email: req.session.email,
+                action: "Add new nonbiomedical patient record",
+                actionDateTime: new Date()
+            });
         }
 
         const newPatient = new patientModel(patientData);
         await newPatient.save();
-
-        // insert action history
-        const actionHistoryCollection = mongoose.connection.collection('actionhistories');
-        await actionHistoryCollection.insertOne({
-            name: req.session.username,
-            role: req.session.role,
-            email: req.session.email,
-            action: "Add new patient record",
-            actionDateTime: new Date()
-        });
 
         console.log("Patient data successfully added");
         return res.redirect('/tracker?message=Patient Data Record added successfully');
@@ -268,12 +277,12 @@ server.post('/edit/:id', async (req, res) => {
 
         const actionHistoryCollection = client.db("test").collection("actionhistories");
         
-        // insert action history for deleting patient record
+        // insert action history for editing patient record
         await actionHistoryCollection.insertOne({
             name: req.session.username,
             role: req.session.role,
             email: req.session.email,
-            action: "Edited patient record",
+            action: "Edited patient data record",
             actionDateTime: new Date()
         });
         res.status(200).json({ success: true });
@@ -285,33 +294,15 @@ server.post('/edit/:id', async (req, res) => {
 
 // server for profile
 server.get('/profile', async (req, res) => {
-    if (!req.session.email) {
-        return res.redirect('/login');
-    }
-
-    try {
-        // get db collection
-        const userCollection = client.db("test").collection("users");
-        const user = await userCollection.findOne({ email: req.session.email });
-
-        if (!user) {
-            return res.redirect('/login');
+    res.render('profile', {
+        layout: 'index',
+        title: 'Profile Page',
+        user: {
+            name: req.session.username,
+            email: req.session.email,
+            role: req.session.role,
         }
-
-        res.render('profile', {
-            layout: 'index',
-            title: 'Profile Page',
-            user: {
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                isAdmin: user.isAdmin,
-            }
-        });
-    } catch (error) {
-        console.error("Error retrieving user data:", error);
-        res.status(500).send("Internal Server Error");
-    }
+    });
 });
 
 // server for updating user's information in profile page
@@ -347,7 +338,7 @@ server.post('/update-profile', async (req, res) => {
         await actionHistoryCollection.insertOne({
             name: name,
             email: email,
-            action: "Update profile information",
+            action: "Updated profile information",
             actionDateTime: new Date()
         });
 
