@@ -57,19 +57,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="edit-biomedicalfield">
                         <label for="location" class="data-label">Location:</label>
                         <label class="radio-option">
-                            <input type="radio" name="location" value="Caloocan" ${patient.biomedical.location === 'Caloocan' ? 'checked' : ''} onclick="toggleLocationFields()">
+                            <input type="radio" name="location" value="Caloocan" ${patient.biomedical.location === 'Caloocan' ? 'checked' : ''} onclick="toggleEditLocationFields()">
                             <span>Caloocan</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="location" value="Not in Caloocan" ${patient.biomedical.location === 'Not in Caloocan' ? 'checked' : ''} onclick="toggleLocationFields()">
+                            <input type="radio" name="location" value="Not in Caloocan" ${patient.biomedical.location === 'Not in Caloocan' ? 'checked' : ''} onclick="toggleEditLocationFields()">
                             <span>Not in Caloocan</span>
                         </label>
                     </div>
-                    <div id="barangay-field">
+                    <div id="edit-barangay-field" class="form-group ${patient.biomedical.location === 'Caloocan' ? 'visible' : 'hidden'}">
                         <label for="barangay" class="data-label">Barangay:</label>
                         <input type="number" id="barangay" name="barangay" class="data-input" min="1" max="188" value="${patient.biomedical.barangay}">
                     </div>
-                    <div id="remarks-field">
+                    <div id="edit-remarks-field" class="${patient.biomedical.location === 'Not in Caloocan' ? 'visible' : 'hidden'}">
                         <label for="remarks" class="data-label">Remarks:</label>
                         <input type="text" id="remarks" name="remarks" class="data-input" value="${patient.biomedical.remarks}">
                     </div>
@@ -308,9 +308,26 @@ function toggleFields() {
     }
 }
 
+function toggleEditLocationFields() {
+    const caloocanRadio = document.querySelector('input[name="location"][value="Caloocan"]');
+    const barangayField = document.getElementById('edit-barangay-field');
+    const remarksField = document.getElementById('edit-remarks-field');
+
+    if (caloocanRadio.checked) {
+        barangayField.classList.add('visible');
+        barangayField.classList.remove('hidden');
+        remarksField.classList.add('hidden');
+        remarksField.classList.remove('visible');
+    } else {
+        remarksField.classList.add('visible');
+        remarksField.classList.remove('hidden');
+        barangayField.classList.add('hidden');
+        barangayField.classList.remove('visible');
+    }
+}
+
 function toggleLocationFields() {
     const location = document.querySelector('input[name="location"]:checked');
-
     const barangayField = document.getElementById('barangay-field');
     const remarksField = document.getElementById('remarks-field');
 

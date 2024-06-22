@@ -497,7 +497,12 @@ select.monthly:hover, .yearly:hover{
     margin-bottom: 16px;
 }
 
-.biomedicalfield, .nonbiomedicalfield, #barangay-field, #remarks-field{
+.visible {
+    display: flex;
+}
+
+.biomedicalfield, .nonbiomedicalfield,
+#barangay-field, #remarks-field, .hidden {
     display: none;
 }
 
