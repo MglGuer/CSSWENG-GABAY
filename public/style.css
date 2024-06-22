@@ -462,7 +462,7 @@ select.monthly:hover, .yearly:hover{
     font-weight: 600;
 }
 
-/** DATA TRACKER PAGE **/
+/** DATA TRACKER PAGE + EDIT PATIENT RECORDS **/
 
 /* container */
 .container-for-tracker {
@@ -484,7 +484,8 @@ select.monthly:hover, .yearly:hover{
     flex-direction: column;
 }
 
-.field, .biomedicalfield, .nonbiomedicalfield{
+.field, .biomedicalfield, .nonbiomedicalfield,
+.edit-biomedicalfield, .edit-nonbiomedicalfield {
     display: flex;
     align-items: center;
     margin-top: 16px;
@@ -516,7 +517,8 @@ select.monthly:hover, .yearly:hover{
     font-size: 20px;
 }
 
-.biomedicalfield select, .nonbiomedicalfield select {
+.biomedicalfield select, .nonbiomedicalfield select,
+.edit-biomedicalfield select, .edit-nonbiomedicalfield select {
     width: 700px;
     height: 40px;
     padding: 5px;
@@ -527,13 +529,7 @@ select.monthly:hover, .yearly:hover{
     font-size: 20px;
 }
 
-.biomedicalfield select:focus, .nonbiomedicalfield select:focus{
-    outline: none;
-    border-color: #6cb2eb;
-    box-shadow: 0 0 5px rgba(108, 178, 235, 0.5);
-}
-
-.submit-button {
+.submit-button, .edit-button {
     border: none;
     border-radius: 20px;
     margin-left: 1220px;
@@ -547,7 +543,7 @@ select.monthly:hover, .yearly:hover{
     font-weight: bold;
 }
 
-.submit-button:hover {
+.submit-button:hover, .edit-button:hover {
     background-color: white;
     color: #9B112E;
     border: 3px solid #9B112E;
@@ -559,7 +555,6 @@ select.monthly:hover, .yearly:hover{
     margin-right: 22px; 
     font-size: 20px;
 }
-
 /** PROFILE PAGE **/
 .container-for-profile {
     background-color: #FFECF0; 
@@ -764,4 +759,40 @@ select.monthly:hover, .yearly:hover{
     border-radius: 4px;
     background-color: black;
     margin-right: 5px;
+}
+
+/* Modal styling */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    padding-top: 100px; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    overflow: auto; 
+}
+
+.modal-content {
+    background-color: #eee; 
+    border: 2px solid black;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin: auto;
+    padding: 20px;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }

@@ -89,7 +89,7 @@
             </thead>
             <tbody>
                 {{#each biomedicalPatients}}
-                <tr>
+                <tr data-id="{{_id}}">
                     <td>{{gender}}</td>
                     <td>{{biomedical.location}}</td>
                     <td>{{biomedical.barangay}}</td>
@@ -103,7 +103,7 @@
                     <td>{{encoder}}</td>
                     <td>{{formatDate date_encoded}}</td>
                     <td>
-                        <a href="/edit/{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
+                        <a href="#" data-id="{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
                         <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
                     </td>
                 </tr>
@@ -129,7 +129,7 @@
             </thead>
             <tbody>
                 {{#each nonBiomedicalPatients}}
-                <tr>
+                <tr data-id="{{_id}}">
                     <td>{{gender}}</td>
                     <td>{{nonbiomedical.stigma}}</td>
                     <td>{{nonbiomedical.discrimination}}</td>
@@ -137,7 +137,7 @@
                     <td>{{encoder}}</td>
                     <td>{{formatDate date_encoded}}</td>
                     <td>
-                        <a href="/edit/{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
+                        <a href="#" data-id="{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
                         <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
                     </td>
                 </tr>
@@ -148,5 +148,14 @@
 
     <div class="footer">
         <p>&copy; 2024 HIV Advocacy Database. All rights reserved.</p>
+    </div>
+</div>
+
+<!-- edit form -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="editForm">
+        </form>
     </div>
 </div>

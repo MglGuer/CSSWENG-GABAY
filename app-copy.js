@@ -9,6 +9,7 @@ const express = require('express');
 const server = express();
 
 const bodyParser = require('body-parser');
+server.use(bodyParser.json());
 server.use(express.json()); 
 server.use(express.urlencoded({ extended: true }));
 
@@ -528,43 +529,43 @@ server.get('/data', async (req, res) => {
     }
 });
   
-// edit patient record 
+// server for editing a patient record
 server.get('/edit/:id', async (req, res) => {
     try {
         const patient = await patientModel.findById(req.params.id);
-        res.render('edit', { patient: patient });
+        res.json({ patient: patient });
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
     }
 });
 
-// update patient record 
+// server for updating a patient record
 server.post('/edit/:id', async (req, res) => {
     try {
         const { gender, barangay, remarks, age_range, tested_before, test_result, reason, kvp, linkage, stigma, discrimination, violence } = req.body;
         await patientModel.findByIdAndUpdate(req.params.id, {
             gender: gender,
-            barangay: barangay,
-            remarks: remarks,
-            age_range: age_range,
-            tested_before: tested_before === 'true', // Convert to Boolean
-            test_result: test_result,
-            reason: reason,
-            kvp: kvp,
-            linkage: linkage,
-            stigma: stigma,
-            discrimination: discrimination,
-            violence: violence
+            'biomedical.barangay': barangay,
+            'biomedical.remarks': remarks,
+            'biomedical.age_range': age_range,
+            'biomedical.tested_before': tested_before === 'true',
+            'biomedical.test_result': test_result,
+            'biomedical.reason': reason,
+            'biomedical.kvp': kvp,
+            'biomedical.linkage': linkage,
+            'nonbiomedical.stigma': stigma,
+            'nonbiomedical.discrimination': discrimination,
+            'nonbiomedical.violence': violence
         });
-        res.redirect('/data'); 
+        res.json({ success: true });
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
     }
 });
 
-// delete patient record 
+// server for deleting a patient record 
 server.get('/delete/:id', async (req, res) => {
     try {
         await patientModel.findByIdAndDelete(req.params.id);
@@ -574,7 +575,7 @@ server.get('/delete/:id', async (req, res) => {
         await actionHistoryCollection.insertOne({
             name: req.session.username,
             role: req.session.role,
-            email: email,
+            email: req.session.email,
             action: "Deleted patient record",
             actionDateTime: new Date()
         });
