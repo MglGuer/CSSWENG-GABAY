@@ -199,7 +199,7 @@ server.post('/read-user', async (req,res) => {
     const userCollection = client.db("test").collection("users");
 
     // find matching email
-    const user = await userCollection.findOne({ email: email});
+    const user = await userCollection.findOne({ email: email });
     
     // if authentication failed, show login failed
     if(!user){

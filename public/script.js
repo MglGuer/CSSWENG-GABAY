@@ -1,5 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     handleResponse();
+    
+    document.getElementById("sign-up").onclick = function(){
+        if(!(checkEmpty(document.getElementById("name-field").value))){
+            return false; //stop the submit
+        }
+    };
 
     let btn = document.querySelector('#btn');
     let sidebar = document.querySelector('.sidebar');
@@ -348,4 +354,13 @@ function toggleLocationFields() {
 function clearForm() {
     var form = document.getElementById('tracker-form');
     form.reset();
+}
+
+function checkEmpty(field){
+    if(/^\s*$/.test(field)){
+        return false;
+    }
+    else{
+        return true;
+    }
 }
