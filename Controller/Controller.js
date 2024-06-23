@@ -77,7 +77,7 @@ server.post('/read-user', async (req,res) => {
     }else{
         const match = await bcrypt.compare(password,user.password);
         if(!match){
-            return res.redirect('/login?error=User does not exist');
+            return res.redirect('/login?error=Invalid password');
         }
     }
     // insert login history data into the db
@@ -89,10 +89,20 @@ server.post('/read-user', async (req,res) => {
         lastLoginDateTime: new Date() 
     });
     
+    if(req.body.remember == "true"){
+        req.session.cookie.expires  = new Date(Date.now() + 1000*60*60*24*30);//thirty days
+        console.log(req.session.cookie.expires);
+    }else{
+        req.session.cookie.expires  = new Date(Date.now() + 1000*60*60);//one hour
+        console.log(req.session.cookie.expires);
+    }
+
     // TODO: add user into session
     req.session.username = user.name;
     req.session.email = user.email;
     req.session.role = user.role;
+    //console.log(req.body.remember);
+    
     
     // if authentication is successful, redirect to dashboard
     res.redirect('/dashboard');

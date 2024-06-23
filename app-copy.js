@@ -208,7 +208,7 @@ server.post('/read-user', async (req,res) => {
     }else{
         const match = await bcrypt.compare(password,user.password);
         if(!match){
-            return res.redirect('/login?error=User does not exist');
+            return res.redirect('/login?error=Invalid password');
         }
     }
     // insert login history data into the db
