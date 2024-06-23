@@ -2,8 +2,10 @@
 // npm init -y
 // npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session moment
 
-
-// example user | email: exampleuser1@gmail.com , password: password
+// User Credentials (Example)
+// Member                       | email: example@gmail.com , password: password
+// Data Encoder (Admin)         | email: hello@gmail.com , password: dataencoder
+// Data Manager (Super Admin)   | email: admin@gmail.com , password: admin123
 
 const express = require('express');
 const server = express();
