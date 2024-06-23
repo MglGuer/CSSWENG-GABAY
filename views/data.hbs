@@ -74,82 +74,102 @@
     
     <div class="container-for-data">
         <h2 class="headline">Biomedical Records</h2>
-        <table class="data-log">
-            <thead>
-                <tr><b>Total:</b> {{biomedicalCount}}</tr>
-                <tr>
-                    <th>Gender</th>
-                    <th>Location</th>
-                    <th>Barangay</th>
-                    <th>Remarks</th>
-                    <th>Age Range</th>
-                    <th>Tested Before</th>
-                    <th>Test Result</th>
-                    <th>Reason</th>
-                    <th>KVP</th>
-                    <th>Linkage</th>
-                    <th>Encoder</th>
-                    <th>Date Encoded</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each biomedicalPatients}}
-                <tr data-id="{{_id}}">
-                    <td>{{gender}}</td>
-                    <td>{{biomedical.location}}</td>
-                    <td>{{biomedical.barangay}}</td>
-                    <td>{{biomedical.remarks}}</td>
-                    <td>{{biomedical.age_range}}</td>
-                    <td>{{biomedical.tested_before}}</td>
-                    <td>{{biomedical.test_result}}</td>
-                    <td>{{biomedical.reason}}</td>
-                    <td>{{biomedical.kvp}}</td>
-                    <td>{{biomedical.linkage}}</td>
-                    <td>{{encoder}}</td>
-                    <td>{{formatDate date_encoded}}</td>
-                    <td>
-                        <a href="#" data-id="{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
-                        <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
-                    </td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="data-log">
+                <thead>
+                    <tr><b>Total:</b> {{biomedicalCount}}</tr>
+                    <tr>
+                        <th>Gender</th>
+                        <th>Location</th>
+                        <th>Barangay</th>
+                        <th>Remarks</th>
+                        <th>Age Range</th>
+                        <th>Tested Before</th>
+                        <th>Test Result</th>
+                        <th>Reason</th>
+                        <th>KVP</th>
+                        <th>Linkage</th>
+                        <th>Encoder</th>
+                        <th>Date Encoded</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each paginatedBiomedicalPatients}}
+                    <tr data-id="{{_id}}">
+                        <td>{{gender}}</td>
+                        <td>{{biomedical.location}}</td>
+                        <td>{{biomedical.barangay}}</td>
+                        <td>{{biomedical.remarks}}</td>
+                        <td>{{biomedical.age_range}}</td>
+                        <td>{{biomedical.tested_before}}</td>
+                        <td>{{biomedical.test_result}}</td>
+                        <td>{{biomedical.reason}}</td>
+                        <td>{{biomedical.kvp}}</td>
+                        <td>{{biomedical.linkage}}</td>
+                        <td>{{encoder}}</td>
+                        <td>{{formatDate date_encoded}}</td>
+                        <td>
+                            <a href="#" data-id="{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
+                            <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination">
+            {{#if (gt biomedicalPage 1)}}
+                <a href="/data?biomedicalPage={{decrement biomedicalPage}}&nonBiomedicalPage={{nonBiomedicalPage}}" class="pagination-icon"><i class='bx bx-left-arrow-alt'></i></a>
+            {{/if}}
+            <span>Page {{biomedicalPage}} of {{biomedicalTotalPages}}</span>
+            {{#if (lt biomedicalPage biomedicalTotalPages)}}
+                <a href="/data?biomedicalPage={{increment biomedicalPage}}&nonBiomedicalPage={{nonBiomedicalPage}}" class="pagination-icon"><i class='bx bx-right-arrow-alt'></i></a>
+            {{/if}}
+        </div>
     </div>
 
     <div class="container-for-data">
         <h2 class="headline">Nonbiomedical Records</h2>
-        <table class="data-log">
-            <thead>
-                <tr><b>Total:</b> {{nonBiomedicalCount}}</tr>
-                <tr>
-                    <th>Gender</th>
-                    <th>Stigma</th>
-                    <th>Discrimination</th>
-                    <th>Violence</th>
-                    <th>Encoder</th>
-                    <th>Date Encoded</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each nonBiomedicalPatients}}
-                <tr data-id="{{_id}}">
-                    <td>{{gender}}</td>
-                    <td>{{nonbiomedical.stigma}}</td>
-                    <td>{{nonbiomedical.discrimination}}</td>
-                    <td>{{nonbiomedical.violence}}</td>
-                    <td>{{encoder}}</td>
-                    <td>{{formatDate date_encoded}}</td>
-                    <td>
-                        <a href="#" data-id="{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
-                        <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
-                    </td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
+            <table class="data-log">
+                <thead>
+                    <tr><b>Total:</b> {{nonBiomedicalCount}}</tr>
+                    <tr>
+                        <th>Gender</th>
+                        <th>Stigma</th>
+                        <th>Discrimination</th>
+                        <th>Violence</th>
+                        <th>Encoder</th>
+                        <th>Date Encoded</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each paginatedNonBiomedicalPatients}}
+                    <tr data-id="{{_id}}">
+                        <td>{{gender}}</td>
+                        <td>{{nonbiomedical.stigma}}</td>
+                        <td>{{nonbiomedical.discrimination}}</td>
+                        <td>{{nonbiomedical.violence}}</td>
+                        <td>{{encoder}}</td>
+                        <td>{{formatDate date_encoded}}</td>
+                        <td>
+                            <a href="#" data-id="{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
+                            <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        <div class="pagination">
+            {{#if (gt nonBiomedicalPage 1)}}
+                <a href="/data?biomedicalPage={{biomedicalPage}}&nonBiomedicalPage={{decrement nonBiomedicalPage}}" class="pagination-icon"><i class='bx bx-left-arrow-alt'></i></a>
+            {{/if}}
+            <span>Page {{nonBiomedicalPage}} of {{nonBiomedicalTotalPages}}</span>
+            {{#if (lt nonBiomedicalPage nonBiomedicalTotalPages)}}
+                <a href="/data?biomedicalPage={{biomedicalPage}}&nonBiomedicalPage={{increment nonBiomedicalPage}}" class="pagination-icon"><i class='bx bx-right-arrow-alt'></i></a>
+            {{/if}}
+        </div>
     </div>
 
     <div class="footer">

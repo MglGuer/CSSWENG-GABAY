@@ -21,7 +21,24 @@ server.engine('hbs', handlebars.engine({
     extname: 'hbs',
     helpers: {
         formatDate: function (date) {
-            return moment(date).format('MM/DD/YYYY, h:mm:ss A');
+            return moment(date).format('MMMM D, YYYY h:mm:ss A');
+        },
+        eq: (a, b) => a === b,
+        or: (...args) => {
+            args.pop(); 
+            return args.some(arg => arg);
+        },
+        increment: function (value) {
+            return value + 1;
+        },
+        decrement: function (value) {
+            return value - 1;
+        },
+        gt: function (a, b) {
+            return a > b;
+        },
+        lt: function (a, b) {
+            return a < b;
         }
     },
     runtimeOptions: {
