@@ -13,6 +13,10 @@ server.use(bodyParser.json());
 server.use(express.json()); 
 server.use(express.urlencoded({ extended: true }));
 
+//multer for image upload
+const multer  = require('multer');
+const GridFsStorage = require("multer-gridfs-storage");
+
 // handlebars
 const handlebars = require('express-handlebars');
 const moment = require('moment');   // to format date for login history in history log page
@@ -62,7 +66,7 @@ const { ServerApiVersion } = require('mongodb');
 const mongoStore = require('connect-mongodb-session')(session);
 const {MongoClient} = require("mongodb");
 const mongoose = require('mongoose');
-const uri = "mongodb+srv://vancerobles:ZgtbvnIiuXTeRxYB@gabay.uxaz23w.mongodb.net/";
+const uri = "mongodb+srv://vancerobles:ZgtbvnIiuXTeRxYB@gabay.uxaz23w.mongodb.net/?retryWrites=true&w=majority&appName=GABAY";
 const client = new MongoClient(uri, {
     serverApi:{
         version: ServerApiVersion.v1,
@@ -83,6 +87,16 @@ async function connectToDatabase(){
 }
 
 connectToDatabase();
+
+//creating bucket
+let bucket;
+mongoose.connection.on("connected", () => {
+  var db = mongoose.connections[0].db;
+  bucket = new mongoose.mongo.GridFSBucket(db, {
+    bucketName: "newBucket"
+  });
+  console.log(bucket);
+});
 
 // sub-schema for biomedical data
 const biomedicalSchema = new mongoose.Schema({
@@ -252,7 +266,7 @@ server.get('/signup', (req,resp) => {
 // post user details into the database upon signing up
 server.post('/create-user', async (req, res) => {
     // retrieve user details
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role} = req.body;
 
     // get db collection
     const userCollection = client.db("test").collection("users");
@@ -285,7 +299,8 @@ server.post('/create-user', async (req, res) => {
         email: email,
         password: hashedPassword,
         role: role,
-        isAdmin: isAdmin
+        isAdmin: isAdmin,
+        userIcon: s
     });
 
     // when successful, return to login page
