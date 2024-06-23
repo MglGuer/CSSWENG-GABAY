@@ -141,7 +141,7 @@ server.use(session({
     store: new mongoStore({ 
       uri: uri,
       collection: 'sessionGabay',
-      expires: 1000*60*60 // 1 hour
+      //expires: 1000*60*60 // 1 hour
     })
 }));
 
@@ -208,10 +208,20 @@ server.post('/read-user', async (req,res) => {
         lastLoginDateTime: new Date() 
     });
     
+    if(req.body.remember == "true"){
+        req.session.cookie.expires  = new Date(Date.now() + 1000*60*60*24*30);//thirty days
+        console.log(req.session.cookie.expires);
+    }else{
+        req.session.cookie.expires  = new Date(Date.now() + 1000*60*60);//one hour
+        console.log(req.session.cookie.expires);
+    }
+
     // TODO: add user into session
     req.session.username = user.name;
     req.session.email = user.email;
     req.session.role = user.role;
+    //console.log(req.body.remember);
+    
     
     // if authentication is successful, redirect to dashboard
     res.redirect('/dashboard');
