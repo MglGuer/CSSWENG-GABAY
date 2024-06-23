@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     handleResponse();
-    
+
     document.getElementById("sign-up").onclick = function(){
         if(!(checkEmpty(document.getElementById("name-field").value))){
             return false; //stop the submit
@@ -363,4 +363,19 @@ function checkEmpty(field){
     else{
         return true;
     }
+}
+
+function validateForm() {
+    var tested = document.querySelector('input[name="tested"]:checked');
+    var result = document.querySelector('input[name="result"]:checked');
+
+    if (result && result.value === "Do Not Know") {
+        if (!tested || tested.value !== "Yes") {
+            alert("You can only select 'Don't Know' if the person has been tested before.");
+            return false;
+        }
+    }
+
+    alert("Form submitted successfully!");
+    document.getElementById("tracker-form").submit(); 
 }

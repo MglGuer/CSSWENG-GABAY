@@ -704,6 +704,7 @@ select.monthly:hover, .yearly:hover{
 .history-log td {
     padding: 10px;
     text-align: left;
+    border: 1px solid #ddd;
 }
 
 .history-log th {
