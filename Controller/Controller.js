@@ -68,16 +68,18 @@ server.post('/read-user', async (req,res) => {
     const userCollection = client.db("test").collection("users");
 
     // find matching email
-    const user = await userCollection.findOne({ email: email});
-
-    const match = await bcrypt.compare(password,user.password);
-
+    const user = await userCollection.findOne({ email: email });
+    
     // if authentication failed, show login failed
-    if(!user || !match){
+    if(!user){
         // reload page with query
         return res.redirect('/login?error=User does not exist');
+    }else{
+        const match = await bcrypt.compare(password,user.password);
+        if(!match){
+            return res.redirect('/login?error=User does not exist');
+        }
     }
-
     // insert login history data into the db
     const loginHistoryCollection = client.db("test").collection("loginhistories");
     await loginHistoryCollection.insertOne({
@@ -207,8 +209,9 @@ server.get('/dashboard', async (req, resp) => {
 
         // retrieve statistics from the patient collection
         const totalPatientsTested = await patientCollection.countDocuments();
-        const positivePatientsTested = await patientCollection.countDocuments({ test_result: 'positive' });
-        const negativePatientsTested = await patientCollection.countDocuments({ test_result: 'negative' });
+        const positivePatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Positive', data_type: 'biomedical' });
+        const negativePatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Negative', data_type: 'biomedical' });
+        const nonbiomedicalPatientsTested = await patientCollection.countDocuments({ data_type: 'nonbiomedical' });
 
         resp.render('dashboard', {
             layout: 'index',
@@ -221,7 +224,8 @@ server.get('/dashboard', async (req, resp) => {
             statistics: {
                 totalPatientsTested: totalPatientsTested,
                 positivePatientsTested: positivePatientsTested,
-                negativePatientsTested: negativePatientsTested
+                negativePatientsTested: negativePatientsTested,
+                nonbiomedicalPatientsTested: nonbiomedicalPatientsTested
             }
         });
     } catch (error) {
@@ -303,24 +307,47 @@ server.post('/add-record', async (req, res) => {
 // server for data log page
 server.get('/data', async (req, res) => {
     try {
+        const pageSize = 10;   // number of records per page
+
+        // parsing page numbers from query parameters or default to 1
+        const biomedicalPage = parseInt(req.query.biomedicalPage) || 1;
+        const nonBiomedicalPage = parseInt(req.query.nonBiomedicalPage) || 1;
+
+        // get db collection
         const patients = await patientModel.find().exec();
+
+        // filter patients into biomedical and non-biomedical categories
         const biomedicalPatients = patients.filter(patient => patient.data_type === 'biomedical');
         const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'nonbiomedical');
+
+        // paginate biomedical and non-biomedical patients based on page numbers
+        const paginatedBiomedicalPatients = biomedicalPatients.slice((biomedicalPage - 1) * pageSize, biomedicalPage * pageSize);
+        const paginatedNonBiomedicalPatients = nonBiomedicalPatients.slice((nonBiomedicalPage - 1) * pageSize, nonBiomedicalPage * pageSize);
+
+        // count total number of biomedical and non-biomedical patient data records
         const biomedicalCount = biomedicalPatients.length;
         const nonBiomedicalCount = nonBiomedicalPatients.length;
-  
-      res.render('data', { 
-        layout: 'index',
-        title: 'Data Log Page',
-        patients,
-        biomedicalPatients, 
-        nonBiomedicalPatients,
-        biomedicalCount,
-        nonBiomedicalCount 
-      });
+
+        res.render('data', { 
+            layout: 'index',
+            title: 'Data Log Page',
+            user: {
+                name: req.session.username,
+                email: req.session.email,
+                role: req.session.role
+            },
+            paginatedBiomedicalPatients, 
+            paginatedNonBiomedicalPatients,
+            biomedicalCount,
+            nonBiomedicalCount,
+            biomedicalPage,
+            nonBiomedicalPage,
+            biomedicalTotalPages: Math.ceil(biomedicalCount / pageSize),
+            nonBiomedicalTotalPages: Math.ceil(nonBiomedicalCount / pageSize)
+        });
     } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
+        console.error(err);
+        res.status(500).send('Server Error');
     }
 });
 
@@ -458,9 +485,21 @@ server.get('/history', async (req, res) => {
         const loginHistoryCollection = client.db("test").collection("loginhistories");
         const actionHistoryCollection = client.db("test").collection("actionhistories");
 
-        // fetch login and action history documents
-        const loginHistory = await loginHistoryCollection.find().toArray();
-        const actionHistory = await actionHistoryCollection.find().toArray();
+        const pageSize = 10; // number of records per page
+
+        // get page number for login history
+        const loginPage = parseInt(req.query.loginPage) || 1;
+        const loginHistorySkip = (loginPage - 1) * pageSize;
+
+        // get page number for action history
+        const actionPage = parseInt(req.query.actionPage) || 1;
+        const actionHistorySkip = (actionPage - 1) * pageSize;
+
+        // get paginated login history sorted by most recent first
+        const loginHistory = await loginHistoryCollection.find().sort({ lastLoginDateTime: -1 }).skip(loginHistorySkip).limit(pageSize).toArray();
+
+        // get paginated action history sorted by most recent first
+        const actionHistory = await actionHistoryCollection.find().sort({ actionDateTime: -1 }).skip(actionHistorySkip).limit(pageSize).toArray();
 
         res.render('history', {
             layout: 'index',
@@ -471,10 +510,14 @@ server.get('/history', async (req, res) => {
                 role: req.session.role
             },
             loginHistory: loginHistory,
-            actionHistory: actionHistory
+            actionHistory: actionHistory,
+            loginPage: loginPage,
+            actionPage: actionPage,
+            loginTotalPages: Math.ceil(await loginHistoryCollection.countDocuments() / pageSize),
+            actionTotalPages: Math.ceil(await actionHistoryCollection.countDocuments() / pageSize)
         });
     } catch (error) {
-        console.error("Error fetching login history:", error);
+        console.error("Error fetching history:", error);
         res.status(500).send("Internal Server Error");
     }
 });

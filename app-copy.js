@@ -21,12 +21,24 @@ server.engine('hbs', handlebars.engine({
     extname: 'hbs',
     helpers: {
         formatDate: function (date) {
-            return moment(date).format('MM/DD/YYYY, h:mm:ss A');
+            return moment(date).format('MMMM D, YYYY h:mm:ss A');
         },
         eq: (a, b) => a === b,
         or: (...args) => {
             args.pop(); 
             return args.some(arg => arg);
+        },
+        increment: function (value) {
+            return value + 1;
+        },
+        decrement: function (value) {
+            return value - 1;
+        },
+        gt: function (a, b) {
+            return a > b;
+        },
+        lt: function (a, b) {
+            return a < b;
         }
     },
     runtimeOptions: {
@@ -187,7 +199,7 @@ server.post('/read-user', async (req,res) => {
     const userCollection = client.db("test").collection("users");
 
     // find matching email
-    const user = await userCollection.findOne({ email: email});
+    const user = await userCollection.findOne({ email: email });
     
     // if authentication failed, show login failed
     if(!user){
@@ -329,8 +341,9 @@ server.get('/dashboard', async (req, resp) => {
 
         // retrieve statistics from the patient collection
         const totalPatientsTested = await patientCollection.countDocuments();
-        const positivePatientsTested = await patientCollection.countDocuments({ test_result: 'positive' });
-        const negativePatientsTested = await patientCollection.countDocuments({ test_result: 'negative' });
+        const positivePatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Positive', data_type: 'biomedical' });
+        const negativePatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Negative', data_type: 'biomedical' });
+        const nonbiomedicalPatientsTested = await patientCollection.countDocuments({ data_type: 'nonbiomedical' });
 
         resp.render('dashboard', {
             layout: 'index',
@@ -343,7 +356,8 @@ server.get('/dashboard', async (req, resp) => {
             statistics: {
                 totalPatientsTested: totalPatientsTested,
                 positivePatientsTested: positivePatientsTested,
-                negativePatientsTested: negativePatientsTested
+                negativePatientsTested: negativePatientsTested,
+                nonbiomedicalPatientsTested: nonbiomedicalPatientsTested
             }
         });
     } catch (error) {
@@ -483,13 +497,24 @@ server.post('/update-profile', async (req, res) => {
 // server for history log
 server.get('/history', async (req, res) => {
     try {
-        // get db collection
         const loginHistoryCollection = client.db("test").collection("loginhistories");
         const actionHistoryCollection = client.db("test").collection("actionhistories");
 
-        // fetch login and action history documents
-        const loginHistory = await loginHistoryCollection.find().toArray();
-        const actionHistory = await actionHistoryCollection.find().toArray();
+        const pageSize = 10; // number of records per page
+
+        // get page number for login history
+        const loginPage = parseInt(req.query.loginPage) || 1;
+        const loginHistorySkip = (loginPage - 1) * pageSize;
+
+        // get page number for action history
+        const actionPage = parseInt(req.query.actionPage) || 1;
+        const actionHistorySkip = (actionPage - 1) * pageSize;
+
+        // get paginated login history sorted by most recent first
+        const loginHistory = await loginHistoryCollection.find().sort({ lastLoginDateTime: -1 }).skip(loginHistorySkip).limit(pageSize).toArray();
+
+        // get paginated action history sorted by most recent first
+        const actionHistory = await actionHistoryCollection.find().sort({ actionDateTime: -1 }).skip(actionHistorySkip).limit(pageSize).toArray();
 
         res.render('history', {
             layout: 'index',
@@ -500,10 +525,14 @@ server.get('/history', async (req, res) => {
                 role: req.session.role
             },
             loginHistory: loginHistory,
-            actionHistory: actionHistory
+            actionHistory: actionHistory,
+            loginPage: loginPage,
+            actionPage: actionPage,
+            loginTotalPages: Math.ceil(await loginHistoryCollection.countDocuments() / pageSize),
+            actionTotalPages: Math.ceil(await actionHistoryCollection.countDocuments() / pageSize)
         });
     } catch (error) {
-        console.error("Error fetching login history:", error);
+        console.error("Error fetching history:", error);
         res.status(500).send("Internal Server Error");
     }
 });
@@ -511,33 +540,44 @@ server.get('/history', async (req, res) => {
 // server for data log
 server.get('/data', async (req, res) => {
     try {
+        const pageSize = 10;
+        const biomedicalPage = parseInt(req.query.biomedicalPage) || 1;
+        const nonBiomedicalPage = parseInt(req.query.nonBiomedicalPage) || 1;
+
         const patients = await patientModel.find().exec();
         const biomedicalPatients = patients.filter(patient => patient.data_type === 'biomedical');
         const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'nonbiomedical');
+
+        const paginatedBiomedicalPatients = biomedicalPatients.slice((biomedicalPage - 1) * pageSize, biomedicalPage * pageSize);
+        const paginatedNonBiomedicalPatients = nonBiomedicalPatients.slice((nonBiomedicalPage - 1) * pageSize, nonBiomedicalPage * pageSize);
+
         const biomedicalCount = biomedicalPatients.length;
         const nonBiomedicalCount = nonBiomedicalPatients.length;
-  
-      res.render('data', { 
-        layout: 'index',
-        title: 'Data Log Page',
-        user: {
-            name: req.session.username,
-            email: req.session.email,
-            role: req.session.role
-        },
-        patients,
-        biomedicalPatients, 
-        nonBiomedicalPatients,
-        biomedicalCount,
-        nonBiomedicalCount 
-      });
+
+        res.render('data', { 
+            layout: 'index',
+            title: 'Data Log Page',
+            user: {
+                name: req.session.username,
+                email: req.session.email,
+                role: req.session.role
+            },
+            paginatedBiomedicalPatients, 
+            paginatedNonBiomedicalPatients,
+            biomedicalCount,
+            nonBiomedicalCount,
+            biomedicalPage,
+            nonBiomedicalPage,
+            biomedicalTotalPages: Math.ceil(biomedicalCount / pageSize),
+            nonBiomedicalTotalPages: Math.ceil(nonBiomedicalCount / pageSize)
+        });
     } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
+        console.error(err);
+        res.status(500).send('Server Error');
     }
 });
-  
-// server for editing a patient record
+
+// server for editing patient data record
 server.get('/edit/:id', async (req, res) => {
     try {
         const patient = await patientModel.findById(req.params.id);
@@ -585,7 +625,7 @@ server.post('/edit/:id', async (req, res) => {
     }
 });
 
-// server for deleting a patient record 
+// server for deleting a patient data record 
 server.get('/delete/:id', async (req, res) => {
     try {
         await patientModel.findByIdAndDelete(req.params.id);
