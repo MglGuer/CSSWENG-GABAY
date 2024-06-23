@@ -30,9 +30,25 @@
                     <option value="Data Manager">Data Manager</option>
                 </select>
             </div>
-            <input type="submit" class="registration" value="Sign Up"></input>
+            <input type="submit" class="registration" value="Sign Up" id="sign-up"></input>
         </form>
 
         <p class="signup-page">Already have an account? <a class="register" href="/">Log in</a></p>
     </div>
 </div>
+<script>
+    function checkEmpty(field){
+        if(/^\s*$/.test(field)){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    document.getElementById("sign-up").onclick = function(){
+        if(!(checkEmpty(document.getElementById("name-field").value))){
+            return false; //stop the submit
+        }
+    };
+</script>

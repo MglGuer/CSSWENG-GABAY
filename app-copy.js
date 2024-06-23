@@ -188,15 +188,17 @@ server.post('/read-user', async (req,res) => {
 
     // find matching email
     const user = await userCollection.findOne({ email: email});
-
-    const match = await bcrypt.compare(password,user.password);
-
+    
     // if authentication failed, show login failed
-    if(!user || !match){
+    if(!user){
         // reload page with query
         return res.redirect('/login?error=User does not exist');
+    }else{
+        const match = await bcrypt.compare(password,user.password);
+        if(!match){
+            return res.redirect('/login?error=User does not exist');
+        }
     }
-
     // insert login history data into the db
     const loginHistoryCollection = client.db("test").collection("loginhistories");
     await loginHistoryCollection.insertOne({
