@@ -316,7 +316,8 @@ server.get('/dashboard', async (req, resp) => {
             user: {
                 name: req.session.username,
                 email: req.session.email,
-                role: req.session.role
+                role: req.session.role,
+                icon: req.session.userIcon
             },
             statistics: {
                 totalPatientsTested: totalPatientsTested,
@@ -622,7 +623,7 @@ server.get('/delete/:id', async (req, res) => {
 // TODO: log out
 server.get('/logout', (req,resp) => {
 
-    req.session.destroy(function(err) {
+    req.session.destroy((err) => {
         resp.redirect('/');
     });
 
