@@ -441,6 +441,7 @@ server.post('/update-profile', async (req, res) => {
 
         // update session email if changed
         req.session.email = email; 
+        req.session.username = name; 
 
         // update login history with new user information
         await loginHistoryCollection.updateMany({ email: req.session.email }, { $set: { email: email, name: name } });
