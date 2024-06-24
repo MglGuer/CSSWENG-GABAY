@@ -28,8 +28,15 @@ const nonBiomedicalSchema = new mongoose.Schema({
 
 // main schema for patient
 const patientSchema = new mongoose.Schema({
-    data_type: { type: String, required: true },
-    gender: { type: String },
+    data_type: { 
+        type: String, 
+        required: true,
+        enum: ['biomedical', 'nonbiomedical']
+    },
+    gender: { 
+        type: String,
+        enum: ['Male', 'Female', 'Transgender']
+    },
     biomedical: biomedicalSchema,
     nonbiomedical: nonBiomedicalSchema,
     encoder: { type: String },
@@ -41,7 +48,10 @@ const userSchema = new mongoose.Schema({
     name: { type: String },
     email: { type: String },
     password: { type: String },
-    role: { type:String },
+    role: { 
+        type: String,
+        enum: ['Member', 'Data Encoder', 'Data Manager']
+    },
     isAdmin: { type: Boolean },
     userIcon: {type: String}
 },{ versionKey: false });
@@ -49,7 +59,10 @@ const userSchema = new mongoose.Schema({
 // schema for login history
 const loginHistorySchema = new mongoose.Schema({
     name: { type: String },
-    role: { type: String },
+    role: { 
+        type: String,
+        enum: ['Member', 'Data Encoder', 'Data Manager']
+    },
     email: { type: String },
     lastLoginDateTime: { type: Date, default: Date.now }
 },{ versionKey: false });
@@ -57,7 +70,10 @@ const loginHistorySchema = new mongoose.Schema({
 // schema for action history
 const actionHistorySchema = new mongoose.Schema({
     name: { type: String },
-    role: { type: String },
+    role: { 
+        type: String,
+        enum: ['Member', 'Data Encoder', 'Data Manager']
+    },
     email: { type: String },
     action: { type: String },
     actionDateTime: { type: Date, default: Date.now }
