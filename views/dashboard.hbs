@@ -98,6 +98,20 @@
             </div>
             <i id="icon-stats" class="bx bxs-group"></i>
         </div>
+        <div class="biomedical">
+            <div id="stats">
+                <p class="stats-title"><b>Biomedical Patients Tested</b></p>
+                <p class="number">{{statistics.biomedicalPatientsTested}}</p>
+            </div>
+            <i id="icon-stats" class="bx bxs-shield-plus"></i>
+        </div>
+        <div class="nonbiomedical">
+            <div id="stats">
+                <p class="stats-title"><b>Nonbiomedical Patients Tested</b></p>
+                <p class="number">{{statistics.nonbiomedicalPatientsTested}}</p>
+            </div>
+            <i id="icon-stats" class="bx bxs-shield-minus"></i>
+        </div>
         <div class="positive">
             <div id="stats">
                 <p class="stats-title"><b>Positive Biomedical Patients Tested</b></p>
@@ -112,50 +126,77 @@
             </div>
             <i id="icon-stats" class="bx bxs-user-minus"></i>
         </div>
-        <div class="nonbiomedical">
+        <div class="dontknow">
             <div id="stats">
-                <p class="stats-title"><b>Nonbiomedical Patients Tested</b></p>
-                <p class="number">{{statistics.nonbiomedicalPatientsTested}}</p>
+                <p class="stats-title"><b>Don't Know Biomedical Patients Tested</b></p>
+                <p class="number">{{statistics.dnkPatientsTested}}</p>
             </div>
-            <i id="icon-stats" class="bx bxs-shield-minus"></i>
+            <i id="icon-stats" class="bx bx-question-mark"></i>
         </div>
     </div>
 
-    <div class="container">
-        <div class="graph1">
-            <p class="reason">Testing outcomes by main reason for HIV Test</p>
-            <div class="chart">
-                <canvas id="horizontalbarchart"></canvas>
-            </div>
+    <div class="container-graphs">
+        <div class="headline-graphs">
+            Biomedical Patient Records Statistics
+            <button class="toggle-button" onclick="toggleGraphs(this)">
+                <i class='bx bxs-chevron-up'></i>
+            </button>
         </div>
-        <div class="graph2">
-            <p class="reason">Testing outcomes by Key or Vulnerable Population (KVP) at higher risk</p>
-            <div class="chart">
-                <canvas id="horizontalbarchart2"></canvas>
-            </div>
+
+        <div class="filter">
+            <select class="monthly">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+            <div class="yearly">Yearly</div>
         </div>
-        <div class="graph3">
-            <p class="reason">Testing outcomes for clients who were tested before (repeat testers)</p>
-            <div class="chart">
-                <canvas id="barchart"></canvas>
+
+        <div class="container">
+            <div class="graph1">
+                <p class="reason">Testing outcomes by main reason for HIV Test</p>
+                <div class="chart">
+                    <canvas id="horizontalbarchart"></canvas>
+                </div>
             </div>
-        </div>
-        <div class="graph4">
-            <p class="reason">Testing outcomes by age</p>
-            <div class="chart">
-                <canvas id="linechart"></canvas>
+            <div class="graph2">
+                <p class="reason">Testing outcomes by Key or Vulnerable Population (KVP) at higher risk</p>
+                <div class="chart">
+                    <canvas id="horizontalbarchart2"></canvas>
+                </div>
             </div>
-        </div>
-        <div class="graph5">
-            <p class="reason">Testing outcomes for first time testers</p>
-            <div class="chart">
-                <canvas id="horizontalbarchart3"></canvas>
+            <div class="graph3">
+                <p class="reason">Testing outcomes for clients who were tested before (repeat testers)</p>
+                <div class="chart">
+                    <canvas id="barchart"></canvas>
+                </div>
             </div>
-        </div>
-        <div class="graph6">
-            <p class="reason">Linkage for positive clients</p>
-            <div class="chart">
-                <canvas id="linechart2"></canvas>
+            <div class="graph4">
+                <p class="reason">Testing outcomes by age</p>
+                <div class="chart">
+                    <canvas id="linechart"></canvas>
+                </div>
+            </div>
+            <div class="graph5">
+                <p class="reason">Testing outcomes for first time testers</p>
+                <div class="chart">
+                     <canvas id="horizontalbarchart3"></canvas>
+                </div>
+            </div>
+            <div class="graph6">
+                <p class="reason">Linkage for positive clients</p>
+                <div class="chart">
+                   <canvas id="linechart2"></canvas>
+                </div>
             </div>
         </div>
     </div>

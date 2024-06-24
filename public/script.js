@@ -1,16 +1,16 @@
-document.addEventListener('DOMContentLoaded', function () {
-    handleResponse();
-
-    document.getElementById("sign-up").onclick = function(){
-        if(!(checkEmpty(document.getElementById("name-field").value))){
-            return false; //stop the submit
-        }
-    };
+document.addEventListener('DOMContentLoaded', async function () {
+    await handleResponse();
 
     let btn = document.querySelector('#btn');
     let sidebar = document.querySelector('.sidebar');
     btn.onclick = function () {
         sidebar.classList.toggle('active');
+    };
+
+    document.getElementById("sign-up").onclick = function(){
+        if(!(checkEmpty(document.getElementById("name-field").value))){
+            return false; //stop the submit
+        }
     };
 
     const editModal = document.getElementById('editModal');
@@ -258,7 +258,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     
-
     const deleteButtons = document.querySelectorAll('.btn-delete');
     deleteButtons.forEach(button => {
         button.addEventListener('click', function(event) {
@@ -270,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-function handleResponse() {
+async function handleResponse() {
     const params = new URLSearchParams(window.location.search);
     const message = params.get('message');
     const error = params.get('error');
@@ -281,6 +280,22 @@ function handleResponse() {
 
     if (error) {
         alert(error); 
+    }
+}
+
+function toggleGraphs(button) {
+    const containerGraphs = button.closest('.container-graphs');
+    const container = containerGraphs.querySelector('.container');
+    const filter = containerGraphs.querySelector('.filter');
+    
+    if (container.style.display === 'none') {
+        container.style.display = 'grid';
+        filter.style.display = 'flex'; 
+        button.querySelector('i').classList.replace('bxs-chevron-up', 'bxs-chevron-down');
+    } else {
+        container.style.display = 'none';
+        filter.style.display = 'none';
+        button.querySelector('i').classList.replace('bxs-chevron-down', 'bxs-chevron-up');
     }
 }
 

@@ -1,10 +1,10 @@
 // Install Command
 // npm init -y
-// npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session moment
+// npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session moment cloudinary
 
 // User Credentials (Example)
-// Member                       | email: example@gmail.com , password: password
-// Data Encoder (Admin)         | email: hello@gmail.com , password: dataencoder
+// Member                       | email: member@gmail.com , password: testuser
+// Data Encoder (Admin)         | email: dataencoder@gmail.com , password: dataencoder
 // Data Manager (Super Admin)   | email: admin@gmail.com , password: admin123
 
 const express = require('express');
@@ -76,8 +76,7 @@ const client = new MongoClient(uri, {
 var cloudinary = require('cloudinary').v2;
 
 (async function() {
-
-    // Configuration
+    // configuration
     cloudinary.config({ 
         cloud_name: 'dof7fh2cj', 
         api_key: '411879496332247', 
@@ -85,14 +84,21 @@ var cloudinary = require('cloudinary').v2;
     }); 
 })();
 
-async function connectToDatabase(){
-    try{
-        await client.connect();
-        mongoose.connect(uri);
-    }
-    catch (error){
-        console.error("Error connecting to MongoDB:", error);
-        process.exit(1); // exit the process if there's an error connecting to MongoDB
+async function connectToDatabase(retries = 5, delay = 5000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            await client.connect();
+            mongoose.connect(uri);
+            console.log("Connected to MongoDB successfully");
+            break;
+        } catch (err) {
+            console.error(`Error connecting to MongoDB, retrying in ${delay / 1000} seconds...`, err);
+            if (i === retries - 1) {
+                console.error("All retries failed.");
+                break;
+            }
+            await new Promise(res => setTimeout(res, delay));
+        }
     }
 }
 
@@ -298,9 +304,11 @@ server.get('/dashboard', async (req, resp) => {
 
         // retrieve statistics from the patient collection
         const totalPatientsTested = await patientCollection.countDocuments();
+        const biomedicalPatientsTested = await patientCollection.countDocuments({ data_type: 'biomedical' });
+        const nonbiomedicalPatientsTested = await patientCollection.countDocuments({ data_type: 'nonbiomedical' });
         const positivePatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Positive', data_type: 'biomedical' });
         const negativePatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Negative', data_type: 'biomedical' });
-        const nonbiomedicalPatientsTested = await patientCollection.countDocuments({ data_type: 'nonbiomedical' });
+        const dnkPatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Do Not Know', data_type: 'biomedical' });
 
         resp.render('dashboard', {
             layout: 'index',
@@ -308,14 +316,15 @@ server.get('/dashboard', async (req, resp) => {
             user: {
                 name: req.session.username,
                 email: req.session.email,
-                role: req.session.role,
-                icon: req.session.userIcon
+                role: req.session.role
             },
             statistics: {
                 totalPatientsTested: totalPatientsTested,
+                biomedicalPatientsTested: biomedicalPatientsTested,
+                nonbiomedicalPatientsTested: nonbiomedicalPatientsTested,
                 positivePatientsTested: positivePatientsTested,
                 negativePatientsTested: negativePatientsTested,
-                nonbiomedicalPatientsTested: nonbiomedicalPatientsTested
+                dnkPatientsTested: dnkPatientsTested
             }
         });
     } catch (error) {

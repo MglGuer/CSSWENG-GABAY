@@ -327,22 +327,24 @@
 .filter{
     display: flex;
     justify-content: flex-end;
+    padding-right: 20px; 
 }
 
 select.monthly, .yearly{
-    background-color: #9B112E; 
-    color: white;
-    border: 3px solid white; 
+    background-color: white; 
+    color: #9B112E;
+    border: 3px solid #9B112E; 
     border-radius: 25px;
     margin: 10px;
     padding: 10px;
     position: relative;
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 select.monthly:hover, .yearly:hover{
-    background-color: white; 
-    color: #9B112E;
+    background-color: #9B112E; 
+    color: white;
     border: 3px solid #9B112E;
 }
 
@@ -351,6 +353,33 @@ select.monthly:hover, .yearly:hover{
 }
 
 /* container for graphs */
+.container-graphs {
+    display: flex;
+    flex-direction: column;
+    background-color: #FFECF0;
+    border: 2px solid black;
+    margin-bottom: 20px;
+}
+
+.headline-graphs {
+    font-size: 24px;
+    font-weight: bold;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.toggle-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: #333;
+}
+
 .container {
     display: grid;
     grid-template-rows: repeat(3, 1fr); 
@@ -360,9 +389,16 @@ select.monthly:hover, .yearly:hover{
 }
 
 /* grid items / graphs */
-.graph1, .graph2, .graph3, .graph4, .graph5, .graph6 {
+.reason{
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.graph1, .graph2, .graph3, 
+.graph4, .graph5, .graph6,
+.graph7, .graph8, .graph9 {
     background-color: #fff;
-    padding: 20px;
+    padding: 14px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
@@ -411,62 +447,51 @@ select.monthly:hover, .yearly:hover{
 
 /* statistics */
 .statistics {
-    display: grid;
-    grid-template-rows: 200px; 
-    grid-template-columns: repeat(8, 1fr); 
-    gap: 20px; 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 20px;
     margin-bottom: 20px;
 }
 
-.total, .positive, .negative, .nonbiomedical{
+.total, .biomedical, .nonbiomedical, .positive, .negative, .dontknow {
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    border-radius: 5px;
-    padding: 5%;
+    border-radius: 10px;
+    padding: 20px;
+    width: calc(100% / 6 - 20px); 
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.total{
-    background-color: #FBFFE0;
-    grid-row: 1 / 1;
-    grid-column: 1 / 3;
+.total:hover, .biomedical:hover, .nonbiomedical:hover, 
+.positive:hover, .negative:hover, .dontknow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.positive{
-    background-color: #E2FFED;
-    grid-row: 1 / 1;
-    grid-column: 3 / 5;
-}
-
-.negative{
-    background-color: #FFEFEF;
-    grid-row: 1 / 1;
-    grid-column: 5 / 7;
-}
-
-.nonbiomedical{
-    background-color: #D6EBF2;
-    grid-row: 1 / 1;
-    grid-column: 7 / 9;
-}
-
-.stats-title{
-    font-size: 24px;
+.stats-title {
+    font-size: 16px;
     font-weight: 600;
+    text-align: center;
+    margin-bottom: 10px;
+    white-space: pre-wrap; 
+    overflow-wrap: break-word;
 }
 
-.number{
-    font-size: 28px;
+.number {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
 }
 
-#icon-stats{
-    font-size: 80px;
-}
-
-/* graphs */
-.reason{
-    font-size: 20px;
-    font-weight: 600;
+#icon-stats {
+    font-size: 32px;
+    color: #333;
+    margin-top: 10px;
 }
 
 /** DATA TRACKER PAGE + EDIT PATIENT RECORDS **/
