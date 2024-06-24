@@ -7,12 +7,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         sidebar.classList.toggle('active');
     };
 
-    document.getElementById("sign-up").onclick = function(){
-        if(!(checkEmpty(document.getElementById("name-field").value))){
-            return false; //stop the submit
-        }
-    };
-
     const editModal = document.getElementById('editModal');
     const editForm = document.getElementById('editForm');
     const span = document.getElementsByClassName('close')[0];
@@ -391,6 +385,5 @@ function validateForm() {
         }
     }
 
-    alert("Form submitted successfully!");
     document.getElementById("tracker-form").submit(); 
 }
