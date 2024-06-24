@@ -187,6 +187,7 @@ server.post('/read-user', async (req,res) => {
     req.session.username = user.name;
     req.session.email = user.email;
     req.session.role = user.role;
+    req.session.userIcon = user.userIcon;
     //console.log(req.body.remember);
     
     
@@ -307,7 +308,8 @@ server.get('/dashboard', async (req, resp) => {
             user: {
                 name: req.session.username,
                 email: req.session.email,
-                role: req.session.role
+                role: req.session.role,
+                icon: req.session.userIcon
             },
             statistics: {
                 totalPatientsTested: totalPatientsTested,
@@ -330,7 +332,8 @@ server.get('/tracker', (req,resp) => {
         user: {
             name: req.session.username,
             email: req.session.email,
-            role: req.session.role
+            role: req.session.role,
+            icon: req.session.userIcon
         }
     });
 });
@@ -380,6 +383,7 @@ server.post('/add-record', async (req, res) => {
             name: req.session.username,
             role: req.session.role,
             email: req.session.email,
+            icon: req.session.userIcon,
             action: "Add new patient record",
             actionDateTime: new Date()
         });
@@ -401,6 +405,7 @@ server.get('/profile', async (req, res) => {
             name: req.session.username,
             email: req.session.email,
             role: req.session.role,
+            userIcon: req.session.userIcon
         }
     });
 });
@@ -478,7 +483,8 @@ server.get('/history', async (req, res) => {
             user: {
                 name: req.session.username,
                 email: req.session.email,
-                role: req.session.role
+                role: req.session.role,
+                icon: req.session.userIcon
             },
             loginHistory: loginHistory,
             actionHistory: actionHistory,
@@ -516,7 +522,8 @@ server.get('/data', async (req, res) => {
             user: {
                 name: req.session.username,
                 email: req.session.email,
-                role: req.session.role
+                role: req.session.role,
+                icon: req.session.userIcon
             },
             paginatedBiomedicalPatients, 
             paginatedNonBiomedicalPatients,
