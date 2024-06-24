@@ -15,10 +15,6 @@ server.use(bodyParser.json());
 server.use(express.json()); 
 server.use(express.urlencoded({ extended: true }));
 
-//multer for image upload
-const multer  = require('multer');
-const GridFsStorage = require("multer-gridfs-storage");
-
 // handlebars
 const handlebars = require('express-handlebars');
 const moment = require('moment');   // to format date for login history in history log page
@@ -77,6 +73,18 @@ const client = new MongoClient(uri, {
     }
 });
 
+var cloudinary = require('cloudinary').v2;
+
+(async function() {
+
+    // Configuration
+    cloudinary.config({ 
+        cloud_name: 'dof7fh2cj', 
+        api_key: '411879496332247', 
+        api_secret: 'LEEZpzSauYJuHUzCmwQtL80HI5c' // Click 'View Credentials' below to copy your API secret
+    }); 
+})();
+
 async function connectToDatabase(){
     try{
         await client.connect();
@@ -89,16 +97,6 @@ async function connectToDatabase(){
 }
 
 connectToDatabase();
-
-//creating bucket
-let bucket;
-mongoose.connection.on("connected", () => {
-  var db = mongoose.connections[0].db;
-  bucket = new mongoose.mongo.GridFSBucket(db, {
-    bucketName: "newBucket"
-  });
-  console.log(bucket);
-});
 
 const { patientModel, userModel, loginHistoryModel, actionHistoryModel } = require('./Model/Model'); // Adjust the path as necessary
 
@@ -243,7 +241,7 @@ server.post('/create-user', async (req, res) => {
         password: hashedPassword,
         role: role,
         isAdmin: isAdmin,
-        userIcon: s
+        userIcon: 'https://res.cloudinary.com/dof7fh2cj/image/upload/v1719207075/hagwnwmxbpkpczzyh46g.jpg'
     });
 
     // when successful, return to login page

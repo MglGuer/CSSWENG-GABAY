@@ -43,6 +43,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String },
     role: { type:String },
     isAdmin: { type: Boolean },
+    userIcoin: {type: String}
 },{ versionKey: false });
 
 // schema for login history
