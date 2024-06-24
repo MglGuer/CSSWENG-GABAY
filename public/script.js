@@ -1,12 +1,25 @@
+/**
+ * Event listener for the DOMContentLoaded event.
+ * Initializes the page and sets up event handlers.
+ */
 document.addEventListener('DOMContentLoaded', async function () {
+    // Handle URL response parameters for displaying messages or errors
     await handleResponse();
 
+    /**
+     * Event listener for the sidebar toggle button.
+     * Toggles the active class on the sidebar when the button is clicked.
+     */
     let btn = document.querySelector('#btn');
     let sidebar = document.querySelector('.sidebar');
     btn.onclick = function () {
         sidebar.classList.toggle('active');
     };
 
+    /**
+     * Event listener for the edit button.
+     * Opens the edit modal with the data of the selected patient.
+     */
     const editModal = document.getElementById('editModal');
     const editForm = document.getElementById('editForm');
     const span = document.getElementsByClassName('close')[0];
@@ -207,16 +220,29 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     });
 
+    /**
+    * Event listener for the close button of the edit modal.
+    * Closes the edit modal when clicked.
+    */
     span.onclick = function () {
         editModal.style.display = "none";
     }
 
+    /**
+    * Event listener for clicks outside the modal.
+    * Closes the edit modal if the user clicks outside of it.
+    */
     window.onclick = function (event) {
         if (event.target == editModal) {
             editModal.style.display = "none";
         }
     }
 
+    /**
+    * Event listener for the edit form submission.
+    * Submits the updated patient data to the server.
+    * @param {Event} event - The form submission event.
+    */
     editForm.addEventListener('submit', async function (event) {
         event.preventDefault();
     
@@ -252,6 +278,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
     
+    /**
+    * Event listeners for the delete button.
+    * Confirms deletion of a record.
+    */
     const deleteButtons = document.querySelectorAll('.btn-delete');
     deleteButtons.forEach(button => {
         button.addEventListener('click', function(event) {
@@ -263,6 +293,10 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 });
 
+/**
+ * Fetches and handles response parameters from the URL.
+ * Displays an alert if a message or error is present in the URL parameters.
+ */
 async function handleResponse() {
     const params = new URLSearchParams(window.location.search);
     const message = params.get('message');
@@ -277,6 +311,10 @@ async function handleResponse() {
     }
 }
 
+/**
+ * Toggles the display of graphs and filters in the container.
+ * @param {HTMLElement} button - The button that triggers the toggle.
+ */
 function toggleGraphs(button) {
     const containerGraphs = button.closest('.container-graphs');
     const container = containerGraphs.querySelector('.container');
@@ -293,6 +331,9 @@ function toggleGraphs(button) {
     }
 }
 
+/**
+ * Toggles the visibility of fields based on the selected data type.
+ */
 function toggleFields() {
     const dataType = document.querySelector('input[name="data_type"]:checked').value;
     const biomedicalFields = document.querySelectorAll('.biomedicalfield');
@@ -323,24 +364,9 @@ function toggleFields() {
     }
 }
 
-function toggleEditLocationFields() {
-    const caloocanRadio = document.querySelector('input[name="location"][value="Caloocan"]');
-    const barangayField = document.getElementById('edit-barangay-field');
-    const remarksField = document.getElementById('edit-remarks-field');
-
-    if (caloocanRadio.checked) {
-        barangayField.classList.add('visible');
-        barangayField.classList.remove('hidden');
-        remarksField.classList.add('hidden');
-        remarksField.classList.remove('visible');
-    } else {
-        remarksField.classList.add('visible');
-        remarksField.classList.remove('hidden');
-        barangayField.classList.add('hidden');
-        barangayField.classList.remove('visible');
-    }
-}
-
+/**
+ * Toggles the visibility of location-specific fields in the form.
+ */
 function toggleLocationFields() {
     const location = document.querySelector('input[name="location"]:checked');
     const barangayField = document.getElementById('barangay-field');
@@ -360,11 +386,40 @@ function toggleLocationFields() {
     }
 }
 
+/**
+ * Toggles the visibility of location-specific fields in the edit form.
+ */
+function toggleEditLocationFields() {
+    const caloocanRadio = document.querySelector('input[name="location"][value="Caloocan"]');
+    const barangayField = document.getElementById('edit-barangay-field');
+    const remarksField = document.getElementById('edit-remarks-field');
+
+    if (caloocanRadio.checked) {
+        barangayField.classList.add('visible');
+        barangayField.classList.remove('hidden');
+        remarksField.classList.add('hidden');
+        remarksField.classList.remove('visible');
+    } else {
+        remarksField.classList.add('visible');
+        remarksField.classList.remove('hidden');
+        barangayField.classList.add('hidden');
+        barangayField.classList.remove('visible');
+    }
+}
+
+/**
+ * Clears the form inputs.
+ */
 function clearForm() {
     var form = document.getElementById('tracker-form');
     form.reset();
 }
 
+/**
+ * Checks if a field is empty.
+ * @param {string} field - The field value to check.
+ * @returns {boolean} True if the field is not empty, false otherwise.
+ */
 function checkEmpty(field){
     if(/^\s*$/.test(field)){
         return false;
@@ -374,6 +429,11 @@ function checkEmpty(field){
     }
 }
 
+/**
+ * Validates the form before submission.
+ * Ensures the appropriate selections based on the tested and result values.
+ * @returns {boolean} True if the form is valid, false otherwise.
+ */
 function validateForm() {
     var tested = document.querySelector('input[name="tested"]:checked');
     var result = document.querySelector('input[name="result"]:checked');
