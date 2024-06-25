@@ -499,7 +499,7 @@ function processBiomedicalChartData(array, labelKey) {
         if (!dataset) {
             dataset = {
                 label: datasetLabel,
-                backgroundColor: getColor(test_result, gender),
+                backgroundColor: getBioColor(test_result, gender),
                 data: []
             };
             datasets.push(dataset);
@@ -515,7 +515,9 @@ function processBiomedicalChartData(array, labelKey) {
         }
     });
 
-    return { labels, datasets };
+    const filteredDatasets = datasets.filter(ds => ds.data.some(data => data !== 0));
+
+    return { labels, datasets: filteredDatasets };
 }
 
 /**
@@ -538,18 +540,18 @@ function processNonBiomedicalChartData(array, labelKey) {
         const count = item.count;
         const label = item._id[labelKey];
 
-        if (!gender) {
+        if (!gender || !label) {
             console.error('Missing gender in data:', item._id);
             return; // skip this item if gender is missing
         }
 
-        const datasetLabel = `${label} ${gender}`;
+        const datasetLabel = `${gender}`;
         let dataset = datasets.find(ds => ds.label === datasetLabel);
 
         if (!dataset) {
             dataset = {
                 label: datasetLabel,
-                backgroundColor: getColor(label, gender),
+                backgroundColor: getNonbioColor(gender),
                 data: []
             };
             datasets.push(dataset);
@@ -565,26 +567,29 @@ function processNonBiomedicalChartData(array, labelKey) {
         }
     });
 
-    return { labels, datasets };
+    // Filter out datasets with all zeros
+    const filteredDatasets = datasets.filter(ds => ds.data.some(data => data !== 0));
+
+    return { labels, datasets: filteredDatasets };
 }
 
 /**
- * Determines the color based on test_result and gender.
+ * Determines the color based on test_result and gender for biomedical records.
  * @param {string} test_result - The test result (e.g., "Positive", "Negative").
  * @param {string} gender - The gender (e.g., "Male", "Female", "Transgender").
  * @returns {string} The corresponding color in rgba format.
  */
-function getColor(test_result, gender) {
+function getBioColor(test_result, gender) {
     const colors = {
         Positive: {
-            Male: 'rgba(255, 99, 132, 0.5)',
-            Female: 'rgba(255, 206, 86, 0.5)',
-            Transgender: 'rgba(153, 102, 255, 0.5)'
+            Male: 'rgba(66, 165, 245, 0.5)',    
+            Female: 'rgba(255, 105, 180, 0.5)', 
+            Transgender: 'rgba(255, 152, 0, 0.5)'
         },
         Negative: {
-            Male: 'rgba(54, 162, 235, 0.5)',
-            Female: 'rgba(75, 192, 192, 0.5)',
-            Transgender: 'rgba(255, 159, 64, 0.5)'
+            Male: 'rgba(66, 165, 245, 0.5)',    
+            Female: 'rgba(255, 105, 180, 0.5)', 
+            Transgender: 'rgba(255, 152, 0, 0.5)'
         }
     };
 
@@ -594,6 +599,25 @@ function getColor(test_result, gender) {
     } else {
         // return a default color if combination is not recognized
         return 'rgba(0, 0, 0, 0.5)';
+    }
+}
+
+/**
+ * Determines the color based on gender for nonbiomedical records.
+ * @param {string} gender - The gender (e.g., "Male", "Female", "Transgender").
+ * @returns {string} The corresponding color in rgba format.
+ */
+function getNonbioColor(gender) {
+    const colors = {
+        Male: 'rgba(66, 165, 245, 0.5)',    
+        Female: 'rgba(255, 105, 180, 0.5)', 
+        Transgender: 'rgba(255, 152, 0, 0.5)'
+    };
+
+    if (colors[gender]) {
+        return colors[gender];
+    } else {
+        return 'rgba(0, 0, 0, 0.5)'; // default color
     }
 }
 
