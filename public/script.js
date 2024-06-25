@@ -499,7 +499,7 @@ function processBiomedicalChartData(array, labelKey) {
         if (!dataset) {
             dataset = {
                 label: datasetLabel,
-                backgroundColor: getBioColor(test_result, gender),
+                backgroundColor: getColor(test_result, gender),
                 data: []
             };
             datasets.push(dataset);
@@ -515,9 +515,7 @@ function processBiomedicalChartData(array, labelKey) {
         }
     });
 
-    const filteredDatasets = datasets.filter(ds => ds.data.some(data => data !== 0));
-
-    return { labels, datasets: filteredDatasets };
+    return { labels, datasets };
 }
 
 /**
@@ -540,9 +538,9 @@ function processNonBiomedicalChartData(array, labelKey) {
         const count = item.count;
         const label = item._id[labelKey];
 
-        if (!gender || !label) {
-            console.error('Missing gender or label in data:', item._id);
-            return; // skip this item if gender or label is missing
+        if (!gender) {
+            console.error('Missing gender in data:', item._id);
+            return; // skip this item if gender is missing
         }
 
         const datasetLabel = `${label} ${gender}`;
@@ -551,7 +549,7 @@ function processNonBiomedicalChartData(array, labelKey) {
         if (!dataset) {
             dataset = {
                 label: datasetLabel,
-                backgroundColor: getNonbioColor(gender),
+                backgroundColor: getColor(label, gender),
                 data: []
             };
             datasets.push(dataset);
@@ -567,30 +565,26 @@ function processNonBiomedicalChartData(array, labelKey) {
         }
     });
 
-    // Filter out datasets with all zeros
-    const filteredDatasets = datasets.filter(ds => ds.data.some(data => data !== 0));
-
-    return { labels, datasets: filteredDatasets };
+    return { labels, datasets };
 }
 
-
 /**
- * Determines the color based on test_result and gender for biomedical records.
+ * Determines the color based on test_result and gender.
  * @param {string} test_result - The test result (e.g., "Positive", "Negative").
  * @param {string} gender - The gender (e.g., "Male", "Female", "Transgender").
  * @returns {string} The corresponding color in rgba format.
  */
-function getBioColor(test_result, gender) {
+function getColor(test_result, gender) {
     const colors = {
         Positive: {
-            Male: 'rgba(66, 165, 245, 0.5)',    
-            Female: 'rgba(255, 105, 180, 0.5)', 
-            Transgender: 'rgba(255, 152, 0, 0.5)'
+            Male: 'rgba(255, 99, 132, 0.5)',
+            Female: 'rgba(255, 206, 86, 0.5)',
+            Transgender: 'rgba(153, 102, 255, 0.5)'
         },
         Negative: {
-            Male: 'rgba(66, 165, 245, 0.5)',    
-            Female: 'rgba(255, 105, 180, 0.5)', 
-            Transgender: 'rgba(255, 152, 0, 0.5)'
+            Male: 'rgba(54, 162, 235, 0.5)',
+            Female: 'rgba(75, 192, 192, 0.5)',
+            Transgender: 'rgba(255, 159, 64, 0.5)'
         }
     };
 
@@ -600,25 +594,6 @@ function getBioColor(test_result, gender) {
     } else {
         // return a default color if combination is not recognized
         return 'rgba(0, 0, 0, 0.5)';
-    }
-}
-
-/**
- * Determines the color based on gender for nonbiomedical records.
- * @param {string} gender - The gender (e.g., "Male", "Female", "Transgender").
- * @returns {string} The corresponding color in rgba format.
- */
-function getNonbioColor(gender) {
-    const colors = {
-        Male: 'rgba(66, 165, 245, 0.5)',    
-        Female: 'rgba(255, 105, 180, 0.5)', 
-        Transgender: 'rgba(255, 152, 0, 0.5)'
-    };
-
-    if (colors[gender]) {
-        return colors[gender];
-    } else {
-        return 'rgba(0, 0, 0, 0.5)'; // Default color
     }
 }
 
@@ -638,10 +613,7 @@ function renderChart(ctx, data, config) {
 async function initializeCharts() {
     try {
         const data = await fetchData('/dashboard/data');
-        if (!data) {
-            displayNoDataMessage('.biomedical-container, .nonbiomedical-container'); // Display message if no data fetched
-            return;
-        }
+        if (!data) return; // exit if data fetch failed
 
         const config = {
             type: 'bar',
@@ -660,7 +632,7 @@ async function initializeCharts() {
             }
         };
 
-        // Get chart contexts for biomedical records
+        // Get chart contexts for 
         const ctxReason = document.getElementById('chartReason').getContext('2d');
         const ctxKVP = document.getElementById('chartKVP').getContext('2d');
         const ctxTestedBefore = document.getElementById('chartTestedBefore').getContext('2d');
@@ -668,93 +640,25 @@ async function initializeCharts() {
         const ctxFirstTimeTesters = document.getElementById('chartFirstTimeTesters').getContext('2d');
         const ctxLinkage = document.getElementById('chartLinkage').getContext('2d');
 
-        // Check if each dataset has data, otherwise display a message
-        const reasonData = processBiomedicalChartData(data.reason, 'reason');
-        if (reasonData.datasets.length === 0) {
-            displayNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)');
-        } else {
-            renderChart(ctxReason, reasonData, config);
-        }
-
-        const kvpData = processBiomedicalChartData(data.kvp, 'kvp');
-        if (kvpData.datasets.length === 0) {
-            displayNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk');
-        } else {
-            renderChart(ctxKVP, kvpData, config);
-        }
-
-        const testedBeforeData = processBiomedicalChartData(data.testedBefore, 'tested_before');
-        if (testedBeforeData.datasets.length === 0) {
-            displayNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)');
-        } else {
-            renderChart(ctxTestedBefore, testedBeforeData, config);
-        }
-
-        const ageData = processBiomedicalChartData(data.ageRange, 'age');
-        if (ageData.datasets.length === 0) {
-            displayNoDataMessage('.graph2', 'Testing outcomes by age');
-        } else {
-            renderChart(ctxAge, ageData, config);
-        }
-
-        const firstTimeTestersData = processBiomedicalChartData(data.testedBefore.filter(item => item._id.tested_before === 'No'), 'tested_before');
-        if (firstTimeTestersData.datasets.length === 0) {
-            displayNoDataMessage('.graph4', 'Testing outcomes for first time testers');
-        } else {
-            renderChart(ctxFirstTimeTesters, firstTimeTestersData, config);
-        }
-
-        const linkageData = processBiomedicalChartData(data.linkage, 'linkage');
-        if (linkageData.datasets.length === 0) {
-            displayNoDataMessage('.graph6', 'Linkage for positive clients');
-        } else {
-            renderChart(ctxLinkage, linkageData, config);
-        }
+        // Render charts for biomedical records
+        renderChart(ctxReason, processBiomedicalChartData(data.reason, 'reason'), config);
+        renderChart(ctxKVP, processBiomedicalChartData(data.kvp, 'kvp'), config);
+        renderChart(ctxTestedBefore, processBiomedicalChartData(data.testedBefore, 'tested_before'), config);
+        renderChart(ctxAge, processBiomedicalChartData(data.ageRange, 'age'), config);
+        renderChart(ctxFirstTimeTesters, processBiomedicalChartData(data.testedBefore.filter(item => item._id.tested_before === 'No'), 'tested_before'), config);
+        renderChart(ctxLinkage, processBiomedicalChartData(data.linkage, 'linkage'), config);
 
         // Get chart contexts for nonbiomedical records
         const ctxStigma = document.getElementById('chartStigma').getContext('2d');
         const ctxDiscrimination = document.getElementById('chartDiscrimination').getContext('2d');
         const ctxViolence = document.getElementById('chartViolence').getContext('2d');
 
-        // Check if each dataset has data, otherwise display a message
-        const stigmaData = processNonBiomedicalChartData(data.stigma, 'stigma');
-        if (stigmaData.datasets.length === 0) {
-            displayNoDataMessage('.graph7', 'Testing outcomes for stigma');
-        } else {
-            renderChart(ctxStigma, stigmaData, config);
-        }
-
-        const discriminationData = processNonBiomedicalChartData(data.discrimination, 'discrimination');
-        if (discriminationData.datasets.length === 0) {
-            displayNoDataMessage('.graph8', 'Testing outcomes for discrimination');
-        } else {
-            renderChart(ctxDiscrimination, discriminationData, config);
-        }
-
-        const violenceData = processNonBiomedicalChartData(data.violence, 'violence');
-        if (violenceData.datasets.length === 0) {
-            displayNoDataMessage('.graph9', 'Testing outcomes for violence');
-        } else {
-            renderChart(ctxViolence, violenceData, config);
-        }
+        // Render charts for nonbiomedical records
+        renderChart(ctxStigma, processNonBiomedicalChartData(data.stigma, 'stigma'), config);
+        renderChart(ctxDiscrimination, processNonBiomedicalChartData(data.discrimination, 'discrimination'), config);
+        renderChart(ctxViolence, processNonBiomedicalChartData(data.violence, 'violence'), config);
 
     } catch (error) {
         console.error('Error fetching or processing data:', error);
-        displayNoDataMessage('.biomedical-container, .nonbiomedical-container'); // Display message if error occurs
     }
-}
-
-/**
-* Displays a message indicating no data available.
-* @param {string} selector - CSS selector for the container where the message should be displayed.
-* @param {string} reasonText - Reason text to display alongside the message.
-*/
-function displayNoDataMessage(selector, reasonText) {
-    const containers = document.querySelectorAll(selector);
-    containers.forEach(container => {
-        container.innerHTML = `
-            <p class="reason">${reasonText}</p>
-            <p class="message">No data available yet.</p>
-        `;
-    });
 }
