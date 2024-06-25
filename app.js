@@ -347,7 +347,10 @@ server.get('/dashboard/data', async (req, resp) => {
                     kvp: [{ $group: { _id: { gender: "$gender", test_result: "$biomedical.test_result", kvp: "$biomedical.kvp" }, count: { $sum: 1 } } }],
                     testedBefore: [{ $group: { _id: { gender: "$gender", test_result: "$biomedical.test_result", tested_before: "$biomedical.tested_before" }, count: { $sum: 1 } } }],
                     ageRange: [{ $group: { _id: { gender: "$gender", test_result: "$biomedical.test_result", age: "$biomedical.age_range" }, count: { $sum: 1 } } }],
-                    linkage: [{ $group: { _id: { gender: "$gender", test_result: "$biomedical.test_result", linkage: "$biomedical.linkage" }, count: { $sum: 1 } } }]
+                    linkage: [{ $group: { _id: { gender: "$gender", test_result: "$biomedical.test_result", linkage: "$biomedical.linkage" }, count: { $sum: 1 } } }],
+                    stigma: [{ $group: { _id: { gender: "$gender", stigma: "$nonbiomedical.stigma" }, count: { $sum: 1 } } }],
+                    discrimination: [{ $group: { _id: { gender: "$gender", discrimination: "$nonbiomedical.discrimination" }, count: { $sum: 1 } } }],
+                    violence: [{ $group: { _id: { gender: "$gender", violence: "$nonbiomedical.violence" }, count: { $sum: 1 } } }]
                 }
             }
         ]).toArray();

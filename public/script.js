@@ -469,12 +469,12 @@ async function fetchData(endpoint) {
 }
 
 /**
- * Processes data for a specific chart.
+ * Processes biomedical data for a specific chart.
  * @param {Array} array - The data array to process.
  * @param {string} labelKey - The key used for labeling data points.
  * @returns {Object} An object containing labels and datasets for the chart.
  */
-function processChartData(array, labelKey) {
+function processBiomedicalChartData(array, labelKey) {
     if (!Array.isArray(array) || array.length === 0) {
         console.error('Expected a non-empty array for data processing:', array);
         return { labels: [], datasets: [] };
@@ -500,6 +500,56 @@ function processChartData(array, labelKey) {
             dataset = {
                 label: datasetLabel,
                 backgroundColor: getColor(test_result, gender),
+                data: []
+            };
+            datasets.push(dataset);
+        }
+
+        const labelIndex = labels.indexOf(label);
+        if (labelIndex === -1) {
+            labels.push(label);
+            datasets.forEach(ds => ds.data.push(0));
+            dataset.data[labels.indexOf(label)] = count;
+        } else {
+            dataset.data[labelIndex] = count;
+        }
+    });
+
+    return { labels, datasets };
+}
+
+/**
+ * Processes nonbiomedical data for a specific chart.
+ * @param {Array} array - The data array to process.
+ * @param {string} labelKey - The key used for labeling data points.
+ * @returns {Object} An object containing labels and datasets for the chart.
+ */
+function processNonBiomedicalChartData(array, labelKey) {
+    if (!Array.isArray(array) || array.length === 0) {
+        console.error('Expected a non-empty array for data processing:', array);
+        return { labels: [], datasets: [] };
+    }
+
+    const labels = [];
+    const datasets = [];
+
+    array.forEach(item => {
+        const { gender } = item._id;
+        const count = item.count;
+        const label = item._id[labelKey];
+
+        if (!gender) {
+            console.error('Missing gender in data:', item._id);
+            return; // skip this item if gender is missing
+        }
+
+        const datasetLabel = `${label} ${gender}`;
+        let dataset = datasets.find(ds => ds.label === datasetLabel);
+
+        if (!dataset) {
+            dataset = {
+                label: datasetLabel,
+                backgroundColor: getColor(label, gender),
                 data: []
             };
             datasets.push(dataset);
@@ -582,7 +632,7 @@ async function initializeCharts() {
             }
         };
 
-        // Get chart contexts
+        // Get chart contexts for biomedical records
         const ctxReason = document.getElementById('chartReason').getContext('2d');
         const ctxKVP = document.getElementById('chartKVP').getContext('2d');
         const ctxTestedBefore = document.getElementById('chartTestedBefore').getContext('2d');
@@ -590,13 +640,23 @@ async function initializeCharts() {
         const ctxFirstTimeTesters = document.getElementById('chartFirstTimeTesters').getContext('2d');
         const ctxLinkage = document.getElementById('chartLinkage').getContext('2d');
 
-        // Render charts
-        renderChart(ctxReason, processChartData(data.reason, 'reason'), config);
-        renderChart(ctxKVP, processChartData(data.kvp, 'kvp'), config);
-        renderChart(ctxTestedBefore, processChartData(data.testedBefore, 'tested_before'), config);
-        renderChart(ctxAge, processChartData(data.ageRange, 'age'), config);
-        renderChart(ctxFirstTimeTesters, processChartData(data.testedBefore.filter(item => item._id.tested_before === 'No'), 'tested_before'), config);
-        renderChart(ctxLinkage, processChartData(data.linkage, 'linkage'), config);
+        // Render charts for biomedical records
+        renderChart(ctxReason, processBiomedicalChartData(data.reason, 'reason'), config);
+        renderChart(ctxKVP, processBiomedicalChartData(data.kvp, 'kvp'), config);
+        renderChart(ctxTestedBefore, processBiomedicalChartData(data.testedBefore, 'tested_before'), config);
+        renderChart(ctxAge, processBiomedicalChartData(data.ageRange, 'age'), config);
+        renderChart(ctxFirstTimeTesters, processBiomedicalChartData(data.testedBefore.filter(item => item._id.tested_before === 'No'), 'tested_before'), config);
+        renderChart(ctxLinkage, processBiomedicalChartData(data.linkage, 'linkage'), config);
+
+        // Get chart contexts for nonbiomedical records
+        const ctxStigma = document.getElementById('chartStigma').getContext('2d');
+        const ctxDiscrimination = document.getElementById('chartDiscrimination').getContext('2d');
+        const ctxViolence = document.getElementById('chartViolence').getContext('2d');
+
+        // Render charts for nonbiomedical records
+        renderChart(ctxStigma, processNonBiomedicalChartData(data.stigma, 'stigma'), config);
+        renderChart(ctxDiscrimination, processNonBiomedicalChartData(data.discrimination, 'discrimination'), config);
+        renderChart(ctxViolence, processNonBiomedicalChartData(data.violence, 'violence'), config);
 
     } catch (error) {
         console.error('Error fetching or processing data:', error);
