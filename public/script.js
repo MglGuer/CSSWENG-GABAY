@@ -448,6 +448,15 @@ function validateForm() {
         }
     }
 
+    // check if all required fields are filled
+    var requiredFields = document.querySelectorAll('#tracker-form [required]');
+    for (var i = 0; i < requiredFields.length; i++) {
+        if (!requiredFields[i].value || (requiredFields[i].type === 'radio' && !document.querySelector(`input[name="${requiredFields[i].name}"]:checked`))) {
+            alert("Please fill all required fields.");
+            return false;
+        }
+    }
+
     document.getElementById("tracker-form").submit(); 
 }
 
