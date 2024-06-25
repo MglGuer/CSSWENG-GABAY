@@ -339,7 +339,7 @@ function toggleGraphs(button) {
  */
 function toggleFields() {
     const dataType = document.querySelector('input[name="data_type"]:checked').value;
-    const biomedicalFields = document.querySelectorAll('.biomedicalfield');
+    const biomedicalFields = document.querySelectorAll('.biomedicalfield, #barangay-field, #remarks-field');
     const nonbiomedicalFields = document.querySelectorAll('.nonbiomedicalfield');
 
     if (dataType === 'biomedical') {
@@ -348,12 +348,14 @@ function toggleFields() {
             const inputs = field.querySelectorAll('input, select');
             inputs.forEach(input => input.required = true);
         });
+        // Toggle location-specific fields based on location selection
+        toggleLocationFields();
         nonbiomedicalFields.forEach(field => {
             field.style.display = 'none';
             const inputs = field.querySelectorAll('input, select');
             inputs.forEach(input => input.required = false);
         });
-    } else {
+    } else if (dataType === 'nonbiomedical') {
         biomedicalFields.forEach(field => {
             field.style.display = 'none';
             const inputs = field.querySelectorAll('input, select');
@@ -375,7 +377,7 @@ function toggleLocationFields() {
     const barangayField = document.getElementById('barangay-field');
     const remarksField = document.getElementById('remarks-field');
 
-    if (location) {
+    if (location && document.querySelector('input[name="data_type"]:checked').value === 'biomedical') {
         if (location.value === 'Caloocan') {
             barangayField.style.display = 'flex';
             remarksField.style.display = 'none';
@@ -646,8 +648,10 @@ function renderChart(ctx, data, config) {
 async function initializeCharts() {
     try {
         const data = await fetchData('/dashboard/data');
-        if (!data) return; // exit if data fetch failed
-
+        if (!data) {
+            displayNoDataMessage('.biomedical-container, .nonbiomedical-container'); // display message if no data fetched
+            return;
+        }
         const config = {
             type: 'bar',
             data: {},
@@ -665,7 +669,7 @@ async function initializeCharts() {
             }
         };
 
-        // Get chart contexts for 
+        // Get chart contexts for biomedical records
         const ctxReason = document.getElementById('chartReason').getContext('2d');
         const ctxKVP = document.getElementById('chartKVP').getContext('2d');
         const ctxTestedBefore = document.getElementById('chartTestedBefore').getContext('2d');
@@ -673,25 +677,93 @@ async function initializeCharts() {
         const ctxFirstTimeTesters = document.getElementById('chartFirstTimeTesters').getContext('2d');
         const ctxLinkage = document.getElementById('chartLinkage').getContext('2d');
 
-        // Render charts for biomedical records
-        renderChart(ctxReason, processBiomedicalChartData(data.reason, 'reason'), config);
-        renderChart(ctxKVP, processBiomedicalChartData(data.kvp, 'kvp'), config);
-        renderChart(ctxTestedBefore, processBiomedicalChartData(data.testedBefore, 'tested_before'), config);
-        renderChart(ctxAge, processBiomedicalChartData(data.ageRange, 'age'), config);
-        renderChart(ctxFirstTimeTesters, processBiomedicalChartData(data.testedBefore.filter(item => item._id.tested_before === 'No'), 'tested_before'), config);
-        renderChart(ctxLinkage, processBiomedicalChartData(data.linkage, 'linkage'), config);
+        // Check if each dataset has data, otherwise display a message
+        const reasonData = processBiomedicalChartData(data.reason, 'reason');
+        if (reasonData.datasets.length === 0) {
+            displayNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)');
+        } else {
+            renderChart(ctxReason, reasonData, config);
+        }
+
+        const kvpData = processBiomedicalChartData(data.kvp, 'kvp');
+        if (kvpData.datasets.length === 0) {
+            displayNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk');
+        } else {
+            renderChart(ctxKVP, kvpData, config);
+        }
+
+        const testedBeforeData = processBiomedicalChartData(data.testedBefore, 'tested_before');
+        if (testedBeforeData.datasets.length === 0) {
+            displayNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)');
+        } else {
+            renderChart(ctxTestedBefore, testedBeforeData, config);
+        }
+
+        const ageData = processBiomedicalChartData(data.ageRange, 'age');
+        if (ageData.datasets.length === 0) {
+            displayNoDataMessage('.graph2', 'Testing outcomes by age');
+        } else {
+            renderChart(ctxAge, ageData, config);
+        }
+
+        const firstTimeTestersData = processBiomedicalChartData(data.testedBefore.filter(item => item._id.tested_before === 'No'), 'tested_before');
+        if (firstTimeTestersData.datasets.length === 0) {
+            displayNoDataMessage('.graph4', 'Testing outcomes for first time testers');
+        } else {
+            renderChart(ctxFirstTimeTesters, firstTimeTestersData, config);
+        }
+
+        const linkageData = processBiomedicalChartData(data.linkage, 'linkage');
+        if (linkageData.datasets.length === 0) {
+            displayNoDataMessage('.graph6', 'Linkage for positive clients');
+        } else {
+            renderChart(ctxLinkage, linkageData, config);
+        }
 
         // Get chart contexts for nonbiomedical records
         const ctxStigma = document.getElementById('chartStigma').getContext('2d');
         const ctxDiscrimination = document.getElementById('chartDiscrimination').getContext('2d');
         const ctxViolence = document.getElementById('chartViolence').getContext('2d');
 
-        // Render charts for nonbiomedical records
-        renderChart(ctxStigma, processNonBiomedicalChartData(data.stigma, 'stigma'), config);
-        renderChart(ctxDiscrimination, processNonBiomedicalChartData(data.discrimination, 'discrimination'), config);
-        renderChart(ctxViolence, processNonBiomedicalChartData(data.violence, 'violence'), config);
+       // Check if each dataset has data, otherwise display a message
+       const stigmaData = processNonBiomedicalChartData(data.stigma, 'stigma');
+       if (stigmaData.datasets.length === 0) {
+           displayNoDataMessage('.graph7', 'Testing outcomes for stigma');
+       } else {
+           renderChart(ctxStigma, stigmaData, config);
+       }
+
+       const discriminationData = processNonBiomedicalChartData(data.discrimination, 'discrimination');
+       if (discriminationData.datasets.length === 0) {
+           displayNoDataMessage('.graph8', 'Testing outcomes for discrimination');
+       } else {
+           renderChart(ctxDiscrimination, discriminationData, config);
+       }
+
+       const violenceData = processNonBiomedicalChartData(data.violence, 'violence');
+       if (violenceData.datasets.length === 0) {
+           displayNoDataMessage('.graph9', 'Testing outcomes for violence');
+       } else {
+           renderChart(ctxViolence, violenceData, config);
+       }
 
     } catch (error) {
         console.error('Error fetching or processing data:', error);
+        displayNoDataMessage('.biomedical-container, .nonbiomedical-container'); 
     }
+}
+
+/**
+* Displays a message indicating no data available.
+* @param {string} selector - CSS selector for the container where the message should be displayed.
+* @param {string} reasonText - Reason text to display alongside the message.
+*/
+function displayNoDataMessage(selector, reasonText) {
+    const containers = document.querySelectorAll(selector);
+    containers.forEach(container => {
+        container.innerHTML = `
+            <p class="reason">${reasonText}</p>
+            <p class="message">No data available yet.</p>
+        `;
+    });
 }
