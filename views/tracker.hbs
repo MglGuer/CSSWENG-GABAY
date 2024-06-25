@@ -49,22 +49,10 @@
             <span class="tooltip">History Log</span>
         </li>
         {{/if}}
-        <li>
-            <a href="/logout">
-                <i class="bx bxs-log-out"></i>
-                <span class="nav-item">Logout</span>
-            </a>
-            <span class="tooltip">Logout</span>
-        </li>
+        {{>logout}}
     </ul>
 
-    <div class="user">
-        <img src="{{user.icon}}" alt="gabay org" class="user-img">
-        <div class="div">
-            <p class="bold">{{user.name}}</p>
-            <p>{{user.role}}</p>
-        </div>
-    </div>
+    {{>user}}
 </div>
 
 <div class="main-content">
@@ -264,7 +252,5 @@
         </form>
     </div>
 
-    <div class="footer">
-        <p>&copy; 2024 HIV Advocacy Database. All rights reserved.</p>
-    </div>
+   {{>footer}}
 </div>

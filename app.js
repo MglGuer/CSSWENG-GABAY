@@ -296,7 +296,7 @@ server.post('/forgot-password', async (req, res) => {
     }
 });
 
-// server for dashboard
+// server for dashboard page
 server.get('/dashboard', async (req, resp) => {
     try {
         // get db collection
@@ -331,6 +331,31 @@ server.get('/dashboard', async (req, resp) => {
     } catch (error) {
         console.error("Error fetching dashboard statistics:", error);
         res.status(500).send("Internal Server Error");
+    }
+});
+
+// server to get data for the dashboard
+server.get('/dashboard/data', async (req, resp) => {
+    try {
+        const patientCollection = client.db("test").collection("patients");
+
+        const data = await patientCollection.aggregate([
+            {
+                $facet: {
+                    genderTestResult: [{ $group: { _id: { gender: "$gender", test_result: "$biomedical.test_result" }, count: { $sum: 1 } } }],
+                    reason: [{ $group: { _id: { gender: "$gender", test_result: "$biomedical.test_result", reason: "$biomedical.reason" }, count: { $sum: 1 } } }],
+                    kvp: [{ $group: { _id: { gender: "$gender", test_result: "$biomedical.test_result", kvp: "$biomedical.kvp" }, count: { $sum: 1 } } }],
+                    testedBefore: [{ $group: { _id: { gender: "$gender", test_result: "$biomedical.test_result", tested_before: "$biomedical.tested_before" }, count: { $sum: 1 } } }],
+                    ageRange: [{ $group: { _id: { gender: "$gender", test_result: "$biomedical.test_result", age: "$biomedical.age_range" }, count: { $sum: 1 } } }],
+                    linkage: [{ $group: { _id: { gender: "$gender", test_result: "$biomedical.test_result", linkage: "$biomedical.linkage" }, count: { $sum: 1 } } }]
+                }
+            }
+        ]).toArray();
+
+        resp.json({ data: data[0] }); 
+    } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        resp.status(500).json({ error: "Internal Server Error" });
     }
 });
 

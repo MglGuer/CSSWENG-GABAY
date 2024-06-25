@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Handle URL response parameters for displaying messages or errors
     await handleResponse();
 
+    // Fetch data and initialize charts after the DOM is fully loaded
+    await initializeCharts();
+
     /**
      * Event listener for the sidebar toggle button.
      * Toggles the active class on the sidebar when the button is clicked.
@@ -316,16 +319,16 @@ async function handleResponse() {
  * @param {HTMLElement} button - The button that triggers the toggle.
  */
 function toggleGraphs(button) {
-    const containerGraphs = button.closest('.container-graphs');
-    const container = containerGraphs.querySelector('.container');
-    const filter = containerGraphs.querySelector('.filter');
+    const container = button.closest('.container');
+    const graphContainer = container.querySelector('.biomedical-container') || container.querySelector('.nonbiomedical-container');
+    const filter = container.querySelector('.filter');
     
-    if (container.style.display === 'none') {
-        container.style.display = 'grid';
+    if (graphContainer.style.display === 'none') {
+        graphContainer.style.display = 'grid';
         filter.style.display = 'flex'; 
         button.querySelector('i').classList.replace('bxs-chevron-up', 'bxs-chevron-down');
     } else {
-        container.style.display = 'none';
+        graphContainer.style.display = 'none';
         filter.style.display = 'none';
         button.querySelector('i').classList.replace('bxs-chevron-down', 'bxs-chevron-up');
     }
@@ -446,4 +449,156 @@ function validateForm() {
     }
 
     document.getElementById("tracker-form").submit(); 
+}
+
+/**
+ * Fetches data from the given endpoint.
+ * @async
+ * @param {string} endpoint - The URL to fetch data from.
+ * @returns {Promise<Object|null>} The fetched data or null in case of an error.
+ */
+async function fetchData(endpoint) {
+    try {
+        const response = await fetch(endpoint);
+        const responseData = await response.json();
+        return responseData.data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return null;
+    }
+}
+
+/**
+ * Processes data for a specific chart.
+ * @param {Array} array - The data array to process.
+ * @param {string} labelKey - The key used for labeling data points.
+ * @returns {Object} An object containing labels and datasets for the chart.
+ */
+function processChartData(array, labelKey) {
+    if (!Array.isArray(array) || array.length === 0) {
+        console.error('Expected a non-empty array for data processing:', array);
+        return { labels: [], datasets: [] };
+    }
+
+    const labels = [];
+    const datasets = [];
+
+    array.forEach(item => {
+        const { gender, test_result } = item._id;
+        const count = item.count;
+        const label = item._id[labelKey];
+
+        if (!gender || !test_result) {
+            console.error('Missing gender or test_result in data:', item._id);
+            return; // skip this item if gender or test_result is missing
+        }
+
+        const datasetLabel = `${test_result} ${gender}`;
+        let dataset = datasets.find(ds => ds.label === datasetLabel);
+
+        if (!dataset) {
+            dataset = {
+                label: datasetLabel,
+                backgroundColor: getColor(test_result, gender),
+                data: []
+            };
+            datasets.push(dataset);
+        }
+
+        const labelIndex = labels.indexOf(label);
+        if (labelIndex === -1) {
+            labels.push(label);
+            datasets.forEach(ds => ds.data.push(0));
+            dataset.data[labels.indexOf(label)] = count;
+        } else {
+            dataset.data[labelIndex] = count;
+        }
+    });
+
+    return { labels, datasets };
+}
+
+/**
+ * Determines the color based on test_result and gender.
+ * @param {string} test_result - The test result (e.g., "Positive", "Negative").
+ * @param {string} gender - The gender (e.g., "Male", "Female", "Transgender").
+ * @returns {string} The corresponding color in rgba format.
+ */
+function getColor(test_result, gender) {
+    const colors = {
+        Positive: {
+            Male: 'rgba(255, 99, 132, 0.5)',
+            Female: 'rgba(255, 206, 86, 0.5)',
+            Transgender: 'rgba(153, 102, 255, 0.5)'
+        },
+        Negative: {
+            Male: 'rgba(54, 162, 235, 0.5)',
+            Female: 'rgba(75, 192, 192, 0.5)',
+            Transgender: 'rgba(255, 159, 64, 0.5)'
+        }
+    };
+
+    // check if test_result and gender are valid keys in colors object
+    if (colors[test_result] && colors[test_result][gender]) {
+        return colors[test_result][gender];
+    } else {
+        // return a default color if combination is not recognized
+        return 'rgba(0, 0, 0, 0.5)';
+    }
+}
+
+/**
+ * Renders a chart using Chart.js.
+ * @param {CanvasRenderingContext2D} ctx - The context of the canvas element to render the chart on.
+ * @param {Object} data - The data for the chart.
+ * @param {Object} config - The configuration options for the chart.
+ */
+function renderChart(ctx, data, config) {
+    new Chart(ctx, { ...config, data });
+}
+
+/**
+ * Initializes charts by fetching data and rendering them.
+ */
+async function initializeCharts() {
+    try {
+        const data = await fetchData('/dashboard/data');
+        if (!data) return; // exit if data fetch failed
+
+        const config = {
+            type: 'bar',
+            data: {},
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        };
+
+        // Get chart contexts
+        const ctxReason = document.getElementById('chartReason').getContext('2d');
+        const ctxKVP = document.getElementById('chartKVP').getContext('2d');
+        const ctxTestedBefore = document.getElementById('chartTestedBefore').getContext('2d');
+        const ctxAge = document.getElementById('chartAge').getContext('2d');
+        const ctxFirstTimeTesters = document.getElementById('chartFirstTimeTesters').getContext('2d');
+        const ctxLinkage = document.getElementById('chartLinkage').getContext('2d');
+
+        // Render charts
+        renderChart(ctxReason, processChartData(data.reason, 'reason'), config);
+        renderChart(ctxKVP, processChartData(data.kvp, 'kvp'), config);
+        renderChart(ctxTestedBefore, processChartData(data.testedBefore, 'tested_before'), config);
+        renderChart(ctxAge, processChartData(data.ageRange, 'age'), config);
+        renderChart(ctxFirstTimeTesters, processChartData(data.testedBefore.filter(item => item._id.tested_before === 'No'), 'tested_before'), config);
+        renderChart(ctxLinkage, processChartData(data.linkage, 'linkage'), config);
+
+    } catch (error) {
+        console.error('Error fetching or processing data:', error);
+    }
 }

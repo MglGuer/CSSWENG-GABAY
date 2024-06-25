@@ -49,22 +49,10 @@
             <span class="tooltip">History Log</span>
         </li>
         {{/if}}
-        <li>
-            <a href="/logout">
-                <i class="bx bxs-log-out"></i>
-                <span class="nav-item">Logout</span>
-            </a>
-            <span class="tooltip">Logout</span>
-        </li>
+        {{>logout}}
     </ul>
 
-    <div class="user">
-        <img src="{{user.icon}}" alt="gabay org" class="user-img">
-        <div class="div">
-            <p class="bold">{{user.name}}</p>
-            <p>{{user.role}}</p>
-        </div>
-    </div>
+     {{>user}}
 </div>
 
 <div class="main-content">
@@ -117,9 +105,9 @@
         </div>
     </div>
 
-    <div class="container-graphs">
+    <div class="container">
         <div class="headline-graphs">
-            Biomedical Patient Records Statistics
+            Biomedical Patient Records Statistcs
             <button class="toggle-button" onclick="toggleGraphs(this)">
                 <i class='bx bxs-chevron-up'></i>
             </button>
@@ -143,47 +131,93 @@
             <div class="yearly">Yearly</div>
         </div>
 
-        <div class="container">
+        <div class="biomedical-container">
             <div class="graph1">
                 <p class="reason">Testing outcomes by main reason for HIV Test</p>
                 <div class="chart">
-                    <canvas id="horizontalbarchart"></canvas>
+                    <canvas id="chartReason"></canvas>
                 </div>
             </div>
             <div class="graph2">
                 <p class="reason">Testing outcomes by Key or Vulnerable Population (KVP) at higher risk</p>
                 <div class="chart">
-                    <canvas id="horizontalbarchart2"></canvas>
+                    <canvas id="chartKVP"></canvas>
                 </div>
             </div>
             <div class="graph3">
                 <p class="reason">Testing outcomes for clients who were tested before (repeat testers)</p>
                 <div class="chart">
-                    <canvas id="barchart"></canvas>
+                    <canvas id="chartTestedBefore"></canvas>
                 </div>
             </div>
             <div class="graph4">
                 <p class="reason">Testing outcomes by age</p>
                 <div class="chart">
-                    <canvas id="linechart"></canvas>
+                    <canvas id="chartAge"></canvas>
                 </div>
             </div>
             <div class="graph5">
                 <p class="reason">Testing outcomes for first time testers</p>
                 <div class="chart">
-                     <canvas id="horizontalbarchart3"></canvas>
+                    <canvas id="chartFirstTimeTesters"></canvas>
                 </div>
             </div>
             <div class="graph6">
                 <p class="reason">Linkage for positive clients</p>
                 <div class="chart">
-                   <canvas id="linechart2"></canvas>
+                    <canvas id="chartLinkage"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="footer">
-        <p>&copy; 2024 HIV Advocacy Database. All rights reserved.</p>
+    <div class="container">
+        <div class="headline-graphs">
+            Nonbiomedical Patient Records Statistcs
+             <button class="toggle-button" onclick="toggleGraphs(this)">
+                <i class='bx bxs-chevron-up'></i>
+            </button>
+        </div>
+
+        <div class="filter">
+            <select class="monthly">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+            <div class="yearly">Yearly</div>
+        </div>
+
+        <div class="nonbiomedical-container">
+            <div class="graph7">
+                <p class="reason">Stigma</p>
+                <div class="chart">
+                    <canvas id=""></canvas>
+                </div>
+            </div>
+            <div class="graph8">
+                <p class="reason">Discrimination</p>
+                <div class="chart">
+                    <canvas id=""></canvas>
+                </div>
+            </div>
+            <div class="graph9">
+                <p class="reason">Violence</p>
+                <div class="chart">
+                    <canvas id=""></canvas>
+                </div>
+            </div>
+        </div>
     </div>
+
+   {{>footer}}
 </div>
