@@ -304,11 +304,11 @@ server.get('/dashboard', async (req, resp) => {
 
         // retrieve statistics from the patient collection
         const totalPatientsTested = await patientCollection.countDocuments();
-        const biomedicalPatientsTested = await patientCollection.countDocuments({ data_type: 'biomedical' });
-        const nonbiomedicalPatientsTested = await patientCollection.countDocuments({ data_type: 'nonbiomedical' });
-        const positivePatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Positive', data_type: 'biomedical' });
-        const negativePatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Negative', data_type: 'biomedical' });
-        const dnkPatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Do Not Know', data_type: 'biomedical' });
+        const biomedicalPatientsTested = await patientCollection.countDocuments({ data_type: 'Biomedical' });
+        const nonbiomedicalPatientsTested = await patientCollection.countDocuments({ data_type: 'Nonbiomedical' });
+        const positivePatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Positive', data_type: 'Biomedical' });
+        const negativePatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Negative', data_type: 'Biomedical' });
+        const dnkPatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Do Not Know', data_type: 'Biomedical' });
 
         resp.render('dashboard', {
             layout: 'index',
@@ -392,7 +392,7 @@ server.post('/add-record', async (req, res) => {
             encoder: req.session.username
         };
 
-        if (data_type === 'biomedical') {
+        if (data_type === 'Biomedical') {
             patientData.biomedical = {
                 location: location,
                 barangay: barangay,
@@ -404,7 +404,7 @@ server.post('/add-record', async (req, res) => {
                 kvp: vulnerable_population,
                 linkage: linkage
             };
-        } else if (data_type === 'nonbiomedical') {
+        } else if (data_type === 'Nonbiomedical') {
             patientData.nonbiomedical = {
                 stigma: stigma,
                 discrimination: discrimination,
@@ -546,8 +546,8 @@ server.get('/data', async (req, res) => {
         const nonBiomedicalPage = parseInt(req.query.nonBiomedicalPage) || 1;
 
         const patients = await patientModel.find().exec();
-        const biomedicalPatients = patients.filter(patient => patient.data_type === 'biomedical');
-        const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'nonbiomedical');
+        const biomedicalPatients = patients.filter(patient => patient.data_type === 'Biomedical');
+        const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'Nonbiomedical');
 
         const paginatedBiomedicalPatients = biomedicalPatients.slice((biomedicalPage - 1) * pageSize, biomedicalPage * pageSize);
         const paginatedNonBiomedicalPatients = nonBiomedicalPatients.slice((nonBiomedicalPage - 1) * pageSize, nonBiomedicalPage * pageSize);

@@ -66,11 +66,11 @@
                 <div class="field">
                     <label for="data_type" class="data-label">Is the data Biomedical or Non-biomedical?</label>
                     <label class="radio-option">
-                        <input type="radio" name="data_type" value="biomedical" onclick="toggleFields()" required>
+                        <input type="radio" name="data_type" value="Biomedical" onclick="toggleFields()" required>
                         <span>Biomedical</span>
                     </label>
                     <label class="radio-option">
-                        <input type="radio" name="data_type" value="nonbiomedical" onclick="toggleFields()" required>
+                        <input type="radio" name="data_type" value="Nonbiomedical" onclick="toggleFields()" required>
                         <span>Non-biomedical</span>
                     </label>
                 </div>
@@ -96,11 +96,11 @@
                     <div class="biomedicalfield"> 
                         <label for="location" class="data-label">Location:</label>
                         <label class="radio-option">
-                            <input type="radio" name="location" value="Caloocan" onclick="toggleLocationFields()">
+                            <input type="radio" name="location" value="Caloocan" onclick="toggleLocationFields()" required>
                             <span>Caloocan</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="location" value="Not in Caloocan" onclick="toggleLocationFields()">
+                            <input type="radio" name="location" value="Not in Caloocan" onclick="toggleLocationFields()" required>
                             <span>Not in Caloocan</span>
                         </label>
                     </div>
@@ -117,7 +117,7 @@
 
                     <div class="biomedicalfield">
                         <label for="age" class="data-label">Age:</label>  
-                        <select id="age" name="age" >
+                        <select id="age" name="age" required>
                             <option value="" disabled selected>Select age range</option>
                             <option value="0 to 18 months">0 to 18 months</option>
                             <option value="19 months to 9 years">19 months to 9 years</option>
@@ -134,11 +134,11 @@
                     <div class="biomedicalfield">
                         <label for="repeat" class="data-label">Has the person been tested before?</label>
                             <label class="radio-option">
-                                <input type="radio" name="tested" value="Yes" >
+                                <input type="radio" name="tested" value="Yes" required>
                                 <span>Yes (Has been tested before)</span>
                             </label>
                             <label class="radio-option">
-                                <input type="radio" name="tested" value="No" >
+                                <input type="radio" name="tested" value="No" required>
                                 <span>No (First Time Tester)</span>
                             </label>
                     </div>
@@ -146,22 +146,22 @@
                     <div class="biomedicalfield">
                         <label for="result" class="data-label">Test result: </label>
                             <label class="radio-option">
-                                <input type="radio" name="result" value="Positive" >
+                                <input type="radio" name="result" value="Positive" required>
                                 <span>Positive</span>
                             </label>
                             <label class="radio-option">
-                                <input type="radio" name="result" value="Negative" >
+                                <input type="radio" name="result" value="Negative" required>
                                 <span>Negative</span>
                             </label>
                             <label class="radio-option">
-                                <input type="radio" name="result" value="Do Not Know" >
+                                <input type="radio" name="result" value="Do Not Know" required>
                                 <span>Don't Know (For repeat testers)</span>
                             </label>
                     </div>
 
                     <div class="biomedicalfield">
                         <label for="reason-hiv" class="data-label">Reason for HIV test:</label>  
-                        <select id="reason-hiv" name="reason-hiv" >
+                        <select id="reason-hiv" name="reason-hiv" required>
                             <option value="" disabled selected>Select reason</option>
                             <option value="Unprotected Sex">Unprotected Sex</option>
                             <option value="Injectable Drugs">Use of injectable drugs</option>
@@ -180,7 +180,7 @@
 
                     <div class="biomedicalfield">
                         <label for="vulnerable-population" class="data-label">Key or Vulnerable Population (KVP) at higher risk</label>
-                        <select id="vulnerable-population" name="vulnerable-population" >
+                        <select id="vulnerable-population" name="vulnerable-population" required>
                             <option value="" disabled selected>Select population</option>
                             <option value="PWID">Person who injects drugs (PWID) or other needle sharing</option>
                             <option value="MSM">Gay and other Men having Sex with Men (MSM)</option>
@@ -200,7 +200,7 @@
 
                     <div class="biomedicalfield">
                         <label for="linkage" class="data-label">Linkage</label>
-                        <select id="linkage" name="linkage" >
+                        <select id="linkage" name="linkage" required>
                             <option value="" disabled selected>Select linkage</option>
                             <option value="Treatment facility">Linked to Treatment Facility</option>
                             <option value="Follow-up">Linkage not yet confirmed, under follow-up</option>
@@ -214,7 +214,7 @@
                 <div class="nonbiomedical-container-tracker">
                     <div class="nonbiomedicalfield">
                         <label for="stigma" class="data-label">Stigma:</label>
-                        <select id="stigma" name="stigma">
+                        <select id="stigma" name="stigma" required>
                             <option value="" disabled selected>Select category</option>
                             <option value="Public Stigma">Public Stigma</option>
                             <option value="Family Stigma">Family Stigma</option>
@@ -224,7 +224,7 @@
 
                     <div class="nonbiomedicalfield">
                         <label for="discrimination" class="data-label">Discrimination:</label>
-                        <select id="discrimination" name="discrimination">
+                        <select id="discrimination" name="discrimination" required>
                             <option value="" disabled selected>Select category</option>
                             <option value="Verbal Abuse">Verbal Abuse</option>
                             <option value="Physical Abuse">Physical Abuse</option>
@@ -234,7 +234,7 @@
 
                     <div class="nonbiomedicalfield">
                         <label for="violence" class="data-label">Violence:</label>
-                        <select id="violence" name="violence">
+                        <select id="violence" name="violence" required>
                             <option value="" disabled selected>Select category</option>
                             <option value="Economic Abuse">Economic Abuse</option>
                             <option value="Sexual Abuse">Sexual Abuse</option>

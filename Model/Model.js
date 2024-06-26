@@ -8,22 +8,32 @@ const mongoose = require('mongoose');
 
 // sub-schema for patient if the data is a biomedical patient record
 const biomedicalSchema = new mongoose.Schema({
-    location: { type: String },
-    barangay: { type: Number },
-    remarks: { type: String },
-    age_range: { type: String },
-    tested_before: { type: String },
-    test_result: { type: String },
-    reason: { type: String },
-    kvp: { type: String },
-    linkage: { type: String }
+    location: { type: String, enum: ['Caloocan', 'Not in Caloocan'], required: true },
+    barangay: { type: Number, min: 1, max: 188, required: function() {
+        return this.location === 'Caloocan'; // require barangay only if location is Caloocan
+    } },
+    remarks: { type: String,   required: function() {
+        return this.location === 'Not in Caloocan'; // require remarks only if location is Not in Caloocan
+    } },
+    age_range: { type: String, 
+            enum: ['0 to 18 months', '19 months to 9 years', '10 to 14 years', '15 to 19 years', '20 to 24 years', 
+                '25 to 29 years', '30 to 39 years', '40 to 49 years', '50-plus'] },
+    tested_before: { type: String, enum: ['Yes', 'No'] },
+    test_result: { type: String, enum: ['Positive', 'Negative', 'Do Not Know'] },
+    reason: { type: String, 
+            enum: ['Unprotected Sex', 'Injectable Drugs', 'Pregnancy', 'Exposed-child', 'PITC', 'Positve-partner',
+                'Rape', 'Bloodtransfusion', 'HCW', 'Administrative', 'History', 'No reason'] },
+    kvp: { type: String, 
+            enum: ['PWID', 'MSM', 'Transgenders', 'Sex-worker', 'Prisoner', 'Migrant', 'PWUD', 
+                'Uniformed forces', 'Sexual-partners', 'AGEW', 'PWD', 'PLHIV', 'Not disclosed'] },
+    linkage: {  type: String, enum: ['Treatment facility', 'Follow-up', 'Unconfirmed'] }
 }, { _id: false });
 
 // sub-schema for patient if the data is a nonbiomedical patient record
 const nonBiomedicalSchema = new mongoose.Schema({
-    stigma: { type: String },
-    discrimination: { type: String },
-    violence: { type: String }
+    stigma: { type: String, enum: ['Public Stigma', 'Family Stigma', 'Self-stigma'] },
+    discrimination: { type: String, enum: ['Verbal Abuse', 'Physical Abuse', 'Emotional Abuse'] },
+    violence: { type: String, enum: ['Economic Abuse', 'Sexual Abuse', 'Hate Crime'] }
 }, { _id: false });
 
 // main schema for patient
@@ -31,7 +41,7 @@ const patientSchema = new mongoose.Schema({
     data_type: { 
         type: String, 
         required: true,
-        enum: ['biomedical', 'nonbiomedical']
+        enum: ['Biomedical', 'Nonbiomedical']
     },
     gender: { 
         type: String,

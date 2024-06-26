@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                 console.log('Patient data type:', patient.data_type);
                 
-                if (patient.data_type === 'biomedical') {
+                if (patient.data_type === 'Biomedical') {
                     formContent += `
                     <div class="edit-biomedicalfield">
                         <label for="location" class="data-label">Location:</label>
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                             <option value="Unconfirmed" ${patient.biomedical.linkage === 'Unconfirmed' ? 'selected' : ''}>Linkage unconfirmed (after 3 months follow-up)</option>
                         </select>
                     </div>`;
-                } else if (patient.data_type === 'nonbiomedical') {
+                } else if (patient.data_type === 'Nonbiomedical') {
                     formContent += `
                     <div class="edit-nonbiomedicalfield">
                         <label for="stigma" class="data-label">Stigma:</label>
@@ -342,7 +342,7 @@ function toggleFields() {
     const biomedicalFields = document.querySelectorAll('.biomedicalfield, #barangay-field, #remarks-field');
     const nonbiomedicalFields = document.querySelectorAll('.nonbiomedicalfield');
 
-    if (dataType === 'biomedical') {
+    if (dataType === 'Biomedical') {
         biomedicalFields.forEach(field => {
             field.style.display = 'flex';
             const inputs = field.querySelectorAll('input, select');
@@ -355,7 +355,7 @@ function toggleFields() {
             const inputs = field.querySelectorAll('input, select');
             inputs.forEach(input => input.required = false);
         });
-    } else if (dataType === 'nonbiomedical') {
+    } else if (dataType === 'Nonbiomedical') {
         biomedicalFields.forEach(field => {
             field.style.display = 'none';
             const inputs = field.querySelectorAll('input, select');
@@ -377,7 +377,7 @@ function toggleLocationFields() {
     const barangayField = document.getElementById('barangay-field');
     const remarksField = document.getElementById('remarks-field');
 
-    if (location && document.querySelector('input[name="data_type"]:checked').value === 'biomedical') {
+    if (location && document.querySelector('input[name="data_type"]:checked').value === 'Biomedical') {
         if (location.value === 'Caloocan') {
             barangayField.style.display = 'flex';
             remarksField.style.display = 'none';
@@ -450,8 +450,28 @@ function validateForm() {
         }
     }
 
-    // check if all required fields are filled
-    var requiredFields = document.querySelectorAll('#tracker-form [required]');
+    // Check location-specific fields based on chosen location
+    var location = document.querySelector('input[name="location"]:checked');
+    if (location) {
+        if (location.value === "Caloocan") {
+            var barangay = document.getElementById('barangay').value;
+            if (!barangay) {
+                alert("Please fill the Barangay field.");
+                return false;
+            }
+            document.getElementById('remarks').removeAttribute('required');
+        } else if (location.value === "Not in Caloocan") {
+            var remarks = document.getElementById('remarks').value;
+            if (!remarks) {
+                alert("Please fill the Remarks field.");
+                return false;
+            }
+            document.getElementById('barangay').removeAttribute('required');
+        }
+    }
+
+    // Check if all required fields are filled (excluding location-specific fields already validated)
+    var requiredFields = document.querySelectorAll('#tracker-form [required]:not(#barangay, #remarks)');
     for (var i = 0; i < requiredFields.length; i++) {
         if (!requiredFields[i].value || (requiredFields[i].type === 'radio' && !document.querySelector(`input[name="${requiredFields[i].name}"]:checked`))) {
             alert("Please fill all required fields.");
@@ -459,8 +479,10 @@ function validateForm() {
         }
     }
 
-    document.getElementById("tracker-form").submit(); 
+    // Submit the form if all validations pass
+    document.getElementById("tracker-form").submit();
 }
+
 
 /**
  * Fetches data from the given endpoint.
@@ -593,17 +615,22 @@ function processNonBiomedicalChartData(array, labelKey) {
 function getBioColor(test_result, gender) {
     const colors = {
         Positive: {
-            Male: 'rgba(66, 165, 245, 0.5)',    
-            Female: 'rgba(255, 105, 180, 0.5)', 
-            Transgender: 'rgba(255, 152, 0, 0.5)'
+            Male: 'rgba(0, 150, 136, 0.3)',    
+            Female: 'rgba(233, 30, 99, 0.3)', 
+            Transgender: 'rgba(225, 152, 0, 0.3)'
         },
         Negative: {
-            Male: 'rgba(66, 165, 245, 0.5)',    
+            Male: 'rgba(159, 244, 245, 0.7)',    
+            Female: 'rgba(233, 30, 99, 0.7)', 
+            Transgender: 'rgba(255, 152, 0, 0.7)'
+        },
+        'Do Not Know': {
+            Male: 'rgba(95, 125, 139, 0.3)',    
             Female: 'rgba(255, 105, 180, 0.5)', 
             Transgender: 'rgba(255, 152, 0, 0.5)'
         }
     };
-
+    
     // check if test_result and gender are valid keys in colors object
     if (colors[test_result] && colors[test_result][gender]) {
         return colors[test_result][gender];
@@ -620,9 +647,9 @@ function getBioColor(test_result, gender) {
  */
 function getNonbioColor(gender) {
     const colors = {
-        Male: 'rgba(66, 165, 245, 0.5)',    
-        Female: 'rgba(255, 105, 180, 0.5)', 
-        Transgender: 'rgba(255, 152, 0, 0.5)'
+        Male: 'rgba(0, 150, 136, 0.3)',    
+        Female: 'rgba(233, 30, 99, 0.3)', 
+        Transgender: 'rgba(225, 152, 0, 0.3)'
     };
 
     if (colors[gender]) {
