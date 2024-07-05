@@ -10,14 +10,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     await initializeCharts();
         
     /**
-     * Filters biomedical graph by month
+     * Filters biomedical graphs by month
      */
+    let bioMonthValue = undefined; 
     let biomedicalMonthly = document.querySelector('#biomedicalMonthly');
     biomedicalMonthly.onchange = async function () {
-        let value = biomedicalMonthly.value;    
+        bioMonthValue = biomedicalMonthly.value;    
         try{
-            alert('Touch the sky');
-            await initializeCharts(value,null);
+            console.log('The month is ' + bioMonthValue);
+            await initializeCharts(bioMonthValue,bioYearValue);
         }
         catch(error) {
                 console.error('Error fetching patient data:', error);
@@ -27,25 +28,27 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     /**
      * Filters biomedical graph by year
-    //  */
-    // // let biomedicalYearly = document.querySelector('#biomedicalYearly');
-    // // biomedicalYearly.onchange = function () {
-    // //     try{
-    // //         alert('Touch the sky');
-    // //     }
-    // //     catch(error) {
-    // //             console.error('Error fetching patient data:', error);
-    // //             alert('An error occurred while filtering biomedical patient data.');
-    // //         }
-    // // };
+     */
+    let bioYearValue = undefined; 
+    let biomedicalYearly = document.querySelector('#biomedicalYearly');
+    biomedicalYearly.onchange = async function () {
+        try{
+            console.log('The year is ' + bioYearValue);
+            await initializeCharts(bioMonthValue,bioYearValue);
+        }
+        catch(error) {
+                console.error('Error fetching patient data:', error);
+                alert('An error occurred while filtering biomedical patient data.');
+            }
+    };
 
     /**
      * Filters nonbiomedical graph by month
      */
-    let nonbiomeidcalMonthly = document.querySelector('#nonbiomedicalMonthly');
-    nonbiomeidcalMonthly.onchange = function () {
+    let nonbiomedicalMonthly = document.querySelector('#nonbiomedicalMonthly');
+    nonbiomedicalMonthly.onchange = function () {
         try{
-            alert('Dont touch the sky');
+            console.log('nonBio month is');
         }
         catch(error) {
                 console.error('Error fetching patient data:', error);
@@ -59,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // // let nonbiomeidcalYearly = document.querySelector('#nonbiomedicalYearly');
     // // nonbiomeidcalYearly.onchange = function () {
     // //     try{
-    // //         alert('Dont touch the sky');
+    // //         alert('nonbioYear is');
     // //     }
     // //     catch(error) {
     // //             console.error('Error fetching patient data:', error);
@@ -730,11 +733,13 @@ function renderChart(ctx, data, config) {
 /**
  * Initializes charts by fetching data and rendering them.
  */
-async function initializeCharts(month=0,year=0) {
+async function initializeCharts(bioMonth=0,bioYear=0,nonbioMonth=0,nonbioYear=0) {
     try {
-        monthQuery = month !== 0 ? `?month=${month}` : ''
-        yearQuery = year !== 0 ? `?year=${year}`: ''
-        queryParams = `${monthQuery}${yearQuery}`
+        bioMonthQuery = bioMonth !== 0 ? `?bioMonth=${bioMonth}` : ''
+        bioYearQuery = bioYear !== 0 ? `?bioYear=${bioYear}`: ''
+        nonbioMonthQuery =
+        nonbioYearQuery =
+        queryParams = `${bioMonthQuery}${bioYearQuery}`
 
 
         const data = await fetchData(`/dashboard/data${queryParams}`);
