@@ -317,7 +317,7 @@ server.get('/dashboard', async (req, resp) => {
                 name: req.session.username,
                 email: req.session.email,
                 role: req.session.role,
-                icon: req.session.userIcon
+                userIcon: req.session.userIcon
             },
             statistics: {
                 totalPatientsTested: totalPatientsTested,
@@ -362,6 +362,16 @@ server.get('/dashboard/data', async (req, resp) => {
     }
 });
 
+// server.get('', async (req,resp)=>{
+//     try{
+
+//     }
+//     catch (error) {
+//         console.error("Error fetching dashboard data:", error);
+//         resp.status(500).json({ error: "Internal Server Error" });
+//     }
+// });
+
 // server for tracker
 server.get('/tracker', (req,resp) => {
     resp.render('tracker',{
@@ -371,7 +381,7 @@ server.get('/tracker', (req,resp) => {
             name: req.session.username,
             email: req.session.email,
             role: req.session.role,
-            icon: req.session.userIcon
+            userIcon: req.session.userIcon
         }
     });
 });
@@ -523,7 +533,7 @@ server.get('/history', async (req, res) => {
                 name: req.session.username,
                 email: req.session.email,
                 role: req.session.role,
-                icon: req.session.userIcon
+                userIcon: req.session.userIcon
             },
             loginHistory: loginHistory,
             actionHistory: actionHistory,
@@ -562,7 +572,7 @@ server.get('/data', async (req, res) => {
                 name: req.session.username,
                 email: req.session.email,
                 role: req.session.role,
-                icon: req.session.userIcon
+                userIcon: req.session.userIcon
             },
             paginatedBiomedicalPatients, 
             paginatedNonBiomedicalPatients,

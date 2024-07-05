@@ -8,6 +8,64 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Fetch data and initialize charts after the DOM is fully loaded
     await initializeCharts();
+        
+    /**
+     * Filters biomedical graph by month
+     */
+    let biomedicalMonthly = document.querySelector('#biomedicalMonthly');
+    biomedicalMonthly.onchange = async function () {
+        let value = biomedicalMonthly.value;    
+        try{
+            alert('Touch the sky');
+            await initializeCharts(value,null);
+        }
+        catch(error) {
+                console.error('Error fetching patient data:', error);
+                alert('An error occurred while filtering biomedical patient data.');
+            }
+    };
+
+    /**
+     * Filters biomedical graph by year
+    //  */
+    // // let biomedicalYearly = document.querySelector('#biomedicalYearly');
+    // // biomedicalYearly.onchange = function () {
+    // //     try{
+    // //         alert('Touch the sky');
+    // //     }
+    // //     catch(error) {
+    // //             console.error('Error fetching patient data:', error);
+    // //             alert('An error occurred while filtering biomedical patient data.');
+    // //         }
+    // // };
+
+    /**
+     * Filters nonbiomedical graph by month
+     */
+    let nonbiomeidcalMonthly = document.querySelector('#nonbiomedicalMonthly');
+    nonbiomeidcalMonthly.onchange = function () {
+        try{
+            alert('Dont touch the sky');
+        }
+        catch(error) {
+                console.error('Error fetching patient data:', error);
+                alert('An error occurred while filtering nonbiomedical patient data.');
+            }
+    };
+    
+    /**
+    * Filters nonbiomedical graph by year
+    // */
+    // // let nonbiomeidcalYearly = document.querySelector('#nonbiomedicalYearly');
+    // // nonbiomeidcalYearly.onchange = function () {
+    // //     try{
+    // //         alert('Dont touch the sky');
+    // //     }
+    // //     catch(error) {
+    // //             console.error('Error fetching patient data:', error);
+    // //             alert('An error occurred while filtering nonbiomedical patient data.');
+    // //         }
+    // // };
 
     /**
      * Event listener for the sidebar toggle button.
@@ -672,9 +730,14 @@ function renderChart(ctx, data, config) {
 /**
  * Initializes charts by fetching data and rendering them.
  */
-async function initializeCharts() {
+async function initializeCharts(month=0,year=0) {
     try {
-        const data = await fetchData('/dashboard/data');
+        monthQuery = month !== 0 ? `?month=${month}` : ''
+        yearQuery = year !== 0 ? `?year=${year}`: ''
+        queryParams = `${monthQuery}${yearQuery}`
+
+
+        const data = await fetchData(`/dashboard/data${queryParams}`);
         if (!data) {
             displayNoDataMessage('.biomedical-container, .nonbiomedical-container'); // display message if no data fetched
             return;
@@ -794,3 +857,5 @@ function displayNoDataMessage(selector, reasonText) {
         `;
     });
 }
+
+
