@@ -10,15 +10,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     await initializeCharts();
         
     /**
-     * Filters biomedical graphs by month
+     * Filters graphs by month
      */
-    let bioMonthValue = undefined; 
-    let biomedicalMonthly = document.querySelector('#biomedicalMonthly');
-    biomedicalMonthly.onchange = async function () {
-        bioMonthValue = biomedicalMonthly.value;    
+    let monthValue = undefined; 
+    let monthlyFilter = document.querySelector('#monthlyFilter');
+    monthlyFilter.onchange = async function () {
+        monthValue = monthlyFilter.value;    
         try{
-            console.log('The month is ' + bioMonthValue);
-            await initializeCharts(bioMonthValue,bioYearValue,nonbioMonthValue,nonbioYearValue);
+            console.log('The month is ' + monthValue);
+            await initializeCharts(monthValue,yearValue);
         }
         catch(error) {
                 console.error('Error fetching patient data:', error);
@@ -27,53 +27,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     };
 
     /**
-     * Filters biomedical graph by year
+     * Filters graphs by year
      */
-    let bioYearValue = undefined; 
-    let biomedicalYearly = document.querySelector('#biomedicalYearly');
-    biomedicalYearly.onchange = async function () {
-        bioYearValue = biomedicalYearly.value;
+    let yearValue = undefined; 
+    let yearlyFilter = document.querySelector('#yearlyFilter');
+    yearlyFilter.onchange = async function () {
+        yearValue = yearlyFilter.value;
         try{
-            console.log('The year is ' + bioYearValue);
-            await initializeCharts(bioMonthValue,bioYearValue,nonbioMonthValue,nonbioYearValue);
+            console.log('The year is ' + yearValue);
+            await initializeCharts(monthValue,yearValue);
         }
         catch(error) {
                 console.error('Error fetching patient data:', error);
                 alert('An error occurred while filtering biomedical patient data.');
-            }
-    };
-
-    /**
-     * Filters nonbiomedical graph by month
-     */
-    let nonbioMonthValue = undefined; 
-    let nonbiomedicalMonthly = document.querySelector('#nonbiomedicalMonthly');
-    nonbiomedicalMonthly.onchange = async function () {
-        nonbioMonthValue = nonbiomedicalMonthly.value;
-        try{
-            console.log('nonBio month is ' + nonbioMonthValue);
-            await initializeCharts(bioMonthValue,bioYearValue,nonbioMonthValue,nonbioYearValue);
-        }
-        catch(error) {
-                console.error('Error fetching patient data:', error);
-                alert('An error occurred while filtering nonbiomedical patient data.');
-            }
-    };
-    
-    /**
-    * Filters nonbiomedical graph by year
-    */
-    let nonbioYearValue = undefined; 
-    let nonbiomedicalYearly = document.querySelector('#nonbiomedicalYearly');
-    nonbiomedicalYearly.onchange = async function () {
-        nonbioYearValue = nonbiomedicalYearly.value;
-        try{
-            console.log('nonBio Year is ' + nonbioYearValue);
-            await initializeCharts(bioMonthValue,bioYearValue,nonbioMonthValue,nonbioYearValue);
-        }
-        catch(error) {
-                console.error('Error fetching patient data:', error);
-                alert('An error occurred while filtering nonbiomedical patient data.');
             }
     };
 
@@ -751,14 +717,12 @@ function renderChart(ctx, data, config) {
 /**
  * Initializes charts by fetching data and rendering them.
  */
-async function initializeCharts(bioMonth=0,bioYear=0,nonbioMonth=0,nonbioYear=0) {
+async function initializeCharts(monthly=0,yearly=0) {
     try {
-        bioMonthQuery = bioMonth !== 0 ? `?bioMonth=${bioMonth}` : ''
-        bioYearQuery = bioYear !== 0 ? `?bioYear=${bioYear}`: ''
-        nonbioMonthQuery = nonbioMonth !== 0 ? `?nonbioMonth=${nonbioMonth}`: ''
-        nonbioYearQuery = nonbioYear !== 0 ? `?nonbioYear=${nonbioYear}`: ''
-        
-        queryParams = `${bioMonthQuery}${bioYearQuery}${nonbioMonthQuery}${nonbioYearQuery}`
+        monthlyQuery = monthly !== 0 ? `monthly=${monthly}` : ''
+        yearlyQuery = yearly !== 0 ? `yearly=${yearly}`: ''
+        connector1 = monthly !== 0 && yearly !== 0 ? `&`: ''
+        queryParams = `?${monthlyQuery}${connector1}${yearlyQuery}`
 
         const data = await fetchData(`/dashboard/data${queryParams}`);
         if (!data) {
@@ -832,7 +796,7 @@ async function initializeCharts(bioMonth=0,bioYear=0,nonbioMonth=0,nonbioYear=0)
 
         const ageData = processBiomedicalChartData(data.ageRange, 'age');
         if (ageData.datasets.length === 0) {
-            displayNoDataMessage('.graph2', 'Testing outcomes by age');
+            displayNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
         } else {
             if (bioChart4 != undefined){
                 bioChart4.destroy();
@@ -845,7 +809,7 @@ async function initializeCharts(bioMonth=0,bioYear=0,nonbioMonth=0,nonbioYear=0)
 
         const firstTimeTestersData = processBiomedicalChartData(data.testedBefore.filter(item => item._id.tested_before === 'No'), 'tested_before');
         if (firstTimeTestersData.datasets.length === 0) {
-            displayNoDataMessage('.graph4', 'Testing outcomes for first time testers');
+            displayNoDataMessage('.graph4', 'Testing outcomes for first time testers','chartFirstTimeTesters');
         } else {
             if (bioChart5 != undefined){
                 bioChart5.destroy();
@@ -858,7 +822,7 @@ async function initializeCharts(bioMonth=0,bioYear=0,nonbioMonth=0,nonbioYear=0)
 
         const linkageData = processBiomedicalChartData(data.linkage, 'linkage');
         if (linkageData.datasets.length === 0) {
-            displayNoDataMessage('.graph6', 'Linkage for positive clients');
+            displayNoDataMessage('.graph6', 'Linkage for positive clients','chartLinkage');
         } else {
             if (bioChart6 != undefined){
                 bioChart6.destroy();
@@ -931,7 +895,7 @@ function displayNoDataMessage(selector, reasonText, targetId) {
         container.innerHTML = `
             <p class="reason">${reasonText}</p>
             <p class="message">No data available yet.</p>
-            <div class="chart" hidden>
+            <div class="chart">
                 <canvas id="${targetId}"></canvas>
             </div>
         `;

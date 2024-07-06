@@ -343,107 +343,133 @@ server.get('/dashboard', async (req, resp) => {
 server.get('/dashboard/data', async (req, resp) => {
     try {
         const patientCollection = client.db("test").collection("patients");
-        console.log(req.query.bioMonth);
+        const monthly = parseInt(req.query.monthly);
+        const yearly = parseInt(req.query.yearly);
+        console.log("monthly: " + monthly);
+        console.log("yearly: " +yearly);
+
+        //if there is monthly
+        const filterMonth = monthly > 0 || monthly < 13?
+        [
+            {     
+                $match: {
+                    $expr:{$eq: ["$filterMonth",monthly]}
+                }
+            }
+        ]
+        : [];
+
+        const filterYear = !isNaN(yearly)?
+        [
+            {     
+                $match: {
+                    $expr:{$eq: ["$filterYear",yearly]}
+                }
+            }
+        ]
+        : [];
+
         const data = await patientCollection.aggregate([
             {
-                $facet: {
-                    genderTestResult: 
-                    [
-                        {
-                            $group: { 
-                                _id: { gender: "$gender", test_result: "$biomedical.test_result", month: {$month: "$date_encoded"}, year: {$year: "$date_encoded"}},
-                                count: { $sum: 1 } 
-                            }
-                        },
-                        {
-                            $match: {
-                                month: req.query.bioMonth
-                            }
-                        }
-                    ],
-                    
-                    reason: 
-                    [
-                        { 
-                            $group: { 
-                                _id: { gender: "$gender", test_result: "$biomedical.test_result", reason: "$biomedical.reason" }, 
-                                count: { $sum: 1 } 
-                            } 
-                        }
-                    ],
-
-                    kvp: 
-                    [
-                        { 
-                            $group: { 
-                                _id: { gender: "$gender", test_result: "$biomedical.test_result", kvp: "$biomedical.kvp" }, 
-                                count: { $sum: 1 } 
-                            } 
-                        }
-                    ],
-
-                    testedBefore: 
-                    [
-                        { 
-                            $group: { 
-                                _id: { gender: "$gender", test_result: "$biomedical.test_result", tested_before: "$biomedical.tested_before" }, 
-                                count: { $sum: 1 } 
-                            } 
-                        }
-                    ],
-
-                    ageRange: 
-                    [
-                        { 
-                            $group: { 
-                                _id: { gender: "$gender", test_result: "$biomedical.test_result", age: "$biomedical.age_range" }, 
-                                count: { $sum: 1 } 
-                            } 
-                        }
-                    ],
-
-                    linkage: 
-                    [
-                        { 
-                            $group: { 
-                                _id: { gender: "$gender", test_result: "$biomedical.test_result", linkage: "$biomedical.linkage" }, 
-                                count: { $sum: 1 } 
-                            } 
-                        }
-                    ],
-                    stigma: 
-                    [
-                        { 
-                            $group: { 
-                                _id: { gender: "$gender", stigma: "$nonbiomedical.stigma" }, 
-                                count: { $sum: 1 } 
-                            }
-                        }
-                    ],
-
-                    discrimination: 
-                    [
-                        { 
-                            $group: { _id: { gender: "$gender", discrimination: "$nonbiomedical.discrimination" }, 
-                            count: { $sum: 1 } 
-                            } 
-                        }
-                    ],
-                    
-                    violence: 
-                    [
-                        { 
-                            $group: { _id: { gender: "$gender", violence: "$nonbiomedical.violence" }, 
-                            count: { $sum: 1 } 
-                            } 
-                        }
-                    ]
+                $addFields: {
+                    filterMonth: {$month:"$date_encoded"},
+                    filterYear: {$year:"$date_encoded"}
                 }
+            },
+            ...filterMonth,
+            ...filterYear,
+            {$facet: {
+                genderTestResult: 
+                [
+                    {
+                        $group: { 
+                            _id: { gender: "$gender", test_result: "$biomedical.test_result"},
+                            count: { $sum: 1 } 
+                        }
+                    }
+                ],
+                
+                reason: 
+                [   
+                    { 
+                        $group: { 
+                            _id: { gender: "$gender", test_result: "$biomedical.test_result", reason: "$biomedical.reason" }, 
+                            count: { $sum: 1 } 
+                        } 
+                    }
+                ],
 
-            }
+                kvp: 
+                [   
+                    { 
+                        $group: { 
+                            _id: { gender: "$gender", test_result: "$biomedical.test_result", kvp: "$biomedical.kvp" }, 
+                            count: { $sum: 1 } 
+                        } 
+                    }
+                ],
+
+                testedBefore: 
+                [   
+                    { 
+                        $group: { 
+                            _id: { gender: "$gender", test_result: "$biomedical.test_result", tested_before: "$biomedical.tested_before" }, 
+                            count: { $sum: 1 } 
+                        } 
+                    }
+                ],
+
+                ageRange: 
+                [   
+                    { 
+                        $group: { 
+                            _id: { gender: "$gender", test_result: "$biomedical.test_result", age: "$biomedical.age_range" }, 
+                            count: { $sum: 1 } 
+                        } 
+                    }
+                ],
+
+                linkage: 
+                [
+                    { 
+                        $group: { 
+                            _id: { gender: "$gender", test_result: "$biomedical.test_result", linkage: "$biomedical.linkage" }, 
+                            count: { $sum: 1 } 
+                        } 
+                    }
+                ],
+                stigma: 
+                [   
+                    { 
+                        $group: { 
+                            _id: { gender: "$gender", stigma: "$nonbiomedical.stigma" }, 
+                            count: { $sum: 1 } 
+                        }
+                    }
+                ],
+
+                discrimination: 
+                [   
+                    { 
+                        $group: { _id: { gender: "$gender", discrimination: "$nonbiomedical.discrimination" }, 
+                        count: { $sum: 1 } 
+                        } 
+                    }
+                ],
+                
+                violence: 
+                [   
+                    { 
+                        $group: { _id: { gender: "$gender", violence: "$nonbiomedical.violence" }, 
+                        count: { $sum: 1 } 
+                        } 
+                    }
+                ]
+            }}
         ]).toArray();
 
-        resp.json({ data: data[0] }); 
+
+        resp.json({data: data[0]}); 
     } catch (error) {
         console.error("Error fetching dashboard data:", error);
         resp.status(500).json({ error: "Internal Server Error" });

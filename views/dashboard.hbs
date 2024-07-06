@@ -105,36 +105,37 @@
         </div>
     </div>
 
+    <div class="filter">
+        <p style="font-size:24px;font-weight:bold;margin-right:5%;margin-left:5%">Filters: </p>
+        <select class="monthly" id="monthlyFilter">
+            <option selected hidden>Monthly</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+        <select class="yearly" id="yearlyFilter">
+            <option selected hidden>Yearly</option>
+            {{#each year}}
+            <option value="{{this}}">{{this}}</option>
+            {{/each}}
+        </select>
+    </div>
+
     <div class="container">
         <div class="headline-graphs">
             Biomedical Patient Records Statistcs
             <button class="toggle-button" onclick="toggleGraphs(this)">
                 <i class='bx bxs-chevron-up'></i>
             </button>
-        </div>
-
-        <div class="filter">
-            <select class="monthly" id="biomedicalMonthly">
-                <option selected hidden>Monthly</option>
-                <option value="1">January</option>
-                <option value="2">February</option>
-                <option value="3">March</option>
-                <option value="4">April</option>
-                <option value="5">May</option>
-                <option value="6">June</option>
-                <option value="7">July</option>
-                <option value="8">August</option>
-                <option value="9">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-            </select>
-            <select class="yearly" id="biomedicalYearly">
-                <option selected hidden>Yearly</option>
-                {{#each year}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-            </select>
         </div>
 
         <div class="biomedical-container">
@@ -184,30 +185,6 @@
              <button class="toggle-button" onclick="toggleGraphs(this)">
                 <i class='bx bxs-chevron-up'></i>
             </button>
-        </div>
-
-        <div class="filter">
-            <select class="monthly" id="nonbiomedicalMonthly"> 
-                <option selected hidden>Monthly</option>
-                <option value="1">January</option>
-                <option value="2">February</option>
-                <option value="3">March</option>
-                <option value="4">April</option>
-                <option value="5">May</option>
-                <option value="6">June</option>
-                <option value="7">July</option>
-                <option value="8">August</option>
-                <option value="9">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-            </select>
-            <select class="yearly" id="nonbiomedicalYearly">
-                <option selected hidden>Yearly</option>
-                {{#each year}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-            </select>
         </div>
 
         <div class="nonbiomedical-container">
