@@ -331,7 +331,7 @@ server.get('/dashboard', async (req, resp) => {
                 negativePatientsTested: negativePatientsTested,
                 dnkPatientsTested: dnkPatientsTested
             },
-            year: year.filter((item,index) => year.indexOf(item) === index)
+            year: year.filter((item,index) => year.indexOf(item) === index).sort((a,b)=>b-a)
         });
     } catch (error) {
         console.error("Error fetching dashboard statistics:", error);
