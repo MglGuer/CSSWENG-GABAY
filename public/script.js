@@ -727,6 +727,17 @@ function getNonbioColor(gender) {
     }
 }
 
+//declaring charts
+let bioChart1;
+let bioChart2;
+let bioChart3;
+let bioChart4;
+let bioChart5;
+let bioChart6;
+let nonbioChart1;
+let nonbioChart2;
+let nonbioChart3;
+
 /**
  * Renders a chart using Chart.js.
  * @param {CanvasRenderingContext2D} ctx - The context of the canvas element to render the chart on.
@@ -734,7 +745,7 @@ function getNonbioColor(gender) {
  * @param {Object} config - The configuration options for the chart.
  */
 function renderChart(ctx, data, config) {
-    new Chart(ctx, { ...config, data });
+        return new Chart(ctx, { ...config, data });
 }
 
 /**
@@ -748,7 +759,6 @@ async function initializeCharts(bioMonth=0,bioYear=0,nonbioMonth=0,nonbioYear=0)
         nonbioYearQuery = nonbioYear !== 0 ? `?nonbioYear=${nonbioYear}`: ''
         
         queryParams = `${bioMonthQuery}${bioYearQuery}${nonbioMonthQuery}${nonbioYearQuery}`
-
 
         const data = await fetchData(`/dashboard/data${queryParams}`);
         if (!data) {
@@ -783,44 +793,80 @@ async function initializeCharts(bioMonth=0,bioYear=0,nonbioMonth=0,nonbioYear=0)
         // Check if each dataset has data, otherwise display a message
         const reasonData = processBiomedicalChartData(data.reason, 'reason');
         if (reasonData.datasets.length === 0) {
-            displayNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)');
+            displayNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)','chartReason');
         } else {
-            renderChart(ctxReason, reasonData, config);
+            if (bioChart1 != undefined){
+                bioChart1.destroy();
+                bioChart1 = renderChart(ctxReason, reasonData, config);
+            }
+            else{
+                bioChart1 = renderChart(ctxReason, reasonData, config);
+            }
         }
 
         const kvpData = processBiomedicalChartData(data.kvp, 'kvp');
         if (kvpData.datasets.length === 0) {
-            displayNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk');
+            displayNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk','chartKVP');
         } else {
-            renderChart(ctxKVP, kvpData, config);
+            if (bioChart2 != undefined){
+                bioChart2.destroy();
+                bioChart2 = renderChart(ctxKVP, config, kvpData);
+            }
+            else{
+                bioChart2 = renderChart(ctxKVP, config, kvpData);
+            }
         }
 
         const testedBeforeData = processBiomedicalChartData(data.testedBefore, 'tested_before');
         if (testedBeforeData.datasets.length === 0) {
-            displayNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)');
+            displayNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)','chartTestedBefore');
         } else {
-            renderChart(ctxTestedBefore, testedBeforeData, config);
+            if (bioChart3 != undefined){
+                bioChart3.destroy();
+                bioChart3 = renderChart(ctxTestedBefore, testedBeforeData, config);
+            }
+            else{
+                bioChart3 = renderChart(ctxTestedBefore, testedBeforeData, config);
+            }
         }
 
         const ageData = processBiomedicalChartData(data.ageRange, 'age');
         if (ageData.datasets.length === 0) {
             displayNoDataMessage('.graph2', 'Testing outcomes by age');
         } else {
-            renderChart(ctxAge, ageData, config);
+            if (bioChart4 != undefined){
+                bioChart4.destroy();
+                bioChart4 = renderChart(ctxAge, ageData, config);
+            }
+            else{
+                bioChart4 = renderChart(ctxAge, ageData, config);
+            }
         }
 
         const firstTimeTestersData = processBiomedicalChartData(data.testedBefore.filter(item => item._id.tested_before === 'No'), 'tested_before');
         if (firstTimeTestersData.datasets.length === 0) {
             displayNoDataMessage('.graph4', 'Testing outcomes for first time testers');
         } else {
-            renderChart(ctxFirstTimeTesters, firstTimeTestersData, config);
+            if (bioChart5 != undefined){
+                bioChart5.destroy();
+                bioChart5 = renderChart(ctxFirstTimeTesters, firstTimeTestersData, config);
+            }
+            else{
+                bioChart5 = renderChart(ctxFirstTimeTesters, firstTimeTestersData, config);
+            }
         }
 
         const linkageData = processBiomedicalChartData(data.linkage, 'linkage');
         if (linkageData.datasets.length === 0) {
             displayNoDataMessage('.graph6', 'Linkage for positive clients');
         } else {
-            renderChart(ctxLinkage, linkageData, config);
+            if (bioChart6 != undefined){
+                bioChart6.destroy();
+                bioChart6 = renderChart(ctxLinkage, linkageData, config);
+            }
+            else{
+                bioChart6 = renderChart(ctxLinkage, linkageData, config);
+            }
         }
 
         // Get chart contexts for nonbiomedical records
@@ -831,23 +877,41 @@ async function initializeCharts(bioMonth=0,bioYear=0,nonbioMonth=0,nonbioYear=0)
        // Check if each dataset has data, otherwise display a message
        const stigmaData = processNonBiomedicalChartData(data.stigma, 'stigma');
        if (stigmaData.datasets.length === 0) {
-           displayNoDataMessage('.graph7', 'Testing outcomes for stigma');
+           displayNoDataMessage('.graph7', 'Testing outcomes for stigma','chartStigma');
        } else {
-           renderChart(ctxStigma, stigmaData, config);
+            if (nonbioChart1 != undefined){
+                nonbioChart1.destroy();
+                nonbioChart1 = renderChart(ctxStigma, stigmaData, config);
+            }
+            else{
+                nonbioChart1 = renderChart(ctxStigma, stigmaData, config);
+            }
        }
 
        const discriminationData = processNonBiomedicalChartData(data.discrimination, 'discrimination');
        if (discriminationData.datasets.length === 0) {
-           displayNoDataMessage('.graph8', 'Testing outcomes for discrimination');
+           displayNoDataMessage('.graph8', 'Testing outcomes for discrimination','chartDiscrimination');
        } else {
-           renderChart(ctxDiscrimination, discriminationData, config);
+            if (nonbioChart2 != undefined){
+                nonbioChart2.destroy();
+                nonbioChart2 = renderChart(ctxDiscrimination, discriminationData, config);
+            }
+            else{
+                nonbioChart2 = renderChart(ctxDiscrimination, discriminationData, config);
+            }
        }
 
        const violenceData = processNonBiomedicalChartData(data.violence, 'violence');
        if (violenceData.datasets.length === 0) {
-           displayNoDataMessage('.graph9', 'Testing outcomes for violence');
+           displayNoDataMessage('.graph9', 'Testing outcomes for violence','chartViolence');
        } else {
-           renderChart(ctxViolence, violenceData, config);
+            if (nonbioChart3 != undefined){
+                nonbioChart3.destroy();
+                nonbioChart3 = renderChart(ctxViolence, violenceData, config);
+            }
+            else{
+                nonbioChart3 = renderChart(ctxViolence, violenceData, config);
+            }
        }
 
     } catch (error) {
@@ -861,12 +925,15 @@ async function initializeCharts(bioMonth=0,bioYear=0,nonbioMonth=0,nonbioYear=0)
 * @param {string} selector - CSS selector for the container where the message should be displayed.
 * @param {string} reasonText - Reason text to display alongside the message.
 */
-function displayNoDataMessage(selector, reasonText) {
+function displayNoDataMessage(selector, reasonText, targetId) {
     const containers = document.querySelectorAll(selector);
     containers.forEach(container => {
         container.innerHTML = `
             <p class="reason">${reasonText}</p>
             <p class="message">No data available yet.</p>
+            <div class="chart" hidden>
+                <canvas id="${targetId}"></canvas>
+            </div>
         `;
     });
 }
