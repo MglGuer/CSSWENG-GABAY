@@ -183,10 +183,10 @@ server.post('/read-user', async (req,res) => {
     
     if(req.body.remember == "true"){
         req.session.cookie.expires  = new Date(Date.now() + 1000*60*60*24*30);//thirty days
-        console.log(req.session.cookie.expires);
+        //console.log(req.session.cookie.expires);
     }else{
         req.session.cookie.expires  = new Date(Date.now() + 1000*60*60);//one hour
-        console.log(req.session.cookie.expires);
+        //console.log(req.session.cookie.expires);
     }
 
     // TODO: add user into session
@@ -310,6 +310,10 @@ server.get('/dashboard', async (req, resp) => {
         const negativePatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Negative', data_type: 'Biomedical' });
         const dnkPatientsTested = await patientCollection.countDocuments({ 'biomedical.test_result': 'Do Not Know', data_type: 'Biomedical' });
 
+        //getting available years
+        const patient = await patientCollection.find().toArray();
+        const year = patient.map(({date_encoded}) => date_encoded).map(function(date){return date.getFullYear()});
+        
         resp.render('dashboard', {
             layout: 'index',
             title: 'Dashboard Page',
@@ -326,11 +330,12 @@ server.get('/dashboard', async (req, resp) => {
                 positivePatientsTested: positivePatientsTested,
                 negativePatientsTested: negativePatientsTested,
                 dnkPatientsTested: dnkPatientsTested
-            }
+            },
+            year: year.filter((item,index) => year.indexOf(item) === index)
         });
     } catch (error) {
         console.error("Error fetching dashboard statistics:", error);
-        res.status(500).send("Internal Server Error");
+        resp.status(500).send("Internal Server Error");
     }
 });
 
@@ -595,7 +600,7 @@ server.get('/history', async (req, res) => {
 
         // get paginated login history sorted by most recent first
         const loginHistory = await loginHistoryCollection.find().sort({ lastLoginDateTime: -1 }).skip(loginHistorySkip).limit(pageSize).toArray();
-
+        
         // get paginated action history sorted by most recent first
         const actionHistory = await actionHistoryCollection.find().sort({ actionDateTime: -1 }).skip(actionHistorySkip).limit(pageSize).toArray();
 
