@@ -18,6 +18,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         monthValue = monthlyFilter.value;    
         try{
             console.log('The month is ' + monthValue);
+            removeNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)','chartReason');
+            removeNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk','chartKVP');
+            removeNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)','chartTestedBefore');
+            removeNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
+            removeNoDataMessage('.graph4', 'Testing outcomes for first time testers','chartFirstTimeTesters');
+            removeNoDataMessage('.graph6', 'Linkage for positive clients','chartLinkage');
             await initializeCharts(monthValue,yearValue);
         }
         catch(error) {
@@ -35,6 +41,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         yearValue = yearlyFilter.value;
         try{
             console.log('The year is ' + yearValue);
+            removeNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)','chartReason');
+            removeNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk','chartKVP');
+            removeNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)','chartTestedBefore');
+            removeNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
+            removeNoDataMessage('.graph4', 'Testing outcomes for first time testers','chartFirstTimeTesters');
+            removeNoDataMessage('.graph6', 'Linkage for positive clients','chartLinkage');
             await initializeCharts(monthValue,yearValue);
         }
         catch(error) {
@@ -902,4 +914,19 @@ function displayNoDataMessage(selector, reasonText, targetId) {
     });
 }
 
-
+/**
+* Removes no data message.
+* @param {string} selector - CSS selector for the container where the message should be displayed.
+* @param {string} reasonText - Reason text to display alongside the message.
+*/
+function removeNoDataMessage(selector, reasonText, targetId) {
+    const containers = document.querySelectorAll(selector);
+    containers.forEach(container => {
+        container.innerHTML = `
+            <p class="reason">${reasonText}</p>
+            <div class="chart">
+                <canvas id="${targetId}"></canvas>
+            </div>
+        `;
+    });
+}
