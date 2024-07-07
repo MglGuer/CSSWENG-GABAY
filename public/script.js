@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             removeNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
             removeNoDataMessage('.graph4', 'Testing outcomes for first time testers','chartFirstTimeTesters');
             removeNoDataMessage('.graph6', 'Linkage for positive clients','chartLinkage');
+            removeNoDataMessage('.graph7', 'Testing outcomes for stigma','chartStigma');
+            removeNoDataMessage('.graph8', 'Testing outcomes for discrimination','chartDiscrimination');
+            removeNoDataMessage('.graph9', 'Testing outcomes for violence','chartViolence');
             await initializeCharts(monthValue,yearValue);
         }
         catch(error) {
@@ -47,6 +50,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             removeNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
             removeNoDataMessage('.graph4', 'Testing outcomes for first time testers','chartFirstTimeTesters');
             removeNoDataMessage('.graph6', 'Linkage for positive clients','chartLinkage');
+            removeNoDataMessage('.graph7', 'Testing outcomes for stigma','chartStigma');
+            removeNoDataMessage('.graph8', 'Testing outcomes for discrimination','chartDiscrimination');
+            removeNoDataMessage('.graph9', 'Testing outcomes for violence','chartViolence');
             await initializeCharts(monthValue,yearValue);
         }
         catch(error) {
