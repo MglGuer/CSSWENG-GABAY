@@ -7,9 +7,11 @@
 // Data Encoder (Admin)         | email: dataencoder@gmail.com , password: dataencoder
 // Data Manager (Super Admin)   | email: admin@gmail.com , password: admin123
 
+// express
 const express = require('express');
 const server = express();
 
+// bodyparser
 const bodyParser = require('body-parser');
 server.use(bodyParser.json());
 server.use(express.json()); 
@@ -84,6 +86,7 @@ var cloudinary = require('cloudinary').v2;
     }); 
 })();
 
+// function to connect the database
 async function connectToDatabase(retries = 5, delay = 5000) {
     for (let i = 0; i < retries; i++) {
         try {
@@ -104,7 +107,7 @@ async function connectToDatabase(retries = 5, delay = 5000) {
 
 connectToDatabase();
 
-const { patientModel, userModel, loginHistoryModel, actionHistoryModel } = require('./Model/Model'); // Adjust the path as necessary
+const { patientModel, userModel, loginHistoryModel, actionHistoryModel } = require('./Model/Model'); 
 
 server.use(session({
     secret: 'gabay',
@@ -142,7 +145,7 @@ server.get('/', (req,resp) => {
     
 });
 
-// login page
+// server for login page
 server.get('/login', (req,resp) => {
     resp.render('login',{
         layout: 'index',
@@ -151,7 +154,7 @@ server.get('/login', (req,resp) => {
     });
 });
 
-// TODO: check user email and password by searching the database
+//server to check user email and password by searching the database
 server.post('/read-user', async (req,res) => {
     // get data from form
     const {email, password} = req.body;
@@ -345,10 +348,8 @@ server.get('/dashboard/data', async (req, resp) => {
         const patientCollection = client.db("test").collection("patients");
         const monthly = parseInt(req.query.monthly);
         const yearly = parseInt(req.query.yearly);
-        console.log("monthly: " + monthly);
-        console.log("yearly: " +yearly);
 
-        //if there is monthly
+        // if there is monthly
         const filterMonth = monthly > 0 || monthly < 13?
         [
             {     
@@ -476,7 +477,7 @@ server.get('/dashboard/data', async (req, resp) => {
     }
 });
 
-// server for tracker
+// server for tracker page
 server.get('/tracker', (req,resp) => {
     resp.render('tracker',{
         layout: 'index',
@@ -490,7 +491,7 @@ server.get('/tracker', (req,resp) => {
     });
 });
 
-// server to push new patient data to db
+// server to add new patient data to database
 server.post('/add-record', async (req, res) => {
     const { data_type, gender, location, barangay, remarks, age,
         tested, result, linkage, stigma, discrimination, violence } = req.body;
@@ -548,7 +549,7 @@ server.post('/add-record', async (req, res) => {
     }
 });
 
-// server for profile
+// server for profile page
 server.get('/profile', async (req, res) => {
     res.render('profile', {
         layout: 'index',
@@ -608,7 +609,7 @@ server.post('/update-profile', async (req, res) => {
     }
 });
 
-// server for history log
+// server for history log page
 server.get('/history', async (req, res) => {
     try {
         const loginHistoryCollection = client.db("test").collection("loginhistories");
@@ -652,7 +653,7 @@ server.get('/history', async (req, res) => {
     }
 });
 
-// server for data log
+// server for data log page
 server.get('/data', async (req, res) => {
     try {
         const pageSize = 10;
@@ -762,7 +763,7 @@ server.get('/delete/:id', async (req, res) => {
     }
 });
 
-// TODO: log out
+// server to log out
 server.get('/logout', (req,resp) => {
 
     req.session.destroy((err) => {
