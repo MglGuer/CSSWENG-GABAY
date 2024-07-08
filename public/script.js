@@ -14,52 +14,58 @@ document.addEventListener('DOMContentLoaded', async function () {
      */
     let monthValue = undefined; 
     let monthlyFilter = document.querySelector('#monthlyFilter');
-    monthlyFilter.onchange = async function () {
-        monthValue = monthlyFilter.value;    
-        try{
-            console.log('The month is ' + monthValue);
-            removeNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)','chartReason');
-            removeNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk','chartKVP');
-            removeNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)','chartTestedBefore');
-            removeNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
-            removeNoDataMessage('.graph4', 'Testing outcomes for first time testers','chartFirstTimeTesters');
-            removeNoDataMessage('.graph6', 'Linkage for positive clients','chartLinkage');
-            removeNoDataMessage('.graph7', 'Testing outcomes for stigma','chartStigma');
-            removeNoDataMessage('.graph8', 'Testing outcomes for discrimination','chartDiscrimination');
-            removeNoDataMessage('.graph9', 'Testing outcomes for violence','chartViolence');
-            await initializeCharts(monthValue,yearValue);
-        }
-        catch(error) {
-                console.error('Error fetching patient data:', error);
-                alert('An error occurred while filtering biomedical patient data.');
+    if (monthlyFilter){
+        monthlyFilter.onchange = async function () {
+            monthValue = monthlyFilter.value;    
+            try{
+                console.log('The month is ' + monthValue);
+                removeNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)','chartReason');
+                removeNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk','chartKVP');
+                removeNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)','chartTestedBefore');
+                removeNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
+                removeNoDataMessage('.graph4', 'Testing outcomes for first time testers','chartFirstTimeTesters');
+                removeNoDataMessage('.graph6', 'Linkage for positive clients','chartLinkage');
+                removeNoDataMessage('.graph7', 'Testing outcomes for stigma','chartStigma');
+                removeNoDataMessage('.graph8', 'Testing outcomes for discrimination','chartDiscrimination');
+                removeNoDataMessage('.graph9', 'Testing outcomes for violence','chartViolence');
+                await initializeCharts(monthValue,yearValue);
             }
-    };
+            catch(error) {
+                    console.error('Error fetching patient data:', error);
+                    alert('An error occurred while filtering biomedical patient data.');
+                }
+        };
+
+    }
 
     /**
      * Filters graphs by year
      */
     let yearValue = undefined; 
     let yearlyFilter = document.querySelector('#yearlyFilter');
-    yearlyFilter.onchange = async function () {
-        yearValue = yearlyFilter.value;
-        try{
-            console.log('The year is ' + yearValue);
-            removeNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)','chartReason');
-            removeNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk','chartKVP');
-            removeNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)','chartTestedBefore');
-            removeNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
-            removeNoDataMessage('.graph4', 'Testing outcomes for first time testers','chartFirstTimeTesters');
-            removeNoDataMessage('.graph6', 'Linkage for positive clients','chartLinkage');
-            removeNoDataMessage('.graph7', 'Testing outcomes for stigma','chartStigma');
-            removeNoDataMessage('.graph8', 'Testing outcomes for discrimination','chartDiscrimination');
-            removeNoDataMessage('.graph9', 'Testing outcomes for violence','chartViolence');
-            await initializeCharts(monthValue,yearValue);
-        }
-        catch(error) {
-                console.error('Error fetching patient data:', error);
-                alert('An error occurred while filtering biomedical patient data.');
+    if (yearlyFilter){
+        yearlyFilter.onchange = async function () {
+            yearValue = yearlyFilter.value;
+            try{
+                console.log('The year is ' + yearValue);
+                removeNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)','chartReason');
+                removeNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk','chartKVP');
+                removeNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)','chartTestedBefore');
+                removeNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
+                removeNoDataMessage('.graph4', 'Testing outcomes for first time testers','chartFirstTimeTesters');
+                removeNoDataMessage('.graph6', 'Linkage for positive clients','chartLinkage');
+                removeNoDataMessage('.graph7', 'Testing outcomes for stigma','chartStigma');
+                removeNoDataMessage('.graph8', 'Testing outcomes for discrimination','chartDiscrimination');
+                removeNoDataMessage('.graph9', 'Testing outcomes for violence','chartViolence');
+                await initializeCharts(monthValue,yearValue);
             }
-    };
+            catch(error) {
+                    console.error('Error fetching patient data:', error);
+                    alert('An error occurred while filtering biomedical patient data.');
+                }
+        };
+
+    }
 
     /**
      * Event listener for the sidebar toggle button.
