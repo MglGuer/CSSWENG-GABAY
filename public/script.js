@@ -535,7 +535,6 @@ function validateForm() {
     document.getElementById("tracker-form").submit();
 }
 
-
 /**
  * Fetches data from the given endpoint.
  * @async
@@ -729,7 +728,11 @@ let nonbioChart3;
  * @param {Object} config - The configuration options for the chart.
  */
 function renderChart(ctx, data, config) {
+    try {
         return new Chart(ctx, { ...config, data });
+    } catch (error) {
+        console.error('Error rendering chart:', error);
+    }
 }
 
 /**
@@ -792,10 +795,10 @@ async function initializeCharts(monthly=0,yearly=0) {
         } else {
             if (bioChart2 != undefined){
                 bioChart2.destroy();
-                bioChart2 = renderChart(ctxKVP, config, kvpData);
+                bioChart2 = renderChart(ctxKVP, kvpData, config);
             }
             else{
-                bioChart2 = renderChart(ctxKVP, config, kvpData);
+                bioChart2 = renderChart(ctxKVP, kvpData, config);
             }
         }
 
