@@ -769,37 +769,47 @@ server.get('/delete/:id', async (req, res) => {
     }
 });
 
+// server for exporting data to excel sheet
 server.get('/dashboard/export', async (req, res) => {
     try {
-        // Fetch all patients
+        // fetch all patients
         const patients = await patientModel.find().exec();
+        const totalPatientsTested = await patientModel.countDocuments();
         const biomedicalPatients = patients.filter(patient => patient.data_type === 'Biomedical');
         const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'Nonbiomedical');
+        const positivePatientsTested = await patientModel.countDocuments({ 'biomedical.test_result': 'Positive', data_type: 'Biomedical' });
+        const negativePatientsTested = await patientModel.countDocuments({ 'biomedical.test_result': 'Negative', data_type: 'Biomedical' });
+        const dnkPatientsTested = await patientModel.countDocuments({ 'biomedical.test_result': 'Do Not Know', data_type: 'Biomedical' });
 
-        // Calculate totals
+        // calculate totals
         const biomedicalCount = biomedicalPatients.length;
         const nonBiomedicalCount = nonBiomedicalPatients.length;
 
-        // Create Excel workbook
+        // create excel workbook
         const workbook = new ExcelJS.Workbook();
 
-        // Biomedical Sheet
+        // biomedical Sheet
         const biomedicalSheet = workbook.addWorksheet('Biomedical Records');
         formatSheetHeaders(biomedicalSheet, 'Biomedical Records');
         addDataToSheet(biomedicalSheet, biomedicalPatients, true);
 
-        // Nonbiomedical Sheet
+        // bonbiomedical Sheet
         const nonBiomedicalSheet = workbook.addWorksheet('Nonbiomedical Records');
         formatSheetHeaders(nonBiomedicalSheet, 'Nonbiomedical Records');
         addDataToSheet(nonBiomedicalSheet, nonBiomedicalPatients, false);
 
-        // Statistics Sheet
+        // statistics Sheet
         const statisticsSheet = workbook.addWorksheet('Statistics');
         formatSheetHeaders(statisticsSheet, 'Statistics');
+        statisticsSheet.addRow(['Total Patients Tested', totalPatientsTested]);
         statisticsSheet.addRow(['Total Biomedical Records', biomedicalCount]);
         statisticsSheet.addRow(['Total Nonbiomedical Records', nonBiomedicalCount]);
+        statisticsSheet.addRow([]);
+        statisticsSheet.addRow(['Total Biomedical Positive Patients Tested', positivePatientsTested]);
+        statisticsSheet.addRow(['Total Biomedical Negative Patients Testeds', negativePatientsTested]);
+        statisticsSheet.addRow(['Total Biomedical Do Not Know Patients Tested', dnkPatientsTested]);
 
-        // Auto-size columns for all sheets
+        // auto-size columns for all sheets
         [biomedicalSheet, nonBiomedicalSheet, statisticsSheet].forEach(sheet => {
             sheet.columns.forEach(column => {
                 let maxWidth = 0;
@@ -813,18 +823,18 @@ server.get('/dashboard/export', async (req, res) => {
             });
         });
 
-        // Save the Excel file to the server
+        // save the Excel file to the server
         const filePath = path.join(__dirname, 'GABAY Data Sheet.xlsx');
         await workbook.xlsx.writeFile(filePath);
 
-        // Send the Excel file as a response
+        // send the Excel file as a response
         res.download(filePath, 'GABAY Data Sheet.xlsx', err => {
             if (err) {
                 console.error('Error downloading the file:', err);
                 res.status(500).send('Internal Server Error');
             }
 
-            // Clean up the file after sending it
+            // clean up the file after sending it
             fs.unlink(filePath, unlinkErr => {
                 if (unlinkErr) {
                     console.error('Error deleting the file:', unlinkErr);
@@ -837,6 +847,7 @@ server.get('/dashboard/export', async (req, res) => {
     }
 });
 
+// server for exporting charts to excel sheet
 server.get('/exceljs', (req, res) => {
     const filePath = path.join(__dirname, 'node_modules', 'exceljs', 'dist', 'exceljs.min.js');
     fs.readFile(filePath, 'utf8', (err, data) => {
@@ -848,7 +859,8 @@ server.get('/exceljs', (req, res) => {
         res.send(data);
     });
 });
-// Helper function to format sheet headers
+
+// helper function to format sheet headers
 function formatSheetHeaders(sheet, title) {
     const headerRow = sheet.addRow([title]);
     headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
@@ -858,7 +870,7 @@ function formatSheetHeaders(sheet, title) {
     headerRow.alignment = { horizontal: 'left' };
 }
 
-// Helper function to add data to sheet
+// helper function to add data to sheet
 function addDataToSheet(sheet, patients, isBiomedical) {
     let headers;
     if (isBiomedical) {
@@ -908,11 +920,10 @@ function addDataToSheet(sheet, patients, isBiomedical) {
     });
 }
 
-// Helper function to format date
+// helper function to format date
 function formatDate(date) {
     return date.toLocaleDateString('en-US');
 }
-
 
 // server to log out
 server.get('/logout', (req,resp) => {

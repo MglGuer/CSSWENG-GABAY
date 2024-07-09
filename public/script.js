@@ -125,7 +125,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     
                 // adding main header row 
                 const mainHeaderStartRow = worksheet.actualRowCount + 1;
-                const mainHeaderEndColumn = String.fromCharCode(64 + datasets.length); 
+                const mainHeaderEndColumnIndex = datasets.length;
+                const mainHeaderEndColumn = String.fromCharCode(65 + mainHeaderEndColumnIndex); 
     
                 const mainHeaderCell = worksheet.getCell(`A${mainHeaderStartRow}`);
                 mainHeaderCell.value = `Chart ${i + 1} - ${reason}`;
@@ -143,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     fgColor: { argb: 'FF9B112E' }
                 };
     
-                if (datasets.length > 1) {
+                if (datasets.length > 0) {
                     worksheet.mergeCells(`A${mainHeaderStartRow}:${mainHeaderEndColumn}${mainHeaderStartRow}`);
                 }
     
@@ -174,7 +175,15 @@ document.addEventListener('DOMContentLoaded', async function () {
                         rowData.push(dataRow[dataset.label] || '');
                     });
     
-                    worksheet.addRow(rowData);
+                    const dataRowInstance = worksheet.addRow(rowData);
+    
+                    dataRowInstance.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                        if (colNumber === 1) {
+                            cell.alignment = { horizontal: 'left' };
+                        } else {
+                            cell.alignment = { horizontal: 'center' };
+                        }
+                    });
                 });
     
                 // adding spacing between charts in summary text
@@ -222,7 +231,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                         maxWidth = cellWidth;
                     }
                 });
-                column.width = maxWidth < 20 ? 20 : maxWidth;
+                column.width = maxWidth < 25 ? maxWidth : 25; 
             });
     
             // generating excel file and add to ZIP
