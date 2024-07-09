@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             monthValue = monthlyFilter.value;    
             try{
                 console.log('The month is ' + monthValue);
-                removeNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)','chartReason');
+                removeNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test:','chartReason');
                 removeNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk','chartKVP');
                 removeNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)','chartTestedBefore');
                 removeNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             yearValue = yearlyFilter.value;
             try{
                 console.log('The year is ' + yearValue);
-                removeNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)','chartReason');
+                removeNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test:','chartReason');
                 removeNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk','chartKVP');
                 removeNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)','chartTestedBefore');
                 removeNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
@@ -76,6 +76,188 @@ document.addEventListener('DOMContentLoaded', async function () {
     btn.onclick = function () {
         sidebar.classList.toggle('active');
     };
+
+    /**
+     * Event listener for exporting the data from dashboard into images.
+     * Exports the data into a zip file containing the png images, excel sheet and a summary text file.
+     */
+    document.getElementById('exportImagesButton').addEventListener('click', async () => {
+        try {
+            // fetch ExcelJS from server
+            const response = await fetch('/exceljs');
+            if (!response.ok) {
+                throw new Error('Failed to fetch ExcelJS');
+            }
+            const scriptText = await response.text();
+            eval(scriptText);
+    
+            // initializing ExcelJS workbook and other necessary variables
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('GABAY Charts Summary'); 
+            const charts = document.querySelectorAll('canvas');
+            const zip = new JSZip();
+            let summaryContent = '';
+    
+            // processing each chart
+            for (let i = 0; i < charts.length; i++) {
+                const chart = charts[i];
+                const reason = chart.getAttribute('data-reason') || '';
+                const chartInstance = Chart.getChart(chart);
+                const datasets = chartInstance.data.datasets;
+    
+                let chartData = []; // preparing data for excel and summary text
+    
+                // populating chart data
+                chartInstance.data.labels.forEach((label, index) => {
+                    let rowData = {
+                        'Label': label
+                    };
+    
+                    // populating data for each category
+                    datasets.forEach((dataset, datasetIndex) => {
+                        const categoryName = dataset.label || `Category ${datasetIndex + 1}`;
+                        const value = dataset.data[index];
+                        rowData[categoryName] = value;
+                    });
+    
+                    chartData.push(rowData);
+                });
+    
+                // adding main header row 
+                const mainHeaderStartRow = worksheet.actualRowCount + 1;
+                const mainHeaderEndColumn = String.fromCharCode(64 + datasets.length); 
+    
+                const mainHeaderCell = worksheet.getCell(`A${mainHeaderStartRow}`);
+                mainHeaderCell.value = `Chart ${i + 1} - ${reason}`;
+                mainHeaderCell.alignment = { horizontal: 'left' };
+                mainHeaderCell.font = {
+                    bold: true,
+                    color: { argb: 'FFFFFFFF' },
+                    name: 'Arial',
+                    size: 12,
+                    family: 2
+                };
+                mainHeaderCell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FF9B112E' }
+                };
+    
+                if (datasets.length > 1) {
+                    worksheet.mergeCells(`A${mainHeaderStartRow}:${mainHeaderEndColumn}${mainHeaderStartRow}`);
+                }
+    
+                // adding subheader row 
+                const subheaderRow = worksheet.addRow(['Label', ...datasets.map((dataset, idx) => dataset.label || `Category ${idx + 1}`)]);
+                subheaderRow.eachCell((cell) => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: { argb: 'FFF6AA26' }
+                    };
+                    cell.font = {
+                        bold: true,
+                        color: { argb: 'FFFFFFFF' },
+                        name: 'Arial',
+                        size: 12,
+                        family: 2
+                    };
+                    cell.alignment = { horizontal: 'center' };
+                });
+    
+                // adding data rows to worksheet
+                chartData.forEach(dataRow => {
+                    const rowData = [];
+                    rowData.push(dataRow.Label);
+    
+                    datasets.forEach(dataset => {
+                        rowData.push(dataRow[dataset.label] || '');
+                    });
+    
+                    worksheet.addRow(rowData);
+                });
+    
+                // adding spacing between charts in summary text
+                summaryContent += `Chart ${i + 1} - ${reason}\n`;
+    
+                // adding category data to summary text
+                datasets.forEach((dataset, datasetIndex) => {
+                    const datasetLabel = dataset.label || `Dataset ${datasetIndex + 1}`;
+                    summaryContent += `${datasetLabel}:\n`;
+    
+                    dataset.data.forEach((value, index) => {
+                        const label = chartInstance.data.labels[index];
+                        summaryContent += `${label}: ${value}\n`;
+                    });
+    
+                    summaryContent += '\n';
+                });
+    
+                // adding horizontal line between charts in summary text
+                summaryContent += '-------------------------------------------------\n';
+    
+                // generating image for the chart and adding to ZIP
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const originalCanvas = await html2canvas(chart);
+                canvas.width = originalCanvas.width;
+                canvas.height = originalCanvas.height + 60;
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.font = 'bold 18px Poppins';
+                ctx.fillStyle = '#000000';
+                ctx.textAlign = 'center';
+                ctx.fillText(reason, canvas.width / 2, 20);
+                ctx.drawImage(originalCanvas, 0, 30);
+                const dataURL = canvas.toDataURL('image/png');
+                zip.file(`chart${i + 1}.png`, dataURL.split('base64,')[1], { base64: true });
+            }
+    
+            // auto-fit column widths based on content length for all columns
+            worksheet.columns.forEach((column) => {
+                let maxWidth = 0;
+                column.eachCell({ includeEmpty: true }, (cell) => {
+                    const cellWidth = cell.value ? cell.value.toString().length + 2 : 10; 
+                    if (cellWidth > maxWidth) {
+                        maxWidth = cellWidth;
+                    }
+                });
+                column.width = maxWidth < 20 ? 20 : maxWidth;
+            });
+    
+            // generating excel file and add to ZIP
+            const excelBuffer = await workbook.xlsx.writeBuffer();
+            zip.file('GABAY Summary.xlsx', excelBuffer);
+    
+            // adding summary text file to ZIP
+            zip.file('GABAY Summary.txt', summaryContent);
+    
+            // generating ZIP file and trigger download
+            zip.generateAsync({ type: 'blob' }).then(content => {
+                saveAs(content, 'GABAY Charts & Summary.zip');
+            });
+        } catch (error) {
+            console.error('Error exporting charts and data:', error);
+        }
+    });
+    
+    /**
+     * Event listener for exporting the overall data from dashboard into excel sheet.
+     * Exports the data into excel sheet.
+     */
+    document.getElementById('exportExcelButton').addEventListener('click', async () => {
+        try {
+            const response = await fetch('/dashboard/export');
+            if (response.ok) {
+                const blob = await response.blob();
+                saveAs(blob, 'GABAY Data Sheet.xlsx');
+            } else {
+                console.error('Failed to export data:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error exporting data to Excel:', error);
+        }
+    });
 
     /**
      * Event listener for the edit button.
@@ -590,7 +772,8 @@ function processBiomedicalChartData(array, labelKey) {
             dataset = {
                 label: datasetLabel,
                 backgroundColor: getBioColor(test_result, gender),
-                data: []
+                data: [],
+                meta: []
             };
             datasets.push(dataset);
         }
@@ -603,10 +786,12 @@ function processBiomedicalChartData(array, labelKey) {
         } else {
             dataset.data[labelIndex] = count;
         }
+
+        dataset.meta[labelIndex] = { gender, test_result, count };
     });
 
     const filteredDatasets = datasets.filter(ds => ds.data.some(data => data !== 0));
-
+   
     return { labels, datasets: filteredDatasets };
 }
 
@@ -631,8 +816,8 @@ function processNonBiomedicalChartData(array, labelKey) {
         const label = item._id[labelKey];
 
         if (!gender || !label) {
-            console.error('Missing gender in data:', item._id);
-            return; // skip this item if gender is missing
+            console.error('Missing gender or label in data:', item._id);
+            return; // skip this item if gender or label is missing
         }
 
         const datasetLabel = `${gender}`;
@@ -642,7 +827,8 @@ function processNonBiomedicalChartData(array, labelKey) {
             dataset = {
                 label: datasetLabel,
                 backgroundColor: getNonbioColor(gender),
-                data: []
+                data: [],
+                meta: []
             };
             datasets.push(dataset);
         }
@@ -655,11 +841,12 @@ function processNonBiomedicalChartData(array, labelKey) {
         } else {
             dataset.data[labelIndex] = count;
         }
+
+        dataset.meta[labelIndex] = { gender, count };
     });
 
-    // Filter out datasets with all zeros
     const filteredDatasets = datasets.filter(ds => ds.data.some(data => data !== 0));
-
+   
     return { labels, datasets: filteredDatasets };
 }
 
@@ -784,7 +971,7 @@ async function initializeCharts(monthly=0,yearly=0) {
         // Check if each dataset has data, otherwise display a message
         const reasonData = processBiomedicalChartData(data.reason, 'reason');
         if (reasonData.datasets.length === 0) {
-            displayNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test: Testing outcomes for clients who were tested before (repeat testers)','chartReason');
+            displayNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test:','chartReason');
         } else {
             if (bioChart1 != undefined){
                 bioChart1.destroy();
@@ -793,6 +980,7 @@ async function initializeCharts(monthly=0,yearly=0) {
             else{
                 bioChart1 = renderChart(ctxReason, reasonData, config);
             }
+            document.getElementById('chartReason').setAttribute('data-reason', 'Testing outcomes by main reason for HIV Test');
         }
 
         const kvpData = processBiomedicalChartData(data.kvp, 'kvp');
@@ -806,6 +994,7 @@ async function initializeCharts(monthly=0,yearly=0) {
             else{
                 bioChart2 = renderChart(ctxKVP, kvpData, config);
             }
+            document.getElementById('chartKVP').setAttribute('data-reason', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk');
         }
 
         const testedBeforeData = processBiomedicalChartData(data.testedBefore, 'tested_before');
@@ -819,6 +1008,7 @@ async function initializeCharts(monthly=0,yearly=0) {
             else{
                 bioChart3 = renderChart(ctxTestedBefore, testedBeforeData, config);
             }
+            document.getElementById('chartTestedBefore').setAttribute('data-reason', 'Testing outcomes for clients who were tested before (repeat testers)');
         }
 
         const ageData = processBiomedicalChartData(data.ageRange, 'age');
@@ -832,6 +1022,7 @@ async function initializeCharts(monthly=0,yearly=0) {
             else{
                 bioChart4 = renderChart(ctxAge, ageData, config);
             }
+            document.getElementById('chartAge').setAttribute('data-reason', 'Testing outcomes by age');
         }
 
         const firstTimeTestersData = processBiomedicalChartData(data.testedBefore.filter(item => item._id.tested_before === 'No'), 'tested_before');
@@ -845,6 +1036,7 @@ async function initializeCharts(monthly=0,yearly=0) {
             else{
                 bioChart5 = renderChart(ctxFirstTimeTesters, firstTimeTestersData, config);
             }
+            document.getElementById('chartFirstTimeTesters').setAttribute('data-reason', 'Testing outcomes for first time testers');
         }
 
         const linkageData = processBiomedicalChartData(data.linkage, 'linkage');
@@ -858,6 +1050,7 @@ async function initializeCharts(monthly=0,yearly=0) {
             else{
                 bioChart6 = renderChart(ctxLinkage, linkageData, config);
             }
+            document.getElementById('chartLinkage').setAttribute('data-reason', 'Linkage for positive clients');
         }
 
         // Get chart contexts for nonbiomedical records
@@ -877,6 +1070,7 @@ async function initializeCharts(monthly=0,yearly=0) {
             else{
                 nonbioChart1 = renderChart(ctxStigma, stigmaData, config);
             }
+            document.getElementById('chartStigma').setAttribute('data-reason', 'Testing outcomes for stigma');
        }
 
        const discriminationData = processNonBiomedicalChartData(data.discrimination, 'discrimination');
@@ -890,6 +1084,7 @@ async function initializeCharts(monthly=0,yearly=0) {
             else{
                 nonbioChart2 = renderChart(ctxDiscrimination, discriminationData, config);
             }
+            document.getElementById('chartDiscrimination').setAttribute('data-reason', 'Testing outcomes for discrimination');
        }
 
        const violenceData = processNonBiomedicalChartData(data.violence, 'violence');
@@ -903,6 +1098,7 @@ async function initializeCharts(monthly=0,yearly=0) {
             else{
                 nonbioChart3 = renderChart(ctxViolence, violenceData, config);
             }
+            document.getElementById('chartViolence').setAttribute('data-reason', 'Testing outcomes for violence');
        }
 
     } catch (error) {

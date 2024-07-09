@@ -323,10 +323,14 @@
     padding: 1rem;
 }
 
+.filter-export{
+    display: flex;
+    justify-content: space-between;
+}
+
 /* filter */
 .filter{
     display: flex;
-    justify-content: flex-end;
     align-items: center;
 }
 
@@ -337,24 +341,36 @@
 
 select.monthly, .yearly{
     background-color: white; 
-    color: #9B112E;
-    border: 3px solid #9B112E; 
-    border-radius: 18px;
     margin: 10px 0px 10px 10px;
     padding: 10px;
     position: relative;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 14px;
 }
 
 select.monthly:hover, .yearly:hover{
     background-color: #9B112E; 
     color: white;
-    border: 3px solid #9B112E;
 }
 
 .filter div {
     cursor: pointer;
+}
+
+.export{
+    display: flex;
+    align-items: center;
+}
+
+.export button{
+    background-color: white;
+    padding: 10px;
+    margin: 20px 0 20px 20px;
+    cursor: pointer;
+}
+
+.export button:hover{
+    background-color: #9B112E;
+    color: white;
 }
 
 /* container for graphs */

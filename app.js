@@ -1,6 +1,6 @@
 // Install Command
 // npm init -y
-// npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session moment cloudinary
+// npm i express express-handlebars body-parser mongoose bcrypt connect-mongodb-session express-session moment cloudinary exceljs file-saver html2canvas jszip jspdf
 
 // User Credentials (Example)
 // Member                       | email: member@gmail.com , password: testuser
@@ -85,6 +85,13 @@ var cloudinary = require('cloudinary').v2;
         api_secret: 'LEEZpzSauYJuHUzCmwQtL80HI5c' // Click 'View Credentials' below to copy your API secret
     }); 
 })();
+
+const ExcelJS = require('exceljs');
+global.ExcelJS = ExcelJS;
+const path = require('path');
+const fs = require('fs');
+const JSZip = require('jszip');
+const JSPDF = require('jspdf');
 
 // function to connect the database
 async function connectToDatabase(retries = 5, delay = 5000) {
@@ -192,13 +199,12 @@ server.post('/read-user', async (req,res) => {
         //console.log(req.session.cookie.expires);
     }
 
-    // TODO: add user into session
+    // add user into session
     req.session.username = user.name;
     req.session.email = user.email;
     req.session.role = user.role;
     req.session.userIcon = user.userIcon;
     //console.log(req.body.remember);
-    
     
     // if authentication is successful, redirect to dashboard
     res.redirect('/dashboard');
@@ -762,6 +768,151 @@ server.get('/delete/:id', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+server.get('/dashboard/export', async (req, res) => {
+    try {
+        // Fetch all patients
+        const patients = await patientModel.find().exec();
+        const biomedicalPatients = patients.filter(patient => patient.data_type === 'Biomedical');
+        const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'Nonbiomedical');
+
+        // Calculate totals
+        const biomedicalCount = biomedicalPatients.length;
+        const nonBiomedicalCount = nonBiomedicalPatients.length;
+
+        // Create Excel workbook
+        const workbook = new ExcelJS.Workbook();
+
+        // Biomedical Sheet
+        const biomedicalSheet = workbook.addWorksheet('Biomedical Records');
+        formatSheetHeaders(biomedicalSheet, 'Biomedical Records');
+        addDataToSheet(biomedicalSheet, biomedicalPatients, true);
+
+        // Nonbiomedical Sheet
+        const nonBiomedicalSheet = workbook.addWorksheet('Nonbiomedical Records');
+        formatSheetHeaders(nonBiomedicalSheet, 'Nonbiomedical Records');
+        addDataToSheet(nonBiomedicalSheet, nonBiomedicalPatients, false);
+
+        // Statistics Sheet
+        const statisticsSheet = workbook.addWorksheet('Statistics');
+        formatSheetHeaders(statisticsSheet, 'Statistics');
+        statisticsSheet.addRow(['Total Biomedical Records', biomedicalCount]);
+        statisticsSheet.addRow(['Total Nonbiomedical Records', nonBiomedicalCount]);
+
+        // Auto-size columns for all sheets
+        [biomedicalSheet, nonBiomedicalSheet, statisticsSheet].forEach(sheet => {
+            sheet.columns.forEach(column => {
+                let maxWidth = 0;
+                column.eachCell(cell => {
+                    const cellTextLength = cell.value ? cell.value.toString().length : 0;
+                    if (cellTextLength > maxWidth) {
+                        maxWidth = cellTextLength;
+                    }
+                });
+                column.width = maxWidth < 10 ? 10 : maxWidth + 2;
+            });
+        });
+
+        // Save the Excel file to the server
+        const filePath = path.join(__dirname, 'GABAY Data Sheet.xlsx');
+        await workbook.xlsx.writeFile(filePath);
+
+        // Send the Excel file as a response
+        res.download(filePath, 'GABAY Data Sheet.xlsx', err => {
+            if (err) {
+                console.error('Error downloading the file:', err);
+                res.status(500).send('Internal Server Error');
+            }
+
+            // Clean up the file after sending it
+            fs.unlink(filePath, unlinkErr => {
+                if (unlinkErr) {
+                    console.error('Error deleting the file:', unlinkErr);
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Error exporting dashboard data:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+server.get('/exceljs', (req, res) => {
+    const filePath = path.join(__dirname, 'node_modules', 'exceljs', 'dist', 'exceljs.min.js');
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading ExcelJS file:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        res.send(data);
+    });
+});
+// Helper function to format sheet headers
+function formatSheetHeaders(sheet, title) {
+    const headerRow = sheet.addRow([title]);
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    if (title === 'Biomedical Records' || title === 'Nonbiomedical Records'|| title === 'Statistics') {
+        headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF9B112E' } };
+    } 
+    headerRow.alignment = { horizontal: 'left' };
+}
+
+// Helper function to add data to sheet
+function addDataToSheet(sheet, patients, isBiomedical) {
+    let headers;
+    if (isBiomedical) {
+        headers = ['Gender', 'Location', 'Barangay', 'Remarks', 'Age Range', 'Tested Before', 'Test Result', 'Reason', 'KVP', 'Linkage', 'Encoder', 'Date Encoded'];
+    } else {
+        headers = ['Gender', 'Stigma', 'Discrimination', 'Violence', 'Encoder', 'Date Encoded'];
+    }
+
+    sheet.addRow(headers).eachCell(cell => {
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        if (isBiomedical) {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF6AA26' } };
+        } else {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF6AA26' } };
+        }
+        cell.alignment = { horizontal: 'center' };
+    });
+
+    patients.forEach(patient => {
+        if (isBiomedical) {
+            const rowData = [
+                patient.gender,
+                patient.biomedical ? patient.biomedical.location : '',
+                patient.biomedical ? patient.biomedical.barangay : '',
+                patient.biomedical ? patient.biomedical.remarks : '',
+                patient.biomedical ? patient.biomedical.age_range : '',
+                patient.biomedical ? patient.biomedical.tested_before : '',
+                patient.biomedical ? patient.biomedical.test_result : '',
+                patient.biomedical ? patient.biomedical.reason : '',
+                patient.biomedical ? patient.biomedical.kvp : '',
+                patient.biomedical ? patient.biomedical.linkage : '',
+                patient.encoder,
+                formatDate(patient.date_encoded)
+            ];
+            sheet.addRow(rowData);
+        } else {
+            const nonBiomedicalRowData = [
+                patient.gender,
+                patient.nonbiomedical ? patient.nonbiomedical.stigma : '',
+                patient.nonbiomedical ? patient.nonbiomedical.discrimination : '',
+                patient.nonbiomedical ? patient.nonbiomedical.violence : '',
+                patient.encoder,
+                formatDate(patient.date_encoded)
+            ];
+            sheet.addRow(nonBiomedicalRowData);
+        }
+    });
+}
+
+// Helper function to format date
+function formatDate(date) {
+    return date.toLocaleDateString('en-US');
+}
+
 
 // server to log out
 server.get('/logout', (req,resp) => {

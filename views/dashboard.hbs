@@ -105,32 +105,41 @@
         </div>
     </div>
 
-    <div class="filter">
-        <p>Filter by</p>
-        <select class="monthly" id="monthlyFilter">
-            <option selected hidden>Monthly</option>
-            <option value="">None</option>
-            <option value="1">January</option>
-            <option value="2">February</option>
-            <option value="3">March</option>
-            <option value="4">April</option>
-            <option value="5">May</option>
-            <option value="6">June</option>
-            <option value="7">July</option>
-            <option value="8">August</option>
-            <option value="9">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-        </select>
-        <select class="yearly" id="yearlyFilter">
-            <option selected hidden>Yearly</option>
-            <option value="">None</option>
-            {{#each year}}
-            <option value="{{this}}">{{this}}</option>
-            {{/each}}
-        </select>
+    <div class="filter-export">
+        <div class="filter">
+            <p>Filter by</p>
+            <select class="monthly" id="monthlyFilter">
+                <option selected hidden>Monthly</option>
+                <option value="">None</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+            <select class="yearly" id="yearlyFilter">
+                <option selected hidden>Yearly</option>
+                <option value="">None</option>
+                {{#each year}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="export">
+            <button id="exportImagesButton">Export Charts as Images</button>
+            <button id="exportPDFButton">Export Charts as PDF</button>
+            <button id="exportExcelButton">Export Data to Excel</button>
+        </div>
     </div>
+
+    
 
     <div class="container">
         <div class="headline-graphs">
@@ -144,37 +153,37 @@
             <div class="graph1">
                 <p class="reason">Testing outcomes for clients who were tested before (repeat testers)</p>
                 <div class="chart">
-                    <canvas id="chartTestedBefore"></canvas>
+                    <canvas id="chartTestedBefore" data-reason="Testing outcomes for clients who were tested before (repeat testers)"></canvas>
                 </div>
             </div>
              <div class="graph2">
                 <p class="reason">Testing outcomes by age</p>
                 <div class="chart">
-                    <canvas id="chartAge"></canvas>
+                    <canvas id="chartAge" data-reason="Testing outcomes by age"></canvas>
                 </div>
             </div>
             <div class="graph3">
                 <p class="reason">Testing outcomes by main reason for HIV Test</p>
                 <div class="chart">
-                    <canvas id="chartReason"></canvas>
+                    <canvas id="chartReason" data-reason="Testing outcomes by main reason for HIV Test"></canvas>
                 </div>
             </div>
             <div class="graph4">
                 <p class="reason">Testing outcomes for first time testers</p>
                 <div class="chart">
-                    <canvas id="chartFirstTimeTesters"></canvas>
+                    <canvas id="chartFirstTimeTesters" data-reason="Testing outcomes for first time testers"></canvas>
                 </div>
             </div>
             <div class="graph5">
                 <p class="reason">Testing outcomes by Key or Vulnerable Population (KVP) at higher risk</p>
                 <div class="chart">
-                    <canvas id="chartKVP"></canvas>
+                    <canvas id="chartKVP" data-reason="Testing outcomes by Key or Vulnerable Population (KVP) at higher risk"></canvas>
                 </div>
             </div>
             <div class="graph6">
                 <p class="reason">Linkage for positive clients</p>
                 <div class="chart">
-                    <canvas id="chartLinkage"></canvas>
+                    <canvas id="chartLinkage" data-reason="Linkage for positive clients"></canvas>
                 </div>
             </div>
             
@@ -193,19 +202,19 @@
             <div class="graph7">
                 <p class="reason">Stigma</p>
                 <div class="chart">
-                    <canvas id="chartStigma"></canvas>
+                    <canvas id="chartStigma" data-reason="Testing outcomes for stigma"></canvas>
                 </div>
             </div>
             <div class="graph8">
                 <p class="reason">Discrimination</p>
                 <div class="chart">
-                    <canvas id="chartDiscrimination"></canvas>
+                    <canvas id="chartDiscrimination" data-reason="Testing outcomes for discrimination"></canvas>
                 </div>
             </div>
             <div class="graph9">
                 <p class="reason">Violence</p>
                 <div class="chart">
-                    <canvas id="chartViolence"></canvas>
+                    <canvas id="chartViolence" data-reason="Testing outcomes for violence"></canvas>
                 </div>
             </div>
         </div>
