@@ -250,6 +250,88 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
     
+    /** 
+     * Event listener for exporting the data from dashboard into PDF.
+     * Exports the data into a PDF file containing the chart images and a summary
+    */
+    document.getElementById('exportPDFButton').addEventListener('click', async () => {
+        try {
+            //Setup PDF file
+            const summaryPDF = new jsPDF();
+        
+            const charts = document.querySelectorAll('canvas');
+            
+            for (let i = 0; i < charts.length; i++) {
+                const chart = charts[i];
+                const reason = chart.getAttribute('data-reason') || '';
+                const chartInstance = Chart.getChart(chart);
+                const datasets = chartInstance.data.datasets;
+    
+                let chartData = []; // preparing data for excel and summary text
+    
+                // populating chart data
+                chartInstance.data.labels.forEach((label, index) => {
+                    let rowData = {
+                        'Label': label
+                    };
+    
+                    // populating data for each category
+                    datasets.forEach((dataset, datasetIndex) => {
+                        const categoryName = dataset.label || `Category ${datasetIndex + 1}`;
+                        const value = dataset.data[index];
+                        rowData[categoryName] = value;
+                    });
+    
+                    chartData.push(rowData);
+                });
+                
+                //Convert chart to image 
+                const canvasImage = chart.toDataURL('image/jpg', 1.0);
+                
+                summaryPDF.setFontSize(14);
+                summaryPDF.setFont("times", "bold");
+                summaryPDF.text(`Chart ${i + 1} ${reason}`, 15, 30);
+
+                // addImage(file, file format, left margin, top margin, width, height)
+                summaryPDF.addImage(canvasImage, 'JPEG', 15, 40, 180, 110);
+                
+                summaryPDF.setFontSize(12);
+                summaryPDF.setFont("times", "normal");
+
+                //This variable is basically top margin
+                var verticalOffset = 160;
+
+                // adding category data
+                datasets.forEach((dataset, datasetIndex) => {
+                    const datasetLabel = dataset.label || `Dataset ${datasetIndex + 1}`;
+                    summaryPDF.text(`${datasetLabel}:`, 15, verticalOffset);
+                    
+                    verticalOffset += 5;
+
+                    dataset.data.forEach((value, index) => {
+                        const label = chartInstance.data.labels[index];
+                        summaryPDF.text(`${label}: ${value}`, 15, verticalOffset);
+                        verticalOffset += 5;
+                    });
+
+                    verticalOffset += 5;
+                });
+    
+                // Add a new page for the next chart
+                if (i < charts.length - 1) {
+                    summaryPDF.addPage();
+                }
+            }
+    
+            summaryPDF.save('Gabay-Summary.pdf');
+
+        } catch (error) {
+            console.error('Error exporting to PDF:', error);
+        }
+    });
+
+
+
     /**
      * Event listener for exporting the overall data from dashboard into excel sheet.
      * Exports the data into excel sheet.
