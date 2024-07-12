@@ -103,15 +103,40 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const chart = charts[i];
                 const reason = chart.getAttribute('data-reason') || '';
                 const chartInstance = Chart.getChart(chart);
+    
+                if (!chartInstance) {
+                    // if chart instance is not found, add placeholder message
+                    const mainHeaderStartRow = worksheet.actualRowCount + 1;
+                    const mainHeaderCell = worksheet.getCell(`A${mainHeaderStartRow}`);
+                    mainHeaderCell.value = `Chart ${i + 1} - ${reason}`;
+                    mainHeaderCell.alignment = { horizontal: 'left' };
+                    mainHeaderCell.font = {
+                        bold: true,
+                        color: { argb: 'FFFFFFFF' },
+                        name: 'Arial',
+                        size: 12,
+                        family: 2
+                    };
+                    mainHeaderCell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: { argb: 'FF9B112E' }
+                    };
+                    worksheet.addRow(['No data available yet for this data reason']);
+    
+                    summaryContent += `Chart ${i + 1} - ${reason}\n\nNo data available yet for this data reason\n\n`;
+                    summaryContent += '-------------------------------------------------\n';
+    
+                    continue;
+                }
+    
                 const datasets = chartInstance.data.datasets;
     
                 let chartData = []; // preparing data for excel and summary text
     
                 // populating chart data
                 chartInstance.data.labels.forEach((label, index) => {
-                    let rowData = {
-                        'Label': label
-                    };
+                    let rowData = { 'Label': label };
     
                     // populating data for each category
                     datasets.forEach((dataset, datasetIndex) => {
@@ -249,6 +274,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.error('Error exporting charts and data:', error);
         }
     });
+    
+    
     
     /** 
      * Event listener for exporting the data from dashboard into PDF.
@@ -1051,7 +1078,7 @@ async function initializeCharts(monthly=0,yearly=0) {
             }
         };
 
-        // Get chart contexts for biomedical records
+        // get chart contexts for biomedical records
         const ctxReason = document.getElementById('chartReason').getContext('2d');
         const ctxKVP = document.getElementById('chartKVP').getContext('2d');
         const ctxTestedBefore = document.getElementById('chartTestedBefore').getContext('2d');
@@ -1059,10 +1086,11 @@ async function initializeCharts(monthly=0,yearly=0) {
         const ctxFirstTimeTesters = document.getElementById('chartFirstTimeTesters').getContext('2d');
         const ctxLinkage = document.getElementById('chartLinkage').getContext('2d');
 
-        // Check if each dataset has data, otherwise display a message
+        // check if each dataset has data, otherwise display a message
         const reasonData = processBiomedicalChartData(data.reason, 'reason');
         if (reasonData.datasets.length === 0) {
             displayNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test:','chartReason');
+            document.getElementById('chartReason').setAttribute('data-reason', 'Testing outcomes by main reason for HIV Test')
         } else {
             if (bioChart1 != undefined){
                 bioChart1.destroy();
@@ -1077,6 +1105,7 @@ async function initializeCharts(monthly=0,yearly=0) {
         const kvpData = processBiomedicalChartData(data.kvp, 'kvp');
         if (kvpData.datasets.length === 0) {
             displayNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk','chartKVP');
+            document.getElementById('chartKVP').setAttribute('data-reason', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk')
         } else {
             if (bioChart2 != undefined){
                 bioChart2.destroy();
@@ -1091,6 +1120,7 @@ async function initializeCharts(monthly=0,yearly=0) {
         const testedBeforeData = processBiomedicalChartData(data.testedBefore, 'tested_before');
         if (testedBeforeData.datasets.length === 0) {
             displayNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)','chartTestedBefore');
+            document.getElementById('chartTestedBefore').setAttribute('data-reason', 'Testing outcomes for clients who were tested before (repeat testers)')
         } else {
             if (bioChart3 != undefined){
                 bioChart3.destroy();
@@ -1105,6 +1135,7 @@ async function initializeCharts(monthly=0,yearly=0) {
         const ageData = processBiomedicalChartData(data.ageRange, 'age');
         if (ageData.datasets.length === 0) {
             displayNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
+            document.getElementById('chartAge').setAttribute('data-reason', 'Testing outcomes by age')
         } else {
             if (bioChart4 != undefined){
                 bioChart4.destroy();
@@ -1119,6 +1150,7 @@ async function initializeCharts(monthly=0,yearly=0) {
         const firstTimeTestersData = processBiomedicalChartData(data.testedBefore.filter(item => item._id.tested_before === 'No'), 'tested_before');
         if (firstTimeTestersData.datasets.length === 0) {
             displayNoDataMessage('.graph4', 'Testing outcomes for first time testers','chartFirstTimeTesters');
+            document.getElementById('chartFirstTimeTesters').setAttribute('data-reason', 'Testing outcomes for first time testers')
         } else {
             if (bioChart5 != undefined){
                 bioChart5.destroy();
@@ -1133,6 +1165,7 @@ async function initializeCharts(monthly=0,yearly=0) {
         const linkageData = processBiomedicalChartData(data.linkage, 'linkage');
         if (linkageData.datasets.length === 0) {
             displayNoDataMessage('.graph6', 'Linkage for positive clients','chartLinkage');
+            document.getElementById('chartLinkage').setAttribute('data-reason', 'Linkage for positive clients')
         } else {
             if (bioChart6 != undefined){
                 bioChart6.destroy();
@@ -1144,15 +1177,16 @@ async function initializeCharts(monthly=0,yearly=0) {
             document.getElementById('chartLinkage').setAttribute('data-reason', 'Linkage for positive clients');
         }
 
-        // Get chart contexts for nonbiomedical records
+        // get chart contexts for nonbiomedical records
         const ctxStigma = document.getElementById('chartStigma').getContext('2d');
         const ctxDiscrimination = document.getElementById('chartDiscrimination').getContext('2d');
         const ctxViolence = document.getElementById('chartViolence').getContext('2d');
 
-       // Check if each dataset has data, otherwise display a message
+       // check if each dataset has data, otherwise display a message
        const stigmaData = processNonBiomedicalChartData(data.stigma, 'stigma');
        if (stigmaData.datasets.length === 0) {
            displayNoDataMessage('.graph7', 'Testing outcomes for stigma','chartStigma');
+           document.getElementById('chartStigma').setAttribute('data-reason', 'Testing outcomes for stigma')
        } else {
             if (nonbioChart1 != undefined){
                 nonbioChart1.destroy();
@@ -1167,6 +1201,7 @@ async function initializeCharts(monthly=0,yearly=0) {
        const discriminationData = processNonBiomedicalChartData(data.discrimination, 'discrimination');
        if (discriminationData.datasets.length === 0) {
            displayNoDataMessage('.graph8', 'Testing outcomes for discrimination','chartDiscrimination');
+           document.getElementById('chartDiscrimination').setAttribute('data-reason', 'Testing outcomes for discrimination');
        } else {
             if (nonbioChart2 != undefined){
                 nonbioChart2.destroy();
@@ -1181,6 +1216,7 @@ async function initializeCharts(monthly=0,yearly=0) {
        const violenceData = processNonBiomedicalChartData(data.violence, 'violence');
        if (violenceData.datasets.length === 0) {
            displayNoDataMessage('.graph9', 'Testing outcomes for violence','chartViolence');
+           document.getElementById('chartViolence').setAttribute('data-reason', 'Testing outcomes for violence');
        } else {
             if (nonbioChart3 != undefined){
                 nonbioChart3.destroy();
