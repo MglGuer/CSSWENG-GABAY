@@ -290,11 +290,26 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const chart = charts[i];
                 const reason = chart.getAttribute('data-reason') || '';
                 const chartInstance = Chart.getChart(chart);
+                
+                if(!chartInstance) {
+                    summaryPDF.setFontSize(14);
+                    summaryPDF.setFont("times", "bold");
+                    summaryPDF.text(`Chart ${i + 1}: ${reason}`, 15, 30);
+
+                    summaryPDF.setFontSize(12);
+                    summaryPDF.setFont("times", "normal");
+                    summaryPDF.text(`There is no data available to show.`, 15, 45);
+                    if (i < charts.length - 1) {
+                        summaryPDF.addPage();
+                    }
+                    continue;
+                } 
+
                 const datasets = chartInstance.data.datasets;
     
                 let chartData = []; // preparing data for excel and summary text
     
-                // populating chart data
+                
                 chartInstance.data.labels.forEach((label, index) => {
                     let rowData = {
                         'Label': label
@@ -308,17 +323,16 @@ document.addEventListener('DOMContentLoaded', async function () {
                     });
     
                     chartData.push(rowData);
-                });
-                
-                //Convert chart to image 
+                });   
+
                 const canvasImage = chart.toDataURL('image/jpg', 1.0);
                 
                 summaryPDF.setFontSize(14);
                 summaryPDF.setFont("times", "bold");
-                summaryPDF.text(`Chart ${i + 1} ${reason}`, 15, 30);
+                summaryPDF.text(`Chart ${i + 1}: ${reason}`, 15, 30);
 
                 // addImage(file, file format, left margin, top margin, width, height)
-                summaryPDF.addImage(canvasImage, 'JPEG', 15, 40, 180, 110);
+                summaryPDF.addImage(canvasImage, 'JPEG', 15, 40, 170, 110);
                 
                 summaryPDF.setFontSize(12);
                 summaryPDF.setFont("times", "normal");
