@@ -275,8 +275,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
     
-    
-    
     /** 
      * Event listener for exporting the data from dashboard into PDF.
      * Exports the data into a PDF file containing the chart images and a summary
@@ -356,8 +354,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.error('Error exporting to PDF:', error);
         }
     });
-
-
 
     /**
      * Event listener for exporting the overall data from dashboard into excel sheet.
