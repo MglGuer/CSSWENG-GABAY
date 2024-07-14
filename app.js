@@ -58,6 +58,26 @@ server.use(express.static('public'));
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+//nodemailer (for sending emails)
+const nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: 'brandon_jamil_so@dlsu.edu.ph',
+      pass: 'vcop ckxg uken rkao'
+    }
+  });
+
+transporter.set("oauth2_provision_cb", (user, renew, callback) => {
+    let accessToken = userTokens[user];
+    if (!accessToken) {
+      return callback(new Error("Unknown user"));
+    } else {
+      return callback(null, accessToken);
+    }
+  });
+
 // session
 const session = require('express-session');
  
@@ -295,14 +315,56 @@ server.post('/forgot-password', async (req, res) => {
         // hash the new password
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // update the user's password in the database
-        await userCollection.updateOne({ email: email }, { $set: { password: hashedPassword } });
+        //send an email to the target user's email address
+        var mailOptions = {
+            from: 'brandon_jamil_so@dlsu.edu.ph',
+            to: email,
+            subject: 'Verification To Reset Password in GABAY HIV Database',
+            text: "to confirm reset of password please use this link http://localhost:3000/verify-password?email="+email+"&pass="+hashedPassword
+        };  
 
-        res.redirect('/login?message=Password updated successfully');
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+            console.log(error);
+            } else {
+            console.log('Email sent: ' + info.response);
+            return res.redirect('/login?message=Email has been sent to verify password reset');
+            }
+        });
+
     } catch (error) {
         console.error("Error resetting password:", error);
         res.status(500).send("Internal Server Error");
     }
+});
+
+server.get('/verify-password', async (req,resp) => {
+
+    //get query
+    try {
+        // get db collection
+        const email = req.query.email;
+        const newPassword = req.query.pass;
+        
+        const userCollection = client.db("test").collection("users");
+
+        // find user by email
+        const user = await userCollection.findOne({ email: email });
+
+        if (!user) {
+            return resp.redirect('/forgotpassword?error=Email not found');
+        }
+
+        // update the user's password in the database
+        await userCollection.updateOne({ email: email }, { $set: { password: newPassword } });
+
+        resp.redirect('/login?message=Password updated successfully');
+
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        res.status(500).send("Internal Server Error");
+    }
+
 });
 
 // server for dashboard page
