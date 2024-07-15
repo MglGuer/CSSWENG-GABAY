@@ -987,6 +987,20 @@ function formatDate(date) {
     return date.toLocaleDateString('en-US');
 }
 
+// server for user data page
+server.get('/user', (req,resp) => {
+    resp.render('user',{
+        layout: 'index',
+        title: 'User Data Page',
+        user: {
+            name: req.session.username,
+            email: req.session.email,
+            role: req.session.role,
+            userIcon: req.session.userIcon
+        },
+    });
+});
+
 // server to log out
 server.get('/logout', (req,resp) => {
 

@@ -1,0 +1,75 @@
+<div class="sidebar">
+    <div class="top">
+        <div class="logo">
+            <img id="logo-mini" src="./logo.png" alt="logo"/>
+            <span>HIV Advocacy Database (HAD)</span>
+        </div>
+        <i class ="bx bx-menu" id="btn"></i>
+    </div>
+    
+    <ul>
+        <li>
+            <a href="/dashboard">
+                <i class="bx bxs-grid-alt"></i>
+                <span class="nav-item">Dashboard</span>
+            </a>
+            <span class="tooltip">Dashboard</span>
+        </li>
+        {{#if (or (eq user.role "Data Encoder") (eq user.role "Data Manager"))}}
+        <li>
+            <a href="/tracker">
+                <i class="bx bxs-pencil"></i>
+                <span class="nav-item">Data Tracker</span>
+            </a>
+            <span class="tooltip">Data Tracker</span>
+        </li>
+        {{/if}}
+        {{#if (eq user.role "Data Manager")}}
+        <li>
+            <a href="/data">
+                <i class="bx bx-table"></i>
+                <span class="nav-item">Data Log</span>
+            </a>
+            <span class="tooltip">Data Log</span>
+        </li>
+        {{/if}}
+        <li>
+            <a href="/profile">
+                <i class="bx bxs-user"></i>
+                <span class="nav-item">Profile</span>
+            </a>
+            <span class="tooltip">Profile</span>
+        </li>
+        {{#if (eq user.role "Data Manager")}}
+        <li>
+            <a href="/history">
+                <i class="bx bx-list-ul"></i>
+                <span class="nav-item">History Log</span>
+            </a>
+            <span class="tooltip">History Log</span>
+        </li>
+        {{/if}}
+        {{#if (eq user.role "Data Manager")}}
+        <li class="active">
+            <a href="/user">
+                <i class="bx bxs-user-detail"></i>
+                <span class="nav-item">User Data</span>
+            </a>
+            <span class="tooltip">User Data</span>
+        </li>
+        {{/if}}
+        {{>logout}}
+    </ul>
+
+     {{>user}}
+</div>
+
+<div class="main-content">
+    <div class="header">
+        <h1>User Data</h1>
+    </div>
+
+    
+
+   {{>footer}}
+</div>
