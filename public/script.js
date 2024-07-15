@@ -793,6 +793,23 @@ function toggleEditLocationFields() {
 }
 
 /**
+ * Toggle display of the "Don't Know" option based on the selected radio button.
+ * Shows the test result field if "Yes" (has been tested before) is selected,
+ * hides it otherwise and ensures the "Don't Know" option is unchecked.
+ * @param {HTMLInputElement} radio - The radio button element that triggered the function.
+ * @returns {void}
+ */
+function toggleDoNotKnowOption(radio) {
+    const doNotKnowOption = document.getElementById('doNotKnowOption');
+
+    if (radio.value === 'Yes') {
+        doNotKnowOption.style.display = 'inline-block';
+    } else {
+        doNotKnowOption.style.display = 'none';
+    }
+}
+
+/**
  * Clears the form inputs.
  */
 function clearForm() {

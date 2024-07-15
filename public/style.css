@@ -589,7 +589,7 @@ select.monthly:hover, .yearly:hover{
 }
 
 .biomedicalfield, .nonbiomedicalfield,
-#barangay-field, #remarks-field, .hidden {
+#barangay-field, #remarks-field, .hidden, #doNotKnowOption {
     display: none;
 }
 
