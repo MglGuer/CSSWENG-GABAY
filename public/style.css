@@ -804,7 +804,7 @@ select.monthly:hover, .yearly:hover{
     text-align: center;
 }
 
-/** DATA PAGE **/
+/** container for data records and list of users **/
 .container-for-data {
     background-color: #FFECF0;
     border: 2px solid black;
@@ -815,6 +815,7 @@ select.monthly:hover, .yearly:hover{
     overflow-x: auto; 
 }
 
+/** DATA PAGE **/
 .data-log {
     width: 100%;
     border-collapse: collapse;
@@ -911,4 +912,92 @@ select.monthly:hover, .yearly:hover{
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+/** USER PAGE **/
+.user-log {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    padding: 8px;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.total-users, .role-filter {
+    font-size: 18px;
+}
+
+.role-filter{
+    display: flex;
+    align-items: center;
+}
+
+.role-filter p{
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.role-filter select{
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    flex: 1;
+}
+
+.user-log th,
+.user-log td {
+    padding: 8px 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+    vertical-align: middle; 
+    overflow: hidden; 
+    white-space: nowrap; 
+}
+
+.user-log th {
+    background-color: #9B112E;
+    color: #E2FFED;
+}
+
+.role-form {
+    width: 100%;
+    margin: 0;
+}
+
+.role-form select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-size: 18px;
+    flex: 1;
+}
+
+.btn-delete-user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-delete-user i{
+    margin-right: 8px;
+}
+
+.btn-delete-user:hover {
+    background-color: #9B112E; 
 }

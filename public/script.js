@@ -667,6 +667,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     });
 
+    /**
+    *  Store the original selected index for each role select element for reverting if necessary.
+    */
+    document.querySelectorAll('.role-select').forEach(select => {
+        select.setAttribute('data-original-index', select.selectedIndex);
+    });
+
 });
 
 /**
@@ -1282,4 +1289,33 @@ function removeNoDataMessage(selector, reasonText, targetId) {
             </div>
         `;
     });
+}
+
+/**
+ * Confirms the role change action and submits the form if confirmed.
+ * Reverts the select element to its original value if not confirmed.
+ * @param {HTMLSelectElement} selectElement - The select element triggering the role change.
+ */
+function confirmRoleChange(selectElement) {
+    const userConfirmed = confirm('Are you sure you want to change this user\'s role?');
+    if (userConfirmed) {
+        selectElement.form.submit();
+    } else {
+        selectElement.selectedIndex = selectElement.getAttribute('data-original-index');
+    }
+}
+
+/**
+ * Confirms the delete user action and prevents the default link action if not confirmed.
+ * @param {Event} event - The event object.
+ * @param {HTMLAnchorElement} linkElement - The link element triggering the delete action.
+ * @returns {boolean} - Returns true if the user confirmed the action, otherwise false.
+ */
+function confirmDeleteUser(event, linkElement) {
+    const userConfirmed = confirm('Are you sure you want to delete this user?');
+    if (!userConfirmed) {
+        event.preventDefault();
+        return false;
+    }
+    return true;
 }
