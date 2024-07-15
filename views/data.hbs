@@ -68,6 +68,12 @@
     <div class="header">
         <h1>Data Log</h1>
     </div>
+
+    {{#if (eq user.role "Data Manager")}}
+    <div class="export">
+        <button id="exportExcelButton"><i class="bx bxs-spreadsheet"></i>Export Data to Excel Sheet</button>
+    </div>
+    {{/if}}
     
     <div class="container-for-data">
         <h2 class="headline">Biomedical Records</h2>

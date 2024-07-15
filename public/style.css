@@ -359,6 +359,7 @@ select.monthly:hover, .yearly:hover{
 .export{
     display: flex;
     align-items: center;
+    justify-content: flex-end;
 }
 
 .export button{
@@ -804,12 +805,11 @@ select.monthly:hover, .yearly:hover{
 }
 
 /** DATA PAGE **/
-
 .container-for-data {
     background-color: #FFECF0;
     border: 2px solid black;
     padding: 20px;
-    margin: 20px 0;
+    margin: 10px 0 20px 0;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow-x: auto; 
