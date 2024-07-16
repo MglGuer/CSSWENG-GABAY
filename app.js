@@ -264,19 +264,13 @@ server.post('/create-user', async (req, res) => {
         });
     });
 
-    // determine admin status based on role
-    let isAdmin = false;
-    if (role === 'Data Manager') {
-        isAdmin = true;
-    }
-
-    // insert data into the db
+    // insert data into the db (new accounts has member role)
     const result = await userCollection.insertOne({
         name: name,
         email: email,
         password: hashedPassword,
-        role: role,
-        isAdmin: isAdmin,
+        role: 'Member',
+        isAdmin: false,
         userIcon: 'https://res.cloudinary.com/dof7fh2cj/image/upload/v1719207075/hagwnwmxbpkpczzyh46g.jpg'
     });
 
