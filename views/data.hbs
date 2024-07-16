@@ -49,6 +49,15 @@
             <span class="tooltip">History Log</span>
         </li>
         {{/if}}
+        {{#if (eq user.role "Data Manager")}}
+        <li>
+            <a href="/user">
+                <i class="bx bxs-user-detail"></i>
+                <span class="nav-item">User Data</span>
+            </a>
+            <span class="tooltip">User Data</span>
+        </li>
+        {{/if}}
         {{>logout}}
     </ul>
 
@@ -59,6 +68,12 @@
     <div class="header">
         <h1>Data Log</h1>
     </div>
+
+    {{#if (eq user.role "Data Manager")}}
+    <div class="export">
+        <button id="exportExcelButton"><i class="bx bxs-spreadsheet"></i>Export Data to Excel Sheet</button>
+    </div>
+    {{/if}}
     
     <div class="container-for-data">
         <h2 class="headline">Biomedical Records</h2>
@@ -67,7 +82,7 @@
                 <thead>
                     <tr><b>Total:</b> {{biomedicalCount}}</tr>
                     <tr>
-                        <th>Gender</th>
+                        <th>Sex at Birth</th>
                         <th>Location</th>
                         <th>Barangay</th>
                         <th>Remarks</th>
@@ -123,7 +138,7 @@
                 <thead>
                     <tr><b>Total:</b> {{nonBiomedicalCount}}</tr>
                     <tr>
-                        <th>Gender</th>
+                        <th>Sex at Birth</th>
                         <th>Stigma</th>
                         <th>Discrimination</th>
                         <th>Violence</th>

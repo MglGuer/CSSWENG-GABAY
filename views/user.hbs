@@ -1,0 +1,136 @@
+<div class="sidebar">
+    <div class="top">
+        <div class="logo">
+            <img id="logo-mini" src="./logo.png" alt="logo"/>
+            <span>HIV Advocacy Database (HAD)</span>
+        </div>
+        <i class ="bx bx-menu" id="btn"></i>
+    </div>
+    
+    <ul>
+        <li>
+            <a href="/dashboard">
+                <i class="bx bxs-grid-alt"></i>
+                <span class="nav-item">Dashboard</span>
+            </a>
+            <span class="tooltip">Dashboard</span>
+        </li>
+        {{#if (or (eq user.role "Data Encoder") (eq user.role "Data Manager"))}}
+        <li>
+            <a href="/tracker">
+                <i class="bx bxs-pencil"></i>
+                <span class="nav-item">Data Tracker</span>
+            </a>
+            <span class="tooltip">Data Tracker</span>
+        </li>
+        {{/if}}
+        {{#if (eq user.role "Data Manager")}}
+        <li>
+            <a href="/data">
+                <i class="bx bx-table"></i>
+                <span class="nav-item">Data Log</span>
+            </a>
+            <span class="tooltip">Data Log</span>
+        </li>
+        {{/if}}
+        <li>
+            <a href="/profile">
+                <i class="bx bxs-user"></i>
+                <span class="nav-item">Profile</span>
+            </a>
+            <span class="tooltip">Profile</span>
+        </li>
+        {{#if (eq user.role "Data Manager")}}
+        <li>
+            <a href="/history">
+                <i class="bx bx-list-ul"></i>
+                <span class="nav-item">History Log</span>
+            </a>
+            <span class="tooltip">History Log</span>
+        </li>
+        {{/if}}
+        {{#if (eq user.role "Data Manager")}}
+        <li class="active">
+            <a href="/user">
+                <i class="bx bxs-user-detail"></i>
+                <span class="nav-item">User Data</span>
+            </a>
+            <span class="tooltip">User Data</span>
+        </li>
+        {{/if}}
+        {{>logout}}
+    </ul>
+
+     {{>user}}
+</div>
+
+<div class="main-content">
+    <div class="header">
+        <h1>User Data</h1>
+    </div>
+
+    <div class="container-for-data">
+        <h2 class="headline">List of Users</h2>
+        <div class="table-responsive">
+            <div class="table-header">
+                <div class="total-users">
+                    <b>Total Users:</b> {{userCount}}
+                </div>
+                <div class="role-filter">
+                    <p>Filter by role:</p>
+                    <form action="/user" method="get">
+                        <select name="role" id="roleFilter" onchange="this.form.submit()">
+                            <option value="" {{isSelected roleFilter ""}}>All</option>
+                            <option value="Member" {{isSelected roleFilter "Member"}}>Member</option>
+                            <option value="Data Encoder" {{isSelected roleFilter "Data Encoder"}}>Data Encoder</option>
+                            <option value="Data Manager" {{isSelected roleFilter "Data Manager"}}>Data Manager</option>
+                        </select>
+                        <input type="hidden" name="userPage" value="1">
+                    </form>
+                </div>
+            </div>
+            <table class="user-log">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each paginatedUsers}}
+                    <tr data-id="{{_id}}">
+                        <td>{{name}}</td>
+                        <td>{{email}}</td>
+                        <td>
+                            <form action="/user/edit" method="post" class="role-form">
+                                <input type="hidden" name="userId" value="{{_id}}">
+                                <select name="role" class="role-select" onchange="confirmRoleChange(this)">
+                                    <option value="Member" {{isSelected role "Member"}}>Member</option>
+                                    <option value="Data Encoder" {{isSelected role "Data Encoder"}}>Data Encoder</option>
+                                    <option value="Data Manager" {{isSelected role "Data Manager"}}>Data Manager</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <a href="/deleteUser/{{_id}}" class="btn-delete-user" onclick="return confirmDeleteUser(event, this)"><i class="bx bxs-trash"></i>Delete User</a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination">
+            {{#if (gt userPage 1)}}
+                <a href="/user?userPage={{decrement userPage}}&role={{roleFilter}}" class="pagination-icon"><i class='bx bx-left-arrow-alt'></i></a>
+            {{/if}}
+            <span>Page {{userPage}} of {{userTotalPages}}</span>
+            {{#if (lt userPage userTotalPages)}}
+                <a href="/user?userPage={{increment userPage}}&role={{roleFilter}}" class="pagination-icon"><i class='bx bx-right-arrow-alt'></i></a>
+            {{/if}}
+        </div>
+    </div>
+
+   {{>footer}}
+</div>

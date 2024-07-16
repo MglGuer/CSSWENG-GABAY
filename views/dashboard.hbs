@@ -49,6 +49,15 @@
             <span class="tooltip">History Log</span>
         </li>
         {{/if}}
+        {{#if (eq user.role "Data Manager")}}
+        <li>
+            <a href="/user">
+                <i class="bx bxs-user-detail"></i>
+                <span class="nav-item">User Data</span>
+            </a>
+            <span class="tooltip">User Data</span>
+        </li>
+        {{/if}}
         {{>logout}}
     </ul>
 
@@ -132,11 +141,12 @@
                 {{/each}}
             </select>
         </div>
+        {{#if (eq user.role "Data Manager")}}
         <div class="export">
             <button id="exportImagesButton"><i class="bx bxs-file-image"></i>Export Charts as Images & Excel Sheet</button>
             <button id="exportPDFButton"><i class="bx bxs-file-pdf"></i>Export Charts as PDF</button>
-            <button id="exportExcelButton"><i class="bx bxs-spreadsheet"></i>Export Data to Excel Sheet</button>
         </div>
+        {{/if}}
     </div>
 
     <div class="container">

@@ -49,6 +49,15 @@
             <span class="tooltip">History Log</span>
         </li>
         {{/if}}
+        {{#if (eq user.role "Data Manager")}}
+        <li>
+            <a href="/user">
+                <i class="bx bxs-user-detail"></i>
+                <span class="nav-item">User Data</span>
+            </a>
+            <span class="tooltip">User Data</span>
+        </li>
+        {{/if}}
         {{>logout}}
     </ul>
 
@@ -76,7 +85,7 @@
                 </div>
 
                 <div class="field">
-                    <label for="gender" class="data-label">Gender:</label>
+                    <label for="gender" class="data-label">Sex at birth:</label>
                     <label class="radio-option">
                         <input type="radio" name="gender" value="Male" required>
                         <span>Male</span>
@@ -133,18 +142,21 @@
                     
                     <div class="biomedicalfield">
                         <label for="repeat" class="data-label">Has the person been tested before?</label>
+                        <div class="radio-options">
                             <label class="radio-option">
-                                <input type="radio" name="tested" value="Yes" required>
+                                <input type="radio" name="tested" value="Yes" required onclick="toggleDoNotKnowOption(this)">
                                 <span>Yes (Has been tested before)</span>
                             </label>
                             <label class="radio-option">
-                                <input type="radio" name="tested" value="No" required>
+                                <input type="radio" name="tested" value="No" required onclick="toggleDoNotKnowOption(this)">
                                 <span>No (First Time Tester)</span>
                             </label>
+                        </div>
                     </div>
 
-                    <div class="biomedicalfield">
-                        <label for="result" class="data-label">Test result: </label>
+                    <div class="biomedicalfield" id="testResultField" style="display: none;">
+                        <label for="result" class="data-label">Test result:</label>
+                        <div class="radio-options">
                             <label class="radio-option">
                                 <input type="radio" name="result" value="Positive" required>
                                 <span>Positive</span>
@@ -153,10 +165,11 @@
                                 <input type="radio" name="result" value="Negative" required>
                                 <span>Negative</span>
                             </label>
-                            <label class="radio-option">
+                            <label class="radio-option" id="doNotKnowOption">
                                 <input type="radio" name="result" value="Do Not Know" required>
                                 <span>Don't Know (For repeat testers)</span>
                             </label>
+                        </div>
                     </div>
 
                     <div class="biomedicalfield">
