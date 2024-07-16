@@ -570,7 +570,7 @@ select.monthly:hover, .yearly:hover{
     width: 100%;
 }
 
-.add-record, .edit-record {
+.add-record, .edit-record, .filter-data {
     display: flex; 
     justify-content: flex-end; 
     gap: 10px; 
@@ -578,7 +578,7 @@ select.monthly:hover, .yearly:hover{
 }
 
 .field, .biomedicalfield, .nonbiomedicalfield,
-.edit-biomedicalfield, .edit-nonbiomedicalfield {
+.edit-biomedicalfield, .edit-nonbiomedicalfield, .filter-field {
     display: flex;
     margin-top: 16px;
     margin-bottom: 16px;
@@ -603,7 +603,8 @@ select.monthly:hover, .yearly:hover{
 }
 
 .data-input, .biomedicalfield select, .nonbiomedicalfield select,
-.edit-biomedicalfield select, .edit-nonbiomedicalfield select {
+.edit-biomedicalfield select, .edit-nonbiomedicalfield select,
+.filter-field select, .filter-field input[type=date] {
     height: 40px;
     padding: 5px;
     margin-left: 50px;
@@ -614,7 +615,7 @@ select.monthly:hover, .yearly:hover{
     flex: 1;
 }
 
-.clear-button, .submit-button, .edit-button {
+.clear-button, .submit-button, .edit-button, .filter-button {
     border-radius: 20px;
     margin-top: 10px;
     background-color: #9B112E; 
@@ -628,7 +629,7 @@ select.monthly:hover, .yearly:hover{
     cursor: pointer;
 }
 
-.clear-button:hover, .submit-button:hover, .edit-button:hover {
+.clear-button:hover, .submit-button:hover, .edit-button:hover, .filter-button:hover {
     background-color: white;
     color: #9B112E;
     border: 3px solid #9B112E;
@@ -858,6 +859,18 @@ select.monthly:hover, .yearly:hover{
     background-color: black;
 }
 
+.btn-filter, .btn-clear-filter {
+    display: inline-block;
+    padding: 6px 10px;
+    font-size: 15px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    background-color: black;
+}
+
 .pagination {
     display: flex;
     align-items: center;
@@ -887,8 +900,11 @@ select.monthly:hover, .yearly:hover{
     left: 0;
     top: 0;
     width: 100%;
+    height: 100%;
     overflow: auto; 
 }
+
+
 
 .modal-content {
     background-color: #eee; 
