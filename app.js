@@ -725,9 +725,28 @@ server.get('/data', async (req, res) => {
         const biomedicalPage = parseInt(req.query.biomedicalPage) || 1;
         const nonBiomedicalPage = parseInt(req.query.nonBiomedicalPage) || 1;
 
-        const patients = await patientModel.find().exec();
-        const biomedicalPatients = patients.filter(patient => patient.data_type === 'Biomedical');
-        const nonBiomedicalPatients = patients.filter(patient => patient.data_type === 'Nonbiomedical');
+        const { genderFilter, fromDateFilter, toDateFilter, locationFilter, ageRangeFilter, testedBeforeFilter, testResultFilter, reasonFilter, kvpFilter, linkageFilter, stigmaFilter, discriminationFilter, violenceFilter } = req.query;
+
+        const filters = {
+            genderFilter,
+            fromDateFilter,
+            toDateFilter,
+            locationFilter,
+            ageRangeFilter,
+            testedBeforeFilter,
+            testResultFilter,
+            reasonFilter,
+            kvpFilter,
+            linkageFilter,
+            stigmaFilter,
+            discriminationFilter,
+            violenceFilter
+        };
+
+        const filteredPatients = await filterPatients(filters);
+
+        const biomedicalPatients = filteredPatients.filter(patient => patient.data_type === 'Biomedical');
+        const nonBiomedicalPatients = filteredPatients.filter(patient => patient.data_type === 'Nonbiomedical');
 
         const paginatedBiomedicalPatients = biomedicalPatients.slice((biomedicalPage - 1) * pageSize, biomedicalPage * pageSize);
         const paginatedNonBiomedicalPatients = nonBiomedicalPatients.slice((nonBiomedicalPage - 1) * pageSize, nonBiomedicalPage * pageSize);
@@ -758,6 +777,64 @@ server.get('/data', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+/**
+ * This function is used as a helper function for /data/filter endpoint
+ * It searches the database based on filters
+ * 
+ * @param {*} filters 
+ * @returns filteredPatients
+ */
+async function filterPatients(filters) {
+    try {
+        let query = patientModel.find({});
+
+        if (filters.genderFilter) {
+            query = query.where('gender').equals(filters.genderFilter);
+        }
+        if (filters.fromDateFilter) {
+            query = query.where('date_encoded').gte(new Date(filters.fromDateFilter));
+        }
+        if (filters.toDateFilter) {
+            query = query.where('date_encoded').lte(new Date(filters.toDateFilter));
+        }
+        if (filters.locationFilter) {
+            query = query.where('biomedical.location').equals(filters.locationFilter);
+        }
+        if (filters.ageRangeFilter) {
+            query = query.where('biomedical.age_range').equals(filters.ageRangeFilter);
+        }
+        if (filters.testedBeforeFilter) {
+            query = query.where('biomedical.tested_before').equals(filters.testedBeforeFilter);
+        }
+        if (filters.testResultFilter) {
+            query = query.where('biomedical.test_result').equals(filters.testResultFilter);
+        }
+        if (filters.reasonFilter) {
+            query = query.where('biomedical.reason').equals(filters.reasonFilter);
+        }
+        if (filters.kvpFilter) {
+            query = query.where('biomedical.kvp').equals(filters.kvpFilter);
+        }
+        if (filters.linkageFilter) {
+            query = query.where('biomedical.linkage').equals(filters.linkageFilter);
+        }
+        if (filters.stigmaFilter) {
+            query = query.where('nonbiomedical.stigma').equals(filters.stigmaFilter);
+        }
+        if (filters.discriminationFilter) {
+            query = query.where('nonbiomedical.discrimination').equals(filters.discriminationFilter);
+        }
+        if (filters.violenceFilter) {
+            query = query.where('nonbiomedical.violence').equals(filters.violenceFilter);
+        }
+
+        return await query.exec();
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+};
 
 // server for editing patient data record
 server.get('/edit/:id', async (req, res) => {

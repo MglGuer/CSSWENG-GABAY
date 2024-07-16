@@ -596,6 +596,185 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     });
 
+    
+    /**
+    * Event listener for the filter button.
+    * Opens the filter modal
+    */
+    const filterModal = document.getElementById('filterModal');
+    const filterForm = document.getElementById('filterForm');
+    const filterSpan = document.getElementsByClassName('close')[1];
+    const filterButtons = document.querySelectorAll('.btn-filter');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            event.preventDefault();
+            try {
+                let formContent = `
+                    <h2 class="headline">Filter</h2>
+                    <div class="filter-field">
+                        <label for="genderFilter" class="data-label">Sex at birth:</label>
+                        <label class="radio-option">
+                            <input type="radio" name="genderFilter" value="Male">
+                            <span>Male</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="genderFilter" value="Female">
+                            <span>Female</span>
+                        </label>  
+                        <label class="radio-option">
+                            <input type="radio" name="genderFilter" value="Transgender">
+                            <span>Transgender</span>
+                        </label>  
+                    </div>
+                    <div class="filter-field">
+                        <label for="fromDateFilter" class="data-label">From date:</label>
+                        <input type="date" id="fromDateFilter" name="fromDateFilter">
+                    </div>
+                    <div class="filter-field">
+                        <label for="toDateFilter" class="data-label">To date:</label>
+                        <input type="date" id="toDateFilter" name="toDateFilter">
+                    </div>
+                    <h2 class="headline">Biomedical</h2>
+                    <div class="filter-field">
+                        <label for="locationFilter" class="data-label">Location:</label>
+                        <label class="radio-option">
+                            <input type="radio" name="locationFilter" value="Caloocan">
+                            <span>Caloocan</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="locationFilter" value="Not in Caloocan">
+                            <span>Not in Caloocan</span>
+                        </label>
+                    </div>
+                    <div class="filter-field">
+                        <label for="ageRangeFilter" class="data-label">Age Range:</label>  
+                        <select id="ageRangeFilter" name="ageRangeFilter">
+                            <option value="" selected>Select age range</option>
+                            <option value="0 to 18 months">0 to 18 months</option>
+                            <option value="19 months to 9 years">19 months to 9 years</option>
+                            <option value="10 to 14 years">10 to 14 years</option>
+                            <option value="15 to 19 years">15 to 19 years</option>
+                            <option value="20 to 24 years">20 to 24 years</option>
+                            <option value="25 to 29 years">25 to 29 years</option>
+                            <option value="30 to 39 years">30 to 39 years</option>
+                            <option value="40 to 49 years">40 to 49 years</option>
+                            <option value="50-plus">50 years and older</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label for="testedBeforeFilter" class="data-label">Test Before</label>
+                        <label class="radio-option">
+                            <input type="radio" name="testedBeforeFilter" value="Yes">
+                            <span>Yes (Has been tested before)</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="testedBeforeFilter" value="No">
+                            <span>No (First Time Tester)</span>
+                        </label>
+                    </div>
+                    <div class="filter-field">
+                        <label for="testResultFilter" class="data-label">Test result:</label>
+                        <label class="radio-option">
+                            <input type="radio" name="testResultFilter" value="Positive">
+                            <span>Positive</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="testResultFilter" value="Negative">
+                            <span>Negative</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="testResultFilter" value="Do Not Know">
+                            <span>Don't Know (For repeat testers)</span>
+                        </label>
+                    </div>
+                    <div class="filter-field">
+                        <label for="reasonFilter" class="data-label">Reason for taking the test:</label>
+                        <select id="reasonFilter" name="reasonFilter">
+                            <option value="" selected>Select reason</option>
+                            <option value="Unprotected Sex">Unprotected Sex</option>
+                            <option value="Injectable Drugs">Use of injectable drugs</option>
+                            <option value="Pregnancy">Pregnancy</option>
+                            <option value="Exposed-child">HIV-exposed child</option>
+                            <option value="PITC">PITC - III health</option>
+                            <option value="Positive-partner">HIV positive partner</option>
+                            <option value="Rape">Non consensual sex and rape</option>
+                            <option value="Bloodtransfusion">History of blood transfusion or exposure to contaminated equipment</option>
+                            <option value="HCW">Occupational hazard health care worker (HCW)</option>
+                            <option value="Administrative">Administrative reason</option>
+                            <option value="History">Subjective ill health or history of sexually transmitted infection(s)</option>
+                            <option value="No reason">No specific reason disclosed</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label for="kvpFilter" class="data-label">Key or Vulnerable Population (KVP) at higher risk:</label>
+                        <select id="kvpFilter" name="kvpFilter">
+                            <option value=""selected>Select population</option>
+                            <option value="PWID">Person who injects drugs (PWID) or other needle sharing</option>
+                            <option value="MSM">Gay and other Men having Sex with Men (MSM)</option>
+                            <option value="Transgenders">Transgenders</option>
+                            <option value="Sex-worker">Sex/entertainment worker</option>
+                            <option value="Prisoner">Prisoner/detainee</option>
+                            <option value="Migrant">Mobile and migrant populations</option>
+                            <option value="PWUD">Person who uses non-injectable drugs (PWUD)</option>
+                            <option value="Uniformed forces">Uniformed forces (military, police, security)</option>
+                            <option value="Sexual-partners">Sexual Partners of identified KP at higher risk</option>
+                            <option value="AGEW">Adolescent Girls and Young Women (AGEW)</option>
+                            <option value="PWD">Persons with disability</option>
+                            <option value="PLHIV">HIV-negative sexual partners of PLHIV</option>
+                            <option value="Not disclosed">No key or vulnerable population known or not disclosed</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label for="linkageFilter" class="data-label">Linkage:</label>
+                        <select id="linkageFilter" name="linkageFilter">
+                            <option value="" selected>Select linkage</option>
+                            <option value="Treatment facility">Linked to Treatment Facility</option>
+                            <option value="Follow-up">Linkage not yet confirmed, under follow-up</option>
+                            <option value="Unconfirmed">Linkage unconfirmed (after 3 months follow-up)</option>
+                        </select>
+                    </div>
+                    <h2 class="headline">Nonbiomedical Filters</h2>
+                    <div class="edit-nonbiomedicalfield">
+                        <label for="stigmaFilter" class="data-label">Stigma:</label>
+                        <select id="stigmaFilter" name="stigmaFilter">
+                            <option value="" selected>Select category</option>
+                            <option value="Public Stigma">Public Stigma</option>
+                            <option value="Family Stigma">Family Stigma</option>
+                            <option value="Self-stigma">Self-stigma</option>
+                        </select>
+                    </div>
+                    <div class="edit-nonbiomedicalfield">
+                        <label for="discriminationFilter" class="data-label">Discrimination:</label>
+                        <select id="discriminationFilter" name="discriminationFilter">
+                            <option value="" selected>Select category</option>
+                            <option value="Verbal Abuse">Verbal Abuse</option>
+                            <option value="Physical Abuse">Physical Abuse</option>
+                            <option value="Emotional Abuse">Emotional Abuse</option>
+                        </select>
+                    </div>
+                    <div class="edit-nonbiomedicalfield">
+                        <label for="violenceFilter" class="data-label">Violence:</label>
+                        <select id="violenceFilter" name="violenceFilter">
+                            <option value="" selected>Select category</option>
+                            <option value="Economic Abuse">Economic Abuse</option>
+                            <option value="Sexual Abuse">Sexual Abuse</option>
+                            <option value="Hate Crime">Hate Crime</option>
+                        </select>
+                    </div>
+                    <div class="filter-data">
+                    <button type="submit" class="filter-button">Apply Filter/s</button>
+                    </div>`;
+                
+                filterForm.innerHTML = formContent;
+
+                filterModal.style.display = "block";
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    });
+
     /**
     * Event listener for the close button of the edit modal.
     * Closes the edit modal when clicked.
@@ -605,12 +784,21 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     /**
+     * Event listener for the close button of the filter modal.
+     * Closes the filter modal when clicked.
+     */
+    filterSpan.onclick = function () {
+        filterModal.style.display = "none";
+    }
+
+    /**
     * Event listener for clicks outside the modal.
     * Closes the edit modal if the user clicks outside of it.
     */
     window.onclick = function (event) {
-        if (event.target == editModal) {
+        if (event.target == editModal || event.target == filterModal) {
             editModal.style.display = "none";
+            filterModal.style.display = "none";
         }
     }
 
@@ -652,6 +840,20 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.error('Error updating patient data:', error);
             alert('An error occurred while updating patient data.');
         }
+    });
+
+    /**
+    * Event listener for the edit form submission.
+    * Submits the updated patient data to the server.
+    * @param {Event} event - The form submission event.
+    */
+    filterForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+    
+        const filterFormData = new FormData(filterForm);
+        const searchParams = new URLSearchParams(filterFormData);
+        const url = `/data?${searchParams.toString()}`;
+        window.location.href = url;
     });
     
     /**

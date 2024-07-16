@@ -67,6 +67,8 @@
 <div class="main-content">
     <div class="header">
         <h1>Data Log</h1>
+        <a href="#" class="btn-filter">Filter</a>
+        <a href="/data" class="btn-clear-filter">Clear filter</a>
     </div>
 
     {{#if (eq user.role "Data Manager")}}
@@ -183,6 +185,15 @@
     <div class="modal-content">
         <span class="close">&times;</span>
         <form id="editForm">
+        </form>
+    </div>
+</div>
+
+<!-- filter form -->
+<div id="filterModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="filterForm">
         </form>
     </div>
 </div>
