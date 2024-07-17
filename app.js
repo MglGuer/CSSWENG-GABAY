@@ -725,12 +725,14 @@ server.get('/data', async (req, res) => {
         const biomedicalPage = parseInt(req.query.biomedicalPage) || 1;
         const nonBiomedicalPage = parseInt(req.query.nonBiomedicalPage) || 1;
 
-        const { genderFilter, fromDateFilter, toDateFilter, locationFilter, ageRangeFilter, testedBeforeFilter, testResultFilter, reasonFilter, kvpFilter, linkageFilter, stigmaFilter, discriminationFilter, violenceFilter } = req.query;
+        const { bioGenderFilter, bioFromDateFilter, bioToDateFilter, locationFilter, ageRangeFilter, 
+                testedBeforeFilter, testResultFilter, reasonFilter, kvpFilter, linkageFilter, nonBioGenderFilter, 
+                nonBioFromDateFilter, nonBioToDateFilter, stigmaFilter, discriminationFilter, violenceFilter } = req.query;
 
         const filters = {
-            genderFilter,
-            fromDateFilter,
-            toDateFilter,
+            bioGenderFilter,
+            bioFromDateFilter,
+            bioToDateFilter,
             locationFilter,
             ageRangeFilter,
             testedBeforeFilter,
@@ -738,6 +740,9 @@ server.get('/data', async (req, res) => {
             reasonFilter,
             kvpFilter,
             linkageFilter,
+            nonBioGenderFilter,
+            nonBioFromDateFilter, 
+            nonBioToDateFilter,
             stigmaFilter,
             discriminationFilter,
             violenceFilter
@@ -787,49 +792,72 @@ server.get('/data', async (req, res) => {
  */
 async function filterPatients(filters) {
     try {
-        let query = patientModel.find({});
+        let biomedicalQuery = patientModel.find({ data_type: 'Biomedical' });
+        let nonBiomedicalQuery = patientModel.find({ data_type: 'Nonbiomedical' });
 
-        if (filters.genderFilter) {
-            query = query.where('gender').equals(filters.genderFilter);
+        /* Biomedical Filters */
+        if (filters.bioGenderFilter) {
+            biomedicalQuery = biomedicalQuery.where('gender').equals(filters.bioGenderFilter);
         }
-        if (filters.fromDateFilter) {
-            query = query.where('date_encoded').gte(new Date(filters.fromDateFilter));
+        if (filters.bioFromDateFilter) {
+            let bioFromDate = new Date(filters.bioFromDateFilter);
+            biomedicalQuery = biomedicalQuery.where('date_encoded').gte(bioFromDate);
         }
-        if (filters.toDateFilter) {
-            query = query.where('date_encoded').lte(new Date(filters.toDateFilter));
+        if (filters.bioToDateFilter) {
+            let bioToDate = new Date(filters.bioToDateFilter);
+            biomedicalQuery = biomedicalQuery.where('date_encoded').lte(bioToDate);
         }
         if (filters.locationFilter) {
-            query = query.where('biomedical.location').equals(filters.locationFilter);
+            biomedicalQuery = biomedicalQuery.where('biomedical.location').equals(filters.locationFilter);
         }
         if (filters.ageRangeFilter) {
-            query = query.where('biomedical.age_range').equals(filters.ageRangeFilter);
+            biomedicalQuery = biomedicalQuery.where('biomedical.age_range').equals(filters.ageRangeFilter);
         }
         if (filters.testedBeforeFilter) {
-            query = query.where('biomedical.tested_before').equals(filters.testedBeforeFilter);
+            biomedicalQuery = biomedicalQuery.where('biomedical.tested_before').equals(filters.testedBeforeFilter);
         }
         if (filters.testResultFilter) {
-            query = query.where('biomedical.test_result').equals(filters.testResultFilter);
+            biomedicalQuery = biomedicalQuery.where('biomedical.test_result').equals(filters.testResultFilter);
         }
         if (filters.reasonFilter) {
-            query = query.where('biomedical.reason').equals(filters.reasonFilter);
+            biomedicalQuery = biomedicalQuery.where('biomedical.reason').equals(filters.reasonFilter);
         }
         if (filters.kvpFilter) {
-            query = query.where('biomedical.kvp').equals(filters.kvpFilter);
+            biomedicalQuery = biomedicalQuery.where('biomedical.kvp').equals(filters.kvpFilter);
         }
         if (filters.linkageFilter) {
-            query = query.where('biomedical.linkage').equals(filters.linkageFilter);
-        }
-        if (filters.stigmaFilter) {
-            query = query.where('nonbiomedical.stigma').equals(filters.stigmaFilter);
-        }
-        if (filters.discriminationFilter) {
-            query = query.where('nonbiomedical.discrimination').equals(filters.discriminationFilter);
-        }
-        if (filters.violenceFilter) {
-            query = query.where('nonbiomedical.violence').equals(filters.violenceFilter);
+            biomedicalQuery = biomedicalQuery.where('biomedical.linkage').equals(filters.linkageFilter);
         }
 
-        return await query.exec();
+        /* Nonbiomedical Filters */
+        if (filters.nonBioGenderFilter) {
+            nonBiomedicalQuery = nonBiomedicalQuery.where('gender').equals(filters.nonBioGenderFilter);
+        }
+        if (filters.nonBioFromDateFilter) {
+            let nonBioFromDate = new Date(filters.nonBioFromDateFilter);
+            nonBiomedicalQuery = nonBiomedicalQuery.where('date_encoded').gte(nonBioFromDate);
+        }
+        if (filters.nonBioToDateFilter) {
+            let nonBioToDate = new Date(filters.nonBioToDateFilter);
+            nonBiomedicalQuery = nonBiomedicalQuery.where('date_encoded').lte(nonBioToDate);
+        }
+        if (filters.stigmaFilter) {
+            nonBiomedicalQuery = nonBiomedicalQuery.where('nonbiomedical.stigma').equals(filters.stigmaFilter);
+        }
+        if (filters.discriminationFilter) {
+            nonBiomedicalQuery = nonBiomedicalQuery.where('nonbiomedical.discrimination').equals(filters.discriminationFilter);
+        }
+        if (filters.violenceFilter) {
+            nonBiomedicalQuery = nonBiomedicalQuery.where('nonbiomedical.violence').equals(filters.violenceFilter);
+        }
+
+        // Executing queries
+        let biomedicalResults = await biomedicalQuery.exec();
+        let nonBiomedicalResults = await nonBiomedicalQuery.exec();
+
+        let allResults = [...biomedicalResults, ...nonBiomedicalResults];
+
+        return allResults;
     } catch (err) {
         console.error(err);
         throw err;

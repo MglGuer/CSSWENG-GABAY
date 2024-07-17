@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Fetch data and initialize charts after the DOM is fully loaded
     await initializeCharts();
-        
     /**
      * Filters graphs by month
      */
@@ -35,7 +34,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                     alert('An error occurred while filtering biomedical patient data.');
                 }
         };
-
     }
 
     /**
@@ -841,20 +839,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             alert('An error occurred while updating patient data.');
         }
     });
-
-    /**
-    * Event listener for the edit form submission.
-    * Submits the updated patient data to the server.
-    * @param {Event} event - The form submission event.
-    */
-    filterForm.addEventListener('submit', async function (event) {
-        event.preventDefault();
-    
-        const filterFormData = new FormData(filterForm);
-        const searchParams = new URLSearchParams(filterFormData);
-        const url = `/data?${searchParams.toString()}`;
-        window.location.href = url;
-    });
     
     /**
     * Event listeners for the delete button.
@@ -877,6 +861,154 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
 });
+
+
+
+document.addEventListener('DOMContentLoaded', async function () {
+        // Handle URL response parameters for displaying messages or errors
+        await handleResponse();
+        console.log('Data filtering is available');
+    
+        function constructQueryString() {
+            let bioGenderFilter = document.querySelector('#bioGenderFilter').value;
+            let bioFromDateFilter = document.querySelector('#bioFromDateFilter').value;
+            let bioToDateFilter = document.querySelector('#bioToDateFilter').value;
+            let locationFilter = document.querySelector('#locationFilter').value;
+            let ageRangeFilter = document.querySelector('#ageRangeFilter').value;
+            let testedBeforeFilter = document.querySelector('#testedBeforeFilter').value;
+            let testResultFilter = document.querySelector('#testResultFilter').value;
+            let reasonFilter = document.querySelector('#reasonFilter').value;
+            let kvpFilter = document.querySelector('#kvpFilter').value;
+            let linkageFilter = document.querySelector('#linkageFilter').value;
+    
+            let nonBioGenderFilter = document.querySelector('#nonBioGenderFilter').value;
+            let nonBioFromDateFilter = document.querySelector('#nonBioFromDateFilter').value;
+            let nonBioToDateFilter = document.querySelector('#nonBioToDateFilter').value;
+            let stigmaFilter = document.querySelector('#stigmaFilter').value;
+            let discriminationFilter = document.querySelector('#discriminationFilter').value;
+            let violenceFilter = document.querySelector('#violenceFilter').value;
+    
+            console.log('Filters:', {
+                bioGenderFilter, bioFromDateFilter, bioToDateFilter, 
+                locationFilter, ageRangeFilter, testedBeforeFilter,
+                testResultFilter, reasonFilter, kvpFilter, linkageFilter,
+                nonBioGenderFilter, nonBioFromDateFilter, nonBioToDateFilter,
+                stigmaFilter, discriminationFilter, violenceFilter
+            });
+    
+            let queryParams = [];
+    
+            if (bioGenderFilter) queryParams.push(`bioGenderFilter=${encodeURIComponent(bioGenderFilter)}`);
+            if (bioFromDateFilter) queryParams.push(`bioFromDateFilter=${encodeURIComponent(bioFromDateFilter)}`);
+            if (bioToDateFilter) queryParams.push(`bioToDateFilter=${encodeURIComponent(bioToDateFilter)}`);
+            if (locationFilter) queryParams.push(`locationFilter=${locationFilter}`);
+            if (ageRangeFilter) queryParams.push(`ageRangeFilter=${encodeURIComponent(ageRangeFilter)}`);
+            if (testedBeforeFilter) queryParams.push(`testedBeforeFilter=${encodeURIComponent(testedBeforeFilter)}`);
+            if (testResultFilter) queryParams.push(`testResultFilter=${encodeURIComponent(testResultFilter)}`);
+            if (reasonFilter) queryParams.push(`reasonFilter=${encodeURIComponent(reasonFilter)}`);
+            if (kvpFilter) queryParams.push(`kvpFilter=${encodeURIComponent(kvpFilter)}`);
+            if (linkageFilter) queryParams.push(`linkageFilter=${encodeURIComponent(linkageFilter)}`);
+
+            if (nonBioGenderFilter) queryParams.push(`nonBioGenderFilter=${encodeURIComponent(nonBioGenderFilter)}`);
+            if (nonBioFromDateFilter) queryParams.push(`nonBioFromDateFilter=${encodeURIComponent(nonBioFromDateFilter)}`);
+            if (nonBioToDateFilter) queryParams.push(`nonBioToDateFilter=${encodeURIComponent(nonBioToDateFilter)}`);
+            if (stigmaFilter) queryParams.push(`stigmaFilter=${encodeURIComponent(stigmaFilter)}`);
+            if (discriminationFilter) queryParams.push(`discriminationFilter=${encodeURIComponent(discriminationFilter)}`);
+            if (violenceFilter) queryParams.push(`violenceFilter=${encodeURIComponent(violenceFilter)}`);
+
+            return queryParams.join('&');
+        }
+
+        function setSelectedOptions() {
+            let urlParams = new URLSearchParams(window.location.search);
+    
+            // Biomedical filters
+            if (urlParams.has('bioGenderFilter')) {
+                let bioGenderValue = urlParams.get('bioGenderFilter');
+                document.querySelector('#bioGenderFilter').value = bioGenderValue;
+            }
+            if (urlParams.has('bioFromDateFilter')) {
+                let bioFromDateValue = urlParams.get('bioFromDateFilter');
+                document.querySelector('#bioFromDateFilter').value = bioFromDateValue;
+            }
+            if (urlParams.has('bioToDateFilter')) {
+                let bioToDateValue = urlParams.get('bioToDateFilter');
+                document.querySelector('#bioToDateFilter').value = bioToDateValue;
+            }
+            if (urlParams.has('locationFilter')) {
+                let locationValue = urlParams.get('locationFilter');
+                document.querySelector('#locationFilter').value = locationValue;
+            }
+            if (urlParams.has('ageRangeFilter')) {
+                let ageRangeValue = urlParams.get('ageRangeFilter');
+                document.querySelector('#ageRangeFilter').value = ageRangeValue;
+            }
+            if (urlParams.has('testedBeforeFilter')) {
+                let testedBeforeValue = urlParams.get('testedBeforeFilter');
+                document.querySelector('#testedBeforeFilter').value = testedBeforeValue;
+            }
+            if (urlParams.has('testResultFilter')) {
+                let testResultValue = urlParams.get('testResultFilter');
+                document.querySelector('#testResultFilter').value = testResultValue;
+            }
+            if (urlParams.has('reasonFilter')) {
+                let reasonValue = urlParams.get('reasonFilter');
+                document.querySelector('#reasonFilter').value = reasonValue;
+            }
+            if (urlParams.has('kvpFilter')) {
+                let kvpValue = urlParams.get('kvpFilter');
+                document.querySelector('#kvpFilter').value = kvpValue;
+            }
+            if (urlParams.has('linkageFilter')) {
+                let linkageValue = urlParams.get('linkageFilter');
+                document.querySelector('#linkageFilter').value = linkageValue;
+            }
+    
+            // Nonbiomedical filters
+            if (urlParams.has('nonBioGenderFilter')) {
+                let nonBioGenderValue = urlParams.get('nonBioGenderFilter');
+                document.querySelector('#nonBioGenderFilter').value = nonBioGenderValue;
+            }
+            if (urlParams.has('nonBioFromDateFilter')) {
+                let nonBioFromDateValue = urlParams.get('nonBioFromDateFilter');
+                document.querySelector('#nonBioFromDateFilter').value = nonBioFromDateValue;
+            }
+            if (urlParams.has('nonBioToDateFilter')) {
+                let nonBioToDateValue = urlParams.get('nonBioToDateFilter');
+                document.querySelector('#nonBioToDateFilter').value = nonBioToDateValue;
+            }
+            if (urlParams.has('stigmaFilter')) {
+                let stigmaValue = urlParams.get('stigmaFilter');
+                document.querySelector('#stigmaFilter').value = stigmaValue;
+            }
+            if (urlParams.has('discriminationFilter')) {
+                let discriminationValue = urlParams.get('discriminationFilter');
+                document.querySelector('#discriminationFilter').value = discriminationValue;
+            }
+            if (urlParams.has('violenceFilter')) {
+                let violenceValue = urlParams.get('violenceFilter');
+                document.querySelector('#violenceFilter').value = violenceValue;
+            }
+        }
+    
+        function reloadPageWithFilters(event) {
+            event.preventDefault(); // Prevent default form submission behavior
+            
+            let fullUrl = '/data' + '?' + constructQueryString();
+            console.log('Full URL with filters:', fullUrl);
+            window.location.href = fullUrl; // Navigate to the new URL
+        }
+
+        let filters = document.querySelectorAll('.filter-select');
+        filters.forEach(filter => {
+            filter.addEventListener('change', reloadPageWithFilters);
+        });
+
+        setSelectedOptions();
+    });
+
+    
+
 
 /**
  * Fetches and handles response parameters from the URL.

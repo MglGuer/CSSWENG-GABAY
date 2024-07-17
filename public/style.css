@@ -602,6 +602,15 @@ select.monthly:hover, .yearly:hover{
     font-weight: bold;
 }
 
+.filter-label {
+    width: 200px;
+    justify-content: center;
+    font-size: 15px;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
 .data-input, .biomedicalfield select, .nonbiomedicalfield select,
 .edit-biomedicalfield select, .edit-nonbiomedicalfield select,
 .filter-field select, .filter-field input[type=date] {
@@ -615,7 +624,20 @@ select.monthly:hover, .yearly:hover{
     flex: 1;
 }
 
-.clear-button, .submit-button, .edit-button, .filter-button {
+.div-filter {
+    margin-bottom: 20px;
+}
+
+.filter-select {
+    background-color: white; 
+    margin-right: 5px;
+    margin-bottom: 5px;
+    padding: 10px;
+    position: relative;
+    font-size: 12px;
+}
+
+.clear-button, .submit-button, .edit-button {
     border-radius: 20px;
     margin-top: 10px;
     background-color: #9B112E; 
@@ -629,7 +651,7 @@ select.monthly:hover, .yearly:hover{
     cursor: pointer;
 }
 
-.clear-button:hover, .submit-button:hover, .edit-button:hover, .filter-button:hover {
+.clear-button:hover, .submit-button:hover, .edit-button:hover {
     background-color: white;
     color: #9B112E;
     border: 3px solid #9B112E;
