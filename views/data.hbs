@@ -68,139 +68,140 @@
     <div class="header">
         <h1>Data Log</h1>     
     </div>
-
-    {{#if (eq user.role "Data Manager")}}
+    
     <div class="export">
         <button id="exportExcelButton"><i class="bx bxs-spreadsheet"></i>Export All Data to Excel Sheet</button>
     </div>
-    {{/if}}
-
-    <!-- Filters for biomedical -->
-    <div class="filter-records">
-        <i class="bx bx-filter"></i>
-        <select id="bioGenderFilter" class="filter-select" name="bioGenderFilter">
-            <option value="" selected>SEX AT BIRTH</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Transgender">Transgender</option>
-        </select>
-        <select id="locationFilter" class="filter-select" name="locationFilter">
-            <option value="" selected>LOCATION</option>
-            <option value="Caloocan">Caloocan</option>
-            <option value="Not in Caloocan">Not in Caloocan</option>
-        </select>
-        <select id="ageRangeFilter" class="filter-select" name="ageRangeFilter">
-            <option value="" selected>AGE RANGE</option>
-            <option value="0 to 18 months">0 to 18 months</option>
-            <option value="19 months to 9 years">19 months to 9 years</option>
-            <option value="10 to 14 years">10 to 14 years</option>
-            <option value="15 to 19 years">15 to 19 years</option>
-            <option value="20 to 24 years">20 to 24 years</option>
-            <option value="25 to 29 years">25 to 29 years</option>
-            <option value="30 to 39 years">30 to 39 years</option>
-            <option value="40 to 49 years">40 to 49 years</option>
-            <option value="50-plus">50 years and older</option>
-        </select>
-        <select id="testedBeforeFilter" class="filter-select" name="testedBeforeFilter">
-            <option value="" selected>TESTED BEFORE</option>
-            <option value="Yes">Yes (Has been tested before)</option>
-            <option value="No">No (First Time Tester)</option>
-        </select>
-        <select id="testResultFilter" class="filter-select" name="testResultFilter">
-            <option value="" selected>TEST RESULT</option>
-            <option value="Positive">Positive</option>
-            <option value="Negative">Negative</option>
-        </select>
-        <select id="reasonFilter" class="filter-select" name="reasonFilter">
-            <option value="" selected>REASON</option>
-            <option value="Unprotected Sex">Unprotected Sex</option>
-            <option value="Injectable Drugs">Use of injectable drugs</option>
-            <option value="Pregnancy">Pregnancy</option>
-            <option value="Exposed-child">HIV-exposed child</option>
-            <option value="PITC">PITC - III health</option>
-            <option value="Positive-partner">HIV positive partner</option>
-            <option value="Rape">Non consensual sex and rape</option>
-            <option value="Bloodtransfusion">History of blood transfusion or exposure to contaminated equipment</option>
-            <option value="HCW">Occupational hazard health care worker (HCW)</option>
-            <option value="Administrative">Administrative reason</option>
-            <option value="History">Subjective ill health or history of sexually transmitted infection(s)</option>
-            <option value="No reason">No specific reason disclosed</option>
-        </select>
-        <select id="kvpFilter" class="filter-select" name="kvpFilter">
-            <option value=""selected>KEY POPULATION</option>
-            <option value="PWID">Person who injects drugs (PWID) or other needle sharing</option>
-            <option value="MSM">Gay and other Men having Sex with Men (MSM)</option>
-            <option value="Transgenders">Transgenders</option>
-            <option value="Sex-worker">Sex/entertainment worker</option>
-            <option value="Prisoner">Prisoner/detainee</option>
-            <option value="Migrant">Mobile and migrant populations</option>
-            <option value="PWUD">Person who uses non-injectable drugs (PWUD)</option>
-            <option value="Uniformed forces">Uniformed forces (military, police, security)</option>
-            <option value="Sexual-partners">Sexual Partners of identified KP at higher risk</option>
-            <option value="AGEW">Adolescent Girls and Young Women (AGEW)</option>
-            <option value="PWD">Persons with disability</option>
-            <option value="PLHIV">HIV-negative sexual partners of PLHIV</option>
-            <option value="Not disclosed">No key or vulnerable population known or not disclosed</option>
-        </select>
-        <select id="linkageFilter" class="filter-select" name="linkageFilter">
-            <option value="" selected>LINKAGE</option>
-            <option value="Treatment facility">Linked to Treatment Facility</option>
-            <option value="Follow-up">Linkage not yet confirmed, under follow-up</option>
-            <option value="Unconfirmed">Linkage unconfirmed (after 3 months follow-up)</option>
-        </select>
-        <p>From Date:</p>
-        <input type="date" id="bioFromDateFilter" class="filter-select placeholder" name="bioFromDateFilter">
-        <p>To Date:</p>
-        <input type="date" id="bioToDateFilter" class="filter-select placeholder" name="bioToDateFilter"> 
-        <a href="/data" class="btn-clear-filter">Clear</a>      
-    </div>
-
+    
     <div class="container-for-data">
         <h2 class="headline">Biomedical Records</h2>
-        <div class="table-responsive">
-            <table class="data-log">
-                <thead>
-                    <tr><b>Total:</b> {{biomedicalCount}}</tr> 
-                    <tr>
-                        <th>Sex at Birth</th>
-                        <th>Location</th>
-                        <th>Barangay</th>
-                        <th>Remarks</th>
-                        <th>Age Range</th>
-                        <th>Tested Before</th>
-                        <th>Test Result</th>
-                        <th>Reason</th>
-                        <th>KVP</th>
-                        <th>Linkage</th>
-                        <th>Encoder</th>
-                        <th>Date Encoded</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each paginatedBiomedicalPatients}}
-                    <tr data-id="{{_id}}">
-                        <td>{{gender}}</td>
-                        <td>{{biomedical.location}}</td>
-                        <td>{{biomedical.barangay}}</td>
-                        <td>{{biomedical.remarks}}</td>
-                        <td>{{biomedical.age_range}}</td>
-                        <td>{{biomedical.tested_before}}</td>
-                        <td>{{biomedical.test_result}}</td>
-                        <td>{{biomedical.reason}}</td>
-                        <td>{{biomedical.kvp}}</td>
-                        <td>{{biomedical.linkage}}</td>
-                        <td>{{encoder}}</td>
-                        <td>{{formatDate date_encoded}}</td>
-                        <td>
-                            <a href="#" data-id="{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
-                            <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+
+        <div class="filter-records">
+            <i class="bx bx-filter"></i>
+            <select id="bioGenderFilter" class="filter-select" name="bioGenderFilter">
+                <option value="" selected>SEX AT BIRTH</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Transgender">Transgender</option>
+            </select>
+            <select id="locationFilter" class="filter-select" name="locationFilter">
+                <option value="" selected>LOCATION</option>
+                <option value="Caloocan">Caloocan</option>
+                <option value="Not in Caloocan">Not in Caloocan</option>
+            </select>
+            <select id="ageRangeFilter" class="filter-select" name="ageRangeFilter">
+                <option value="" selected>AGE RANGE</option>
+                <option value="0 to 18 months">0 to 18 months</option>
+                <option value="19 months to 9 years">19 months to 9 years</option>
+                <option value="10 to 14 years">10 to 14 years</option>
+                <option value="15 to 19 years">15 to 19 years</option>
+                <option value="20 to 24 years">20 to 24 years</option>
+                <option value="25 to 29 years">25 to 29 years</option>
+                <option value="30 to 39 years">30 to 39 years</option>
+                <option value="40 to 49 years">40 to 49 years</option>
+                <option value="50-plus">50 years and older</option>
+            </select>
+            <select id="testedBeforeFilter" class="filter-select" name="testedBeforeFilter">
+                <option value="" selected>TESTED BEFORE</option>
+                <option value="Yes">Yes (Has been tested before)</option>
+                <option value="No">No (First Time Tester)</option>
+            </select>
+            <select id="testResultFilter" class="filter-select" name="testResultFilter">
+                <option value="" selected>TEST RESULT</option>
+                <option value="Positive">Positive</option>
+                <option value="Negative">Negative</option>
+                <option value="Do Not Know">Do Not Know</option>
+            </select>
+            <select id="reasonFilter" class="filter-select" name="reasonFilter">
+                <option value="" selected>REASON</option>
+                <option value="Unprotected Sex">Unprotected Sex</option>
+                <option value="Injectable Drugs">Use of injectable drugs</option>
+                <option value="Pregnancy">Pregnancy</option>
+                <option value="Exposed-child">HIV-exposed child</option>
+                <option value="PITC">PITC - III health</option>
+                <option value="Positive-partner">HIV positive partner</option>
+                <option value="Rape">Non consensual sex and rape</option>
+                <option value="Bloodtransfusion">History of blood transfusion or exposure to contaminated equipment</option>
+                <option value="HCW">Occupational hazard health care worker (HCW)</option>
+                <option value="Administrative">Administrative reason</option>
+                <option value="History">Subjective ill health or history of sexually transmitted infection(s)</option>
+                <option value="No reason">No specific reason disclosed</option>
+            </select>
+            <select id="kvpFilter" class="filter-select" name="kvpFilter">
+                <option value=""selected>KEY POPULATION</option>
+                <option value="PWID">Person who injects drugs (PWID) or other needle sharing</option>
+                <option value="MSM">Gay and other Men having Sex with Men (MSM)</option>
+                <option value="Transgenders">Transgenders</option>
+                <option value="Sex-worker">Sex/entertainment worker</option>
+                <option value="Prisoner">Prisoner/detainee</option>
+                <option value="Migrant">Mobile and migrant populations</option>
+                <option value="PWUD">Person who uses non-injectable drugs (PWUD)</option>
+                <option value="Uniformed forces">Uniformed forces (military, police, security)</option>
+                <option value="Sexual-partners">Sexual Partners of identified KP at higher risk</option>
+                <option value="AGEW">Adolescent Girls and Young Women (AGEW)</option>
+                <option value="PWD">Persons with disability</option>
+                <option value="PLHIV">HIV-negative sexual partners of PLHIV</option>
+                <option value="Not disclosed">No key or vulnerable population known or not disclosed</option>
+            </select>
+            <select id="linkageFilter" class="filter-select" name="linkageFilter">
+                <option value="" selected>LINKAGE</option>
+                <option value="Treatment facility">Linked to Treatment Facility</option>
+                <option value="Follow-up">Linkage not yet confirmed, under follow-up</option>
+                <option value="Unconfirmed">Linkage unconfirmed (after 3 months follow-up)</option>
+            </select>
+            <p>From Date:</p>
+            <input type="date" id="bioFromDateFilter" class="filter-select placeholder" name="bioFromDateFilter">
+            <p>To Date:</p>
+            <input type="date" id="bioToDateFilter" class="filter-select placeholder" name="bioToDateFilter"> 
+            <a href="/data" class="btn-clear-filter">Clear</a>      
         </div>
+
+        <div class="total-count">
+            <b>Total:</b> {{biomedicalCount}}
+        </div>
+
+        <table class="data-log">
+            <thead>
+                <tr>
+                    <th>Sex at Birth</th>
+                    <th>Location</th>
+                    <th>Barangay</th>
+                    <th>Remarks</th>
+                    <th>Age Range</th>
+                    <th>Tested Before</th>
+                    <th>Test Result</th>
+                    <th>Reason</th>
+                    <th>KVP</th>
+                    <th>Linkage</th>
+                    <th>Encoder</th>
+                    <th>Date Encoded</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each paginatedBiomedicalPatients}}
+                <tr data-id="{{_id}}">
+                    <td>{{gender}}</td>
+                    <td>{{biomedical.location}}</td>
+                    <td>{{biomedical.barangay}}</td>
+                    <td>{{biomedical.remarks}}</td>
+                    <td>{{biomedical.age_range}}</td>
+                    <td>{{biomedical.tested_before}}</td>
+                    <td>{{biomedical.test_result}}</td>
+                    <td>{{biomedical.reason}}</td>
+                    <td>{{biomedical.kvp}}</td>
+                    <td>{{biomedical.linkage}}</td>
+                    <td>{{encoder}}</td>
+                    <td>{{formatDate date_encoded}}</td>
+                    <td>
+                        <a href="#" data-id="{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
+                        <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
         <div class="pagination">
             {{#if (gt biomedicalPage 1)}}
                 <a href="/data?biomedicalPage={{decrement biomedicalPage}}&nonBiomedicalPage={{nonBiomedicalPage}}" class="pagination-icon"><i class='bx bx-left-arrow-alt'></i></a>
@@ -212,72 +213,76 @@
         </div>
     </div>
 
-    <!-- Filters for nonbiomedical -->
-    <div class="filter-records">
-        <i class="bx bx-filter"></i>
-        <select id="nonBioGenderFilter" class="filter-select" name="nonBioGenderFilter">
-            <option value="" selected>SEX AT BIRTH</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value"Transgender">Transgender</option>
-        </select>
-        <select id="stigmaFilter" class="filter-select" name="stigmaFilter">
-            <option value="" selected>STIGMA</option>
-            <option value="Public Stigma">Public Stigma</option>
-            <option value="Family Stigma">Family Stigma</option>
-            <option value="Self-stigma">Self-stigma</option>
-        </select>
-        <select id="discriminationFilter" class="filter-select" name="discriminationFilter">
-            <option value="" selected>DISCRIMINATION</option>
-            <option value="Verbal Abuse">Verbal Abuse</option>
-            <option value="Physical Abuse">Physical Abuse</option>
-            <option value="Emotional Abuse">Emotional Abuse</option>
-        </select>
-        <select id="violenceFilter" class="filter-select" name="violenceFilter">
-            <option value="" selected>VIOLENCE</option>
-            <option value="Economic Abuse">Economic Abuse</option>
-            <option value="Sexual Abuse">Sexual Abuse</option>
-            <option value="Hate Crime">Hate Crime</option>
-        </select>
-        <p>From Date:</p>
-        <input type="date" id="nonBioFromDateFilter" class="filter-select" name="nonBioFromDateFilter">
-        <p>To Date:</p>
-        <input type="date" id="nonBioToDateFilter" class="filter-select" name="nonBioToDateFilter">
-        <a href="/data" class="btn-clear-filter">Clear</a>
-    </div>
-
     <div class="container-for-data">
         <h2 class="headline">Nonbiomedical Records</h2>
-            <table class="data-log">
-                <thead>
-                    <tr><b>Total:</b> {{nonBiomedicalCount}}</tr>
-                    <tr>
-                        <th>Sex at Birth</th>
-                        <th>Stigma</th>
-                        <th>Discrimination</th>
-                        <th>Violence</th>
-                        <th>Encoder</th>
-                        <th>Date Encoded</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each paginatedNonBiomedicalPatients}}
-                    <tr data-id="{{_id}}">
-                        <td>{{gender}}</td>
-                        <td>{{nonbiomedical.stigma}}</td>
-                        <td>{{nonbiomedical.discrimination}}</td>
-                        <td>{{nonbiomedical.violence}}</td>
-                        <td>{{encoder}}</td>
-                        <td>{{formatDate date_encoded}}</td>
-                        <td>
-                            <a href="#" data-id="{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
-                            <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+
+        <div class="filter-records">
+            <i class="bx bx-filter"></i>
+            <select id="nonBioGenderFilter" class="filter-select" name="nonBioGenderFilter">
+                <option value="" selected>SEX AT BIRTH</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value"Transgender">Transgender</option>
+            </select>
+            <select id="stigmaFilter" class="filter-select" name="stigmaFilter">
+                <option value="" selected>STIGMA</option>
+                <option value="Public Stigma">Public Stigma</option>
+                <option value="Family Stigma">Family Stigma</option>
+                <option value="Self-stigma">Self-stigma</option>
+            </select>
+            <select id="discriminationFilter" class="filter-select" name="discriminationFilter">
+                <option value="" selected>DISCRIMINATION</option>
+                <option value="Verbal Abuse">Verbal Abuse</option>
+                <option value="Physical Abuse">Physical Abuse</option>
+                <option value="Emotional Abuse">Emotional Abuse</option>
+            </select>
+            <select id="violenceFilter" class="filter-select" name="violenceFilter">
+                <option value="" selected>VIOLENCE</option>
+                <option value="Economic Abuse">Economic Abuse</option>
+                <option value="Sexual Abuse">Sexual Abuse</option>
+                <option value="Hate Crime">Hate Crime</option>
+            </select>
+            <p>From Date:</p>
+            <input type="date" id="nonBioFromDateFilter" class="filter-select" name="nonBioFromDateFilter">
+            <p>To Date:</p>
+            <input type="date" id="nonBioToDateFilter" class="filter-select" name="nonBioToDateFilter">
+            <a href="/data" class="btn-clear-filter">Clear</a>
+        </div>
+
+        <div class="total-count">
+            <b>Total:</b> {{nonBiomedicalCount}}
+        </div>
+
+        <table class="data-log">
+            <thead>
+                <tr>
+                    <th>Sex at Birth</th>
+                    <th>Stigma</th>
+                    <th>Discrimination</th>
+                    <th>Violence</th>
+                    <th>Encoder</th>
+                    <th>Date Encoded</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each paginatedNonBiomedicalPatients}}
+                <tr data-id="{{_id}}">
+                    <td>{{gender}}</td>
+                    <td>{{nonbiomedical.stigma}}</td>
+                    <td>{{nonbiomedical.discrimination}}</td>
+                    <td>{{nonbiomedical.violence}}</td>
+                    <td>{{encoder}}</td>
+                    <td>{{formatDate date_encoded}}</td>
+                    <td>
+                        <a href="#" data-id="{{_id}}" class="btn-edit"><i class="bx bxs-pencil"></i></a>
+                        <a href="/delete/{{_id}}" class="btn-delete"><i class="bx bxs-trash"></i></a>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
         <div class="pagination">
             {{#if (gt nonBiomedicalPage 1)}}
                 <a href="/data?biomedicalPage={{biomedicalPage}}&nonBiomedicalPage={{decrement nonBiomedicalPage}}" class="pagination-icon"><i class='bx bx-left-arrow-alt'></i></a>

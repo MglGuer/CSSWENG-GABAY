@@ -628,34 +628,6 @@ select.monthly:hover, .yearly:hover{
     margin-bottom: 20px;
 }
 
-.filter-records {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px;
-}
-
-.filter-records p{
-    font-weight: bold;
-    font-size: 12px;
-}
-
-.filter-records i {
-    font-size: 24px;
-}
-
-.filter-select {
-    background-color: white; 
-    margin-bottom: 5px;
-    padding: 10px;
-    position: relative;
-    font-size: 12px;
-    width: 130px;
-    border: none;
-    border-radius: 10px;
-    color: #333;
-}
-
 .clear-button, .submit-button, .edit-button {
     border-radius: 20px;
     margin-top: 10px;
@@ -857,7 +829,38 @@ select.monthly:hover, .yearly:hover{
     overflow-x: auto; 
 }
 
-/** DATA PAGE **/
+/** DATA LOG PAGE **/
+.total-count{
+    margin: 10px 0;
+}
+
+.filter-records {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.filter-records p{
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.filter-records i {
+    font-size: 24px;
+}
+
+.filter-select {
+    background-color: white; 
+    margin-bottom: 5px;
+    padding: 10px;
+    position: relative;
+    font-size: 12px;
+    width: 130px;
+    border: none;
+    border-radius: 10px;
+    color: #333;
+}
+
 .data-log {
     width: 100%;
     border-collapse: collapse;
