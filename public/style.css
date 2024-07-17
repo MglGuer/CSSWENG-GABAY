@@ -613,7 +613,7 @@ select.monthly:hover, .yearly:hover{
 
 .data-input, .biomedicalfield select, .nonbiomedicalfield select,
 .edit-biomedicalfield select, .edit-nonbiomedicalfield select,
-.filter-field select, .filter-field input[type=date] {
+.filter-field select{
     height: 40px;
     padding: 5px;
     margin-left: 50px;
@@ -628,13 +628,32 @@ select.monthly:hover, .yearly:hover{
     margin-bottom: 20px;
 }
 
+.filter-records {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+}
+
+.filter-records p{
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.filter-records i {
+    font-size: 24px;
+}
+
 .filter-select {
     background-color: white; 
-    margin-right: 5px;
     margin-bottom: 5px;
     padding: 10px;
     position: relative;
     font-size: 12px;
+    width: 130px;
+    border: none;
+    border-radius: 10px;
+    color: #333;
 }
 
 .clear-button, .submit-button, .edit-button {
