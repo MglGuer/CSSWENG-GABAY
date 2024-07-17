@@ -149,10 +149,8 @@
                 <option value="Follow-up">Linkage not yet confirmed, under follow-up</option>
                 <option value="Unconfirmed">Linkage unconfirmed (after 3 months follow-up)</option>
             </select>
-            <p>From Date:</p>
-            <input type="date" id="bioFromDateFilter" class="filter-select placeholder" name="bioFromDateFilter">
-            <p>To Date:</p>
-            <input type="date" id="bioToDateFilter" class="filter-select placeholder" name="bioToDateFilter"> 
+            <input placeholder="From Date" class="filter-select placeholder" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="bioFromDateFilter" name="bioFromDateFilter">
+            <input placeholder="To Date" class="filter-select placeholder" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="bioToDateFilter" name="bioToDateFilter">
             <a href="/data" class="btn-clear-filter">Clear</a>      
         </div>
 
@@ -242,10 +240,8 @@
                 <option value="Sexual Abuse">Sexual Abuse</option>
                 <option value="Hate Crime">Hate Crime</option>
             </select>
-            <p>From Date:</p>
-            <input type="date" id="nonBioFromDateFilter" class="filter-select" name="nonBioFromDateFilter">
-            <p>To Date:</p>
-            <input type="date" id="nonBioToDateFilter" class="filter-select" name="nonBioToDateFilter">
+            <input placeholder="From Date" class="filter-select placeholder" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="nonBioFromDateFilter" name="nonBioFromDateFilter">
+            <input placeholder="To Date" class="filter-select placeholder" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="nonBioToDateFilter" name="nonBioToDateFilter">
             <a href="/data" class="btn-clear-filter">Clear</a>
         </div>
 
