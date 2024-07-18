@@ -436,59 +436,34 @@ server.get('/dashboard/data', async (req, resp) => {
         ]
         : [];
         let filterQuarter = [];
-        switch (quarter){
-            case 1:
-                filterQuarter = [
-                    {
-                        $match: {
-                            $or: [
-                                { $expr: { $eq: ["$filterMonth", 1] } },
-                                { $expr: { $eq: ["$filterMonth", 2] } },
-                                { $expr: { $eq: ["$filterMonth", 3] } }
-                            ]
-                        }
+        if(quarter){
+            let months = [0,0,0];
+        
+            switch (quarter){
+                case 1:
+                    months = [1,2,3];
+                    break;
+                case 2:
+                    months = [4,5,6];
+                    break;
+                case 3:
+                    months = [7,8,9];
+                    break;
+                case 4:
+                    months = [10,11,12];
+                    break;
+            }
+            filterQuarter = [
+                {
+                    $match: {
+                        $or: [
+                            { $expr: { $eq: ["$filterMonth", months[0]] } },
+                            { $expr: { $eq: ["$filterMonth", months[1]] } },
+                            { $expr: { $eq: ["$filterMonth", months[2]] } }
+                        ]
                     }
-                ]
-                break;
-            case 2:
-                filterQuarter = [
-                    {
-                        $match: {
-                            $or: [
-                                { $expr: { $eq: ["$filterMonth", 4] } },
-                                { $expr: { $eq: ["$filterMonth", 5] } },
-                                { $expr: { $eq: ["$filterMonth", 6] } }
-                            ]
-                        }
-                    }
-                ]
-                break;
-            case 3:
-                filterQuarter = [
-                    {
-                        $match: {
-                            $or: [
-                                { $expr: { $eq: ["$filterMonth", 7] } },
-                                { $expr: { $eq: ["$filterMonth", 8] } },
-                                { $expr: { $eq: ["$filterMonth", 9] } }
-                            ]
-                        }
-                    }
-                ]
-                break;
-            case 4:
-                filterQuarter = [
-                    {
-                        $match: {
-                            $or: [
-                                { $expr: { $eq: ["$filterMonth", 10] } },
-                                { $expr: { $eq: ["$filterMonth", 11] } },
-                                { $expr: { $eq: ["$filterMonth", 12] } }
-                            ]
-                        }
-                    }
-                ]
-                break;
+                }
+            ]
         }
 
         const data = await patientCollection.aggregate([
