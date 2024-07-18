@@ -140,6 +140,14 @@
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
             </select>
+            <select class="yearly" id="quarterFilter">
+                <option selected hidden>Quarter</option>
+                <option value="">None</option>
+                <option value="1">1st Quarter</option>
+                <option value="2">2nd Quarter</option>
+                <option value="3">3rd Quarter</option>
+                <option value="4">4th Quarter</option>
+            </select>
         </div>
         {{#if (eq user.role "Data Manager")}}
         <div class="export">

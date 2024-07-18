@@ -411,6 +411,7 @@ server.get('/dashboard', async (req, resp) => {
 server.get('/dashboard/data', async (req, resp) => {
     try {
         const patientCollection = client.db("test").collection("patients");
+        const quarter = parseInt(req.query.quarter);
         const monthly = parseInt(req.query.monthly);
         const yearly = parseInt(req.query.yearly);
 
@@ -434,6 +435,61 @@ server.get('/dashboard/data', async (req, resp) => {
             }
         ]
         : [];
+        let filterQuarter = [];
+        switch (quarter){
+            case 1:
+                filterQuarter = [
+                    {
+                        $match: {
+                            $or: [
+                                { $expr: { $eq: ["$filterMonth", 1] } },
+                                { $expr: { $eq: ["$filterMonth", 2] } },
+                                { $expr: { $eq: ["$filterMonth", 3] } }
+                            ]
+                        }
+                    }
+                ]
+                break;
+            case 2:
+                filterQuarter = [
+                    {
+                        $match: {
+                            $or: [
+                                { $expr: { $eq: ["$filterMonth", 4] } },
+                                { $expr: { $eq: ["$filterMonth", 5] } },
+                                { $expr: { $eq: ["$filterMonth", 6] } }
+                            ]
+                        }
+                    }
+                ]
+                break;
+            case 3:
+                filterQuarter = [
+                    {
+                        $match: {
+                            $or: [
+                                { $expr: { $eq: ["$filterMonth", 7] } },
+                                { $expr: { $eq: ["$filterMonth", 8] } },
+                                { $expr: { $eq: ["$filterMonth", 9] } }
+                            ]
+                        }
+                    }
+                ]
+                break;
+            case 4:
+                filterQuarter = [
+                    {
+                        $match: {
+                            $or: [
+                                { $expr: { $eq: ["$filterMonth", 10] } },
+                                { $expr: { $eq: ["$filterMonth", 11] } },
+                                { $expr: { $eq: ["$filterMonth", 12] } }
+                            ]
+                        }
+                    }
+                ]
+                break;
+        }
 
         const data = await patientCollection.aggregate([
             {
@@ -444,6 +500,7 @@ server.get('/dashboard/data', async (req, resp) => {
             },
             ...filterMonth,
             ...filterYear,
+            ...filterQuarter,
             {$facet: {
                 genderTestResult: 
                 [

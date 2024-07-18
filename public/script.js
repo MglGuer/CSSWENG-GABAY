@@ -27,13 +27,44 @@ document.addEventListener('DOMContentLoaded', async function () {
                 removeNoDataMessage('.graph7', 'Testing outcomes for stigma','chartStigma');
                 removeNoDataMessage('.graph8', 'Testing outcomes for discrimination','chartDiscrimination');
                 removeNoDataMessage('.graph9', 'Testing outcomes for violence','chartViolence');
-                await initializeCharts(monthValue,yearValue);
+                await initializeCharts(monthValue,yearValue,quarterValue);
             }
             catch(error) {
                     console.error('Error fetching patient data:', error);
                     alert('An error occurred while filtering biomedical patient data.');
                 }
         };
+    }
+
+    /**
+     * Filters graphs by quarter of the year
+     */
+    let quarterValue = undefined; 
+    let quarterFilter = document.querySelector('#quarterFilter');
+    if (quarterFilter){
+        quarterFilter.onchange = async function () {
+            quarterValue = quarterFilter.value;
+            if (quarterValue != ''){monthlyFilter.setAttribute('hidden','');}
+            else{monthlyFilter.removeAttribute('hidden');}
+            try{
+                console.log('The quarter is ' + quarterValue);
+                removeNoDataMessage('.graph3', 'Testing outcomes by main reason for HIV Test:','chartReason');
+                removeNoDataMessage('.graph5', 'Testing outcomes by Key or Vulnerable Population (KVP) at higher risk','chartKVP');
+                removeNoDataMessage('.graph1', 'Testing outcomes for clients who were tested before (repeat testers)','chartTestedBefore');
+                removeNoDataMessage('.graph2', 'Testing outcomes by age','chartAge');
+                removeNoDataMessage('.graph4', 'Testing outcomes for first time testers','chartFirstTimeTesters');
+                removeNoDataMessage('.graph6', 'Linkage for positive clients','chartLinkage');
+                removeNoDataMessage('.graph7', 'Testing outcomes for stigma','chartStigma');
+                removeNoDataMessage('.graph8', 'Testing outcomes for discrimination','chartDiscrimination');
+                removeNoDataMessage('.graph9', 'Testing outcomes for violence','chartViolence');
+                await initializeCharts(monthValue,yearValue,quarterValue);
+            }
+            catch(error) {
+                    console.error('Error fetching patient data:', error);
+                    alert('An error occurred while filtering biomedical patient data.');
+                }
+        };
+
     }
 
     /**
@@ -55,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 removeNoDataMessage('.graph7', 'Testing outcomes for stigma','chartStigma');
                 removeNoDataMessage('.graph8', 'Testing outcomes for discrimination','chartDiscrimination');
                 removeNoDataMessage('.graph9', 'Testing outcomes for violence','chartViolence');
-                await initializeCharts(monthValue,yearValue);
+                await initializeCharts(monthValue,yearValue,quarterValue);
             }
             catch(error) {
                     console.error('Error fetching patient data:', error);
@@ -1412,12 +1443,20 @@ function renderChart(ctx, data, config) {
 /**
  * Initializes charts by fetching data and rendering them.
  */
-async function initializeCharts(monthly=0,yearly=0) {
+async function initializeCharts(monthly=0,yearly=0,quarter=0) {
     try {
-        monthlyQuery = monthly !== 0 ? `monthly=${monthly}` : ''
-        yearlyQuery = yearly !== 0 ? `yearly=${yearly}`: ''
-        connector1 = monthly !== 0 && yearly !== 0 ? `&`: ''
-        queryParams = `?${monthlyQuery}${connector1}${yearlyQuery}`
+        if (quarter != 0){
+            quarterQuery = quarter !== 0 ? `quarter=${quarter}` : ''
+            yearlyQuery = yearly !== 0 ? `yearly=${yearly}`: ''
+            connector1 = quarter !== 0 && yearly !== 0 ? `&`: ''
+            queryParams = `?${quarterQuery}${connector1}${yearlyQuery}`
+        }
+        else{
+            monthlyQuery = monthly !== 0 ? `monthly=${monthly}` : ''
+            yearlyQuery = yearly !== 0 ? `yearly=${yearly}`: ''
+            connector1 = monthly !== 0 && yearly !== 0 ? `&`: ''
+            queryParams = `?${monthlyQuery}${connector1}${yearlyQuery}`
+        }
 
         const data = await fetchData(`/dashboard/data${queryParams}`);
         if (!data) {
