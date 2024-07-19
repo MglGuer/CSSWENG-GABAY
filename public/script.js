@@ -398,29 +398,29 @@ document.addEventListener('DOMContentLoaded', async function () {
                 console.error('Error exporting to PDF:', error);
             }
         });
-
-        /**
-         * Event listener for exporting the overall data from dashboard into excel sheet.
-         * Exports the data into excel sheet.
-         */
-        document.getElementById('exportExcelButton').addEventListener('click', async () => {
-            try {
-                const response = await fetch('/dashboard/export');
-                if (response.ok) {
-                    const blob = await response.blob();
-                    saveAs(blob, 'GABAY Data Sheet.xlsx');
-                } else {
-                    console.error('Failed to export data:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error exporting data to Excel:', error);
-            }
-        });
     }
     catch(error){
 
     }
 
+    /**
+    * Event listener for exporting the overall data from dashboard into excel sheet.
+    * Exports the data into excel sheet.
+    */
+    document.getElementById('exportExcelButton').addEventListener('click', async () => {
+        try {
+            const response = await fetch('/dashboard/export');
+            if (response.ok) {
+                const blob = await response.blob();
+                saveAs(blob, 'GABAY Data Sheet.xlsx');
+            } else {
+                console.error('Failed to export data:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error exporting data to Excel:', error);
+        }
+    });
+    
     /**
      * Event listener for the edit button.
      * Opens the edit modal with the data of the selected patient.
@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 let formContent = `
                     <input type="hidden" name="id" value="${patient._id}">
                     <div class="field">
-                        <label for="gender" class="data-label">Gender:</label>
+                        <label for="gender" class="data-label">Sex at birth:</label>
                         <label class="radio-option">
                             <input type="radio" name="gender" value="Male" ${patient.gender === 'Male' ? 'checked' : ''} required>
                             <span>Male</span>
